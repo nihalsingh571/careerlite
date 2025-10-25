@@ -29,7 +29,10 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS - Using compiled version with all utilities -->
+    <!-- Tailwind CSS - compiled file; fallback to CDN in debug -->
+    {% if debug %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% endif %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind-output.css' %}">
 
         <!-- jQuery -->

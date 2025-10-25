@@ -43,11 +43,14 @@
 
     {% compress css %}
     <link rel="stylesheet" type="text/x-scss" href="{% static 'css/main.scss' %}">
-    <!-- <link rel="stylesheet" type="text/less" href="{% static 'css/select2.min.css' %}"> -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/introjs.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui-slider-pips.css' %}">
     {% endcompress %}
+    {# Fallback in development when compressor isn't compiling SCSS #}
+    {% if debug %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    {% endif %}
     {% endblock %}
 
   </head>

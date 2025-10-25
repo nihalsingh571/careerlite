@@ -6,6 +6,9 @@
 {% compress css %}
 <link rel="stylesheet" type="text/less" href="{% static 'r1/css/main.less' %}">
 {% endcompress %}
+{% if debug %}
+<link rel="stylesheet" type="text/css" href="{% static 'r1/css/my_style.css' %}">
+{% endif %}
     <!-- MODAL FOR LOGIN -->
     <!--/ MODAL FOR LOGIN -->
     <!--/ HEADER -->

@@ -416,9 +416,10 @@ CELERY_MONITOR_URL = os.getenv("CELERY_MONITOR_URL")
 # Tailwind CSS Configuration
 TAILWIND_CSS_FILE = "css/tailwind-output.css"
 
-# Try to load local settings for development
-try:
-    from .settings_local import *
-    print("Local development settings loaded")
-except ImportError:
-    pass  # settings_local.py doesn't exist or has import errors
+# Try to load local settings for development when explicitly enabled
+if os.getenv("DJANGO_SETTINGS_USE_LOCAL", "1") == "1":
+    try:
+        from .settings_local import *
+        print("Local development settings loaded")
+    except ImportError:
+        pass  # settings_local.py doesn't exist or has import errors

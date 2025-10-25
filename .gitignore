@@ -18,6 +18,8 @@ docs/build
 dist/
 env
 env/
+.venv/
+venv/
 .env
 secret
 staticfiles/CACHE
@@ -28,3 +30,5 @@ static/sfdc.png
 tailwind-output.css
 .ruff_cache
 TODO.md
+db.sqlite3
+.vscode/

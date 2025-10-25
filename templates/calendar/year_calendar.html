@@ -18,8 +18,8 @@
 {% show_search_filter %}
 {% endblock %}
 {% block base %}
- {% compress css %}
-<link rel="stylesheet" type="text/less" href="{% static 'css/calendar.css' %}">
+{% compress css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/calendar.css' %}">
 {% endcompress %}
 <style type="text/css">
   .breadcrumb_calendar{

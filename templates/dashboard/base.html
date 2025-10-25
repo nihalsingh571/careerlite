@@ -20,13 +20,18 @@
     <script src="https://cdn.ckeditor.com/4.5.11/standard/ckeditor.js"></script>
 
     {% compress css %}
-        <link rel="stylesheet" type="text/less" href="{% static 'css/jquery.dataTables.min.css' %}">
-        <link rel="stylesheet" type="text/less" href="{% static 'css/select2.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/select2.min.css' %}">
         <link rel="stylesheet" type="text/less" href="{% static 'css/admin_stylesheet.less' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'r1/css/bootstrap-datetimepicker.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}"/>
 
     {% endcompress %}
+    {% if debug %}
+        {# Minimal fallback to ensure base admin styles show in dev #}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/select2.min.css' %}">
+    {% endif %}
     <!--/ MY STYLE -->
 </head>
 <body>

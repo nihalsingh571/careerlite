@@ -27,6 +27,15 @@ INSTALLED_APPS = INSTALLED_APPS + tuple(LOCAL_INSTALLED_APPS)
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+# Set a default SECRET_KEY for local development
+SECRET_KEY = "django-insecure-local-development-key-change-in-production"
+
+# Set default AWS settings to avoid django-ses errors
+AWS_SES_REGION_NAME = "us-east-1"
+AWS_SES_REGION_ENDPOINT = "email.us-east-1.amazonaws.com"
+AWS_ACCESS_KEY_ID = ""
+AWS_SECRET_ACCESS_KEY = ""
+
 # Use console email backend for local development
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
@@ -54,17 +63,13 @@ INTERNAL_IPS = ("127.0.0.1", "localhost")
 #     "template_profiler_panel.panels.template.TemplateProfilerPanel",
 # ]
 
-# Local database settings (if different from main settings)
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'peeljobs_local',
-#         'USER': 'your_db_user',
-#         'PASSWORD': 'your_db_password',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
+# Local database settings - Using SQLite for easier local development
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 # Development-specific middleware (if needed)
 # LOCAL_MIDDLEWARE = [
