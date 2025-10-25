@@ -32,3 +32,4 @@ tailwind-output.css
 TODO.md
 db.sqlite3
 .vscode/
+credentials.dat
