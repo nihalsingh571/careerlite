@@ -4,6 +4,7 @@ import os
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.core.exceptions import ValidationError
@@ -17,19 +18,8 @@ from mpcomp.views import jobseeker_login_required
 from mpcomp.views import get_resume_data, handle_uploaded_file
 from peeldb.models import City, Country, FunctionalArea, Industry, Language, Skill, UserMessage, Project, UserLanguage, EmploymentHistory, EducationDetails, EducationInstitue, Degree, Qualification, TechnicalSkill, Certification
 
-from candidate.forms import (
-    YEARS,
-    MONTHS,
-    MAR_TYPES,
-    ProjectForm,
-    WorkExperienceForm,
-    EducationForm,
-    DegreeForm,
-    EducationInstitueForm,
-    TechnicalSkillForm,
-    CertificationForm,
-)
 
+from candidate.utils.recommend import recommend_internships
 @jobseeker_login_required
 def my_home(request):
     """need to check user login or not"""
@@ -1200,10 +1190,7 @@ def add_skill_modal(request):
                 request.user.profile_updated = timezone.now()
                 request.user.save()
             
-            return JsonResponse({
-                'success': True,
-                'message': 'Technical skill added successfully!'
-            })
+            return JsonResponse({'success': True, 'message': 'Technical skill added successfully!', 'verification_url': reverse('candidate:verify_skill', args=[skill.id])})
             
         except Exception as e:
             return JsonResponse({
@@ -2116,3 +2103,21 @@ def edit_basic_profile(request):
             'success': False,
             'error': f'An error occurred while updating your profile: {str(e)}'
         })
+
+
+@jobseeker_login_required
+def internship_recommendations(request):
+    """Return top internship recommendations based on verified skills and trust score."""
+    recs = recommend_internships(request.user, top_n=10)
+    payload = [
+        {
+            'id': j.id,
+            'title': j.title,
+            'company': j.company.name if j.company else (j.company_name or ''),
+            'url': j.get_absolute_url(),
+            'score': round(score, 4),
+        }
+        for j, score in recs
+    ]
+    return JsonResponse({'success': True, 'results': payload})
+

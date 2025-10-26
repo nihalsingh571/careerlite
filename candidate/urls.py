@@ -62,6 +62,12 @@ from .views.my_views import (
     delete_resume_modal,
     get_resume_info,
     edit_basic_profile,
+    internship_recommendations,
+)
+from .views.skill_assessment import (
+    start_skill_assessment,
+    submit_skill_answer,
+    finish_skill_assessment,
 )
 
 app_name = "candidate"
@@ -320,4 +326,9 @@ urlpatterns = [
         get_resume_info,
         name="get_resume_info",
     ),
+    url(r"^recommendations/$", internship_recommendations, name="internship_recommendations"),
+    # Skill verification (MCQ)
+    url(r"^skill/verify/(?P<skill_id>[0-9]+)/$", start_skill_assessment, name="verify_skill"),
+    url(r"^skill/assessment/(?P<attempt_id>[0-9]+)/answer/$", submit_skill_answer, name="submit_skill_answer"),
+    url(r"^skill/assessment/(?P<attempt_id>[0-9]+)/finish/$", finish_skill_assessment, name="finish_skill_assessment"),
 ]

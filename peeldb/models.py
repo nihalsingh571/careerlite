@@ -1794,6 +1794,9 @@ class Question(models.Model):
     slug = models.SlugField(max_length=500)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
+    # MCQ support
+    DIFFICULTY = (("easy", "Easy"), ("tough", "Tough"))
+    difficulty = models.CharField(max_length=10, choices=DIFFICULTY, default="easy")
 
     class Meta:
         unique_together = (
@@ -1836,6 +1839,44 @@ class AssessmentData(models.Model):
     dislike = models.BooleanField(default=False)
     comment = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
+
+
+class MCQOption(models.Model):
+    """Multiple choice option for a Question."""
+    question = models.ForeignKey(Question, related_name="options", on_delete=models.CASCADE)
+    text = models.CharField(max_length=2000)
+    is_correct = models.BooleanField(default=False)
+    order = models.PositiveIntegerField(default=0)
+
+
+class SkillAssessmentAttempt(models.Model):
+    """A timed attempt to verify a user's skill with MCQs."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="skill_assessment_attempts")
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE, related_name="assessment_attempts")
+    started_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    total_questions = models.PositiveIntegerField(default=0)
+    correct_answers = models.PositiveIntegerField(default=0)
+    score = models.FloatField(default=0.0)  # 0..1
+    status = models.CharField(max_length=20, default="in_progress")
+
+    def finalize(self):
+        from django.utils import timezone
+        self.completed_at = timezone.now()
+        self.total_questions = self.answers.count()
+        self.correct_answers = self.answers.filter(is_correct=True).count()
+        self.score = (self.correct_answers / self.total_questions) if self.total_questions else 0.0
+        self.status = "completed"
+        self.save(update_fields=["completed_at", "total_questions", "correct_answers", "score", "status"])
+
+
+class SkillAssessmentAnswer(models.Model):
+    attempt = models.ForeignKey(SkillAssessmentAttempt, on_delete=models.CASCADE, related_name="answers")
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    selected_option = models.ForeignKey(MCQOption, on_delete=models.SET_NULL, null=True)
+    is_correct = models.BooleanField(default=False)
+    time_taken_sec = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 # class CredentialsModel(models.Model):
