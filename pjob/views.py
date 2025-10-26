@@ -2399,7 +2399,7 @@ def save_codes_and_send_mail(user, request, passwd):
             tech_skill = TechnicalSkill.objects.create(skill=skill[0])
             user.skills.add(tech_skill)
     temp = loader.get_template("email/jobseeker_account.html")
-    subject = "PeelJobs User Account Activation"
+    subject = "CareerLite User Account Activation"
     url = (
         request.scheme
         + "://"
@@ -2419,7 +2419,18 @@ def save_codes_and_send_mail(user, request, passwd):
         }
     )
     mto = user.email
-    send_email.delay(mto, subject, rendered)
+    # Try async email via Celery; fall back to direct send if broker is unavailable
+    try:
+        send_email.delay(mto, subject, rendered)
+    except Exception:
+        from django.core.mail import EmailMessage
+        msg = EmailMessage(subject, rendered, getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@example.com'), [mto])
+        msg.content_subtype = 'html'
+        try:
+            msg.send(fail_silently=True)
+        except Exception:
+            # Ignore email errors in dev; do not block registration
+            pass
 
 
 def register_using_email(request):
