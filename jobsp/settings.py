@@ -210,7 +210,10 @@ STATIC_URL = "/static/"
 ADMIN_MEDIA_PREFIX = STATIC_URL + "admin/"
 COMPRESS_OUTPUT_DIR = "CACHE"
 COMPRESS_URL = STATIC_URL
-COMPRESS_ENABLED = True
+# Allow turning compressor off in dev to avoid requiring local 'sass'/'lessc' binaries
+COMPRESS_ENABLED = str(os.getenv("COMPRESS_ENABLED", "True")).lower() in ("1", "true", "yes")
+# Allow opting into offline compression via env when needed
+COMPRESS_OFFLINE = str(os.getenv("COMPRESS_OFFLINE", "False")).lower() in ("1", "true", "yes")
 COMPRESS_PRECOMPILERS = (
     ("text/less", "lessc {infile} {outfile}"),
     ("text/x-sass", "sass {infile} {outfile}"),

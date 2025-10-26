@@ -22,7 +22,7 @@ env/
 venv/
 .env
 secret
-staticfiles/CACHE
+staticfiles/
 media/
 peeljobs_22032021.sql
 static/antivirus.png
