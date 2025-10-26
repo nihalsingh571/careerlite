@@ -1,0 +1,56 @@
+<div id="rec-card" class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+  <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+    <div class="flex items-center">
+      <i data-lucide="sparkles" class="w-4 h-4 text-blue-600 mr-2"></i>
+      <h3 class="text-sm font-semibold text-gray-900">Recommended Internships</h3>
+    </div>
+    <button id="rec-refresh" class="text-xs text-blue-600 hover:text-blue-700">Refresh</button>
+  </div>
+  <div class="p-4">
+    <div id="rec-empty" class="hidden text-sm text-gray-500">No recommendations yet. Verify a few skills to get personalized matches.</div>
+    <ul id="rec-list" class="space-y-3"></ul>
+    <div id="rec-loading" class="text-sm text-gray-500">Loading recommendations…</div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    const list = document.getElementById('rec-list');
+    const loading = document.getElementById('rec-loading');
+    const empty = document.getElementById('rec-empty');
+    const refresh = document.getElementById('rec-refresh');
+    async function loadRecs(){
+      loading.classList.remove('hidden');
+      empty.classList.add('hidden');
+      list.innerHTML = '';
+      try {
+        const resp = await fetch('{% url "candidate:internship_recommendations" %}');
+        const data = await resp.json();
+        const results = (data && data.success && data.results) ? data.results.slice(0,5) : [];
+        if(results.length === 0){
+          empty.classList.remove('hidden');
+        } else {
+          results.forEach(r => {
+            const li = document.createElement('li');
+            li.className = 'flex items-start';
+            li.innerHTML = `
+              <div class="flex-1">
+                <a href="${r.url}" class="text-sm font-medium text-blue-700 hover:underline" target="_blank">${r.title}</a>
+                <div class="text-xs text-gray-500">${r.company || ''}</div>
+              </div>
+              <span class="ml-3 inline-flex items-center px-2 py-0.5 rounded bg-green-50 text-green-700 text-xs font-medium">${Math.round(r.score*100)}%</span>
+            `;
+            list.appendChild(li);
+          });
+        }
+      } catch(e){
+        empty.classList.remove('hidden');
+      } finally {
+        loading.classList.add('hidden');
+      }
+    }
+    document.addEventListener('DOMContentLoaded', loadRecs);
+    refresh.addEventListener('click', loadRecs);
+  })();
+</script>
+
