@@ -33,7 +33,7 @@
             }
 
             // Setup the ajax indicator
-            // $('body').append('<div id="ajaxBusy"><p><img src="http://peeljobs.s3.amazonaws.com/static/img/loader-gif.gif" height="60px" width="60px"></p></div>');
+            // $('body').append('<div id="ajaxBusy"><p><img src="http://careerlite.s3.amazonaws.com/static/img/loader-gif.gif" height="60px" width="60px"></p></div>');
             // $('#ajaxBusy').css({
             //     display: "block",
             //     margin: "0px",

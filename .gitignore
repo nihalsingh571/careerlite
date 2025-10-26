@@ -24,7 +24,7 @@ venv/
 secret
 staticfiles/
 media/
-peeljobs_22032021.sql
+careerlite_22032021.sql
 static/antivirus.png
 static/sfdc.png
 tailwind-output.css

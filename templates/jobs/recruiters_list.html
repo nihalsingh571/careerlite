@@ -7,11 +7,11 @@
 
 {% if current_page|slugify == '1'|slugify %}
 {% else %}
-<link rel="prev" href="https://peeljobs.com{{current_url}}{% if prev_page != 1 %}page/{{ prev_page }}/{% endif %}" />
+<link rel="prev" href="https://careerlite.com{{current_url}}{% if prev_page != 1 %}page/{{ prev_page }}/{% endif %}" />
 {% endif %}
 {% if current_page <= last_page %}
 {% if current_page == last_page %}{% else %}
-<link rel="next" href="https://peeljobs.com{{current_url}}page/{{current_page| add:"1"}}/" />
+<link rel="next" href="https://careerlite.com{{current_url}}page/{{current_page| add:"1"}}/" />
 {% endif %}{% endif %}
 {% endblock %}
 
@@ -186,7 +186,7 @@
       <div class="col-md-3 right_container">
         <!-- upload_btn_block starts here -->
         <div class="similar_job_posts" style="margin-bottom:10px;">
-          <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fpeeljobs%2F&width=300&height=150&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=892560280818752" width="300" height="150" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+          <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fcareerlite%2F&width=300&height=150&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=892560280818752" width="300" height="150" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
         </div>
         {% if request.user.is_authenticated %}
         {% if request.user.is_jobseeker and not request.user.resume %}

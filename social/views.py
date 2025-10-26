@@ -11,21 +11,20 @@ from django.shortcuts import render
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from zoneinfo import ZoneInfo
 from django.urls import reverse
 from django.conf import settings
 from peeldb.models import (
     User,
     Google,
-    Facebook,
     UserEmail,
     GitHub,
     JobPost,
     AppliedJobs,
 )
-from mpcomp.facebook import GraphAPI, get_access_token_from_code
 
-from urllib.parse import parse_qsl
+from urllib.parse import parse_qsl, urlencode
 
 
 def login_and_apply(request):
@@ -56,7 +55,7 @@ def login_and_apply(request):
                 }
                 rendered = template_loader.render(context)
                 msg = MIMEMultipart()
-                msg["Subject"] = "Peeljobs - The best Job Portal"
+                msg["Subject"] = "CareerLite - The best Job Portal"
                 msg["From"] = settings.DEFAULT_FROM_EMAIL
                 msg["To"] = job_post.user.email
                 part = MIMEText(rendered, "html")
@@ -90,143 +89,6 @@ def login_and_apply(request):
                 return job_post, "applied"
         return job_post, "apply"
     return False
-
-
-def facebook_login(request):
-    if "code" in request.GET:
-        accesstoken = get_access_token_from_code(
-            request.GET["code"],
-            request.scheme
-            + "://"
-            + request.META["HTTP_HOST"]
-            + reverse("social:facebook_login"),
-            settings.FB_APP_ID,
-            settings.FB_SECRET,
-        )
-        if "error" in accesstoken.keys() or not accesstoken.get("access_token"):
-            return render(
-                request,
-                "404.html",
-                {
-                    "message": "Sorry, Your session has been expired",
-                    "reason": "Please kindly try again login to update your profile",
-                    "email": settings.DEFAULT_FROM_EMAIL,
-                },
-                status=404,
-            )
-        graph = GraphAPI(accesstoken["access_token"])
-        accesstoken = graph.extend_access_token(settings.FB_APP_ID, settings.FB_SECRET)[
-            "accesstoken"
-        ]
-        profile = graph.get_object(
-            "me",
-            fields="id, name, email",
-        )
-        email = profile.get("email", "")
-
-        if "email" in profile.keys():
-            email_matches = UserEmail.objects.filter(email__iexact=email).first()
-            if email_matches:
-                user = email_matches.user
-                if user.is_recruiter or user.is_agency_recruiter:
-                    user = authenticate(username=user.username)
-                    login(request, user)
-                    return HttpResponseRedirect(reverse("recruiter:index"))
-
-                # Checking Email associated with the user but user is not connected to facebook
-                if not user.is_fb_connected:
-                    Facebook.objects.create(
-                        user=user,
-                        name=profile.get("name", ""),
-                        email=profile.get("email", ""),
-                    )
-                    user.save()
-                user = authenticate(username=user.email)
-            else:
-                user = User.objects.filter(
-                    email__iexact=profile.get("email", "")
-                ).first()
-                if user:
-                    user.first_name = profile.get("name", "")
-                    user.profile_updated = timezone.now()
-                    user.is_active = True
-                    user.save()
-                else:
-                    user = User.objects.create(
-                        username=profile.get("email", ""),
-                        email=profile.get("email", ""),
-                        first_name=profile.get("name", ""),
-                        last_name=profile.get("name", ""),
-                        user_type="JS",
-                        profile_updated=timezone.now(),
-                        is_active=True,
-                        registered_from="Social",
-                    )
-
-                Facebook.objects.create(
-                    user=user,
-                    facebook_id=profile.get("id"),
-                    name=profile.get("name", ""),
-                    email=profile.get("email", ""),
-                )
-                UserEmail.objects.create(
-                    user=user, email=profile.get("email"), is_primary=True
-                )
-                user = authenticate(username=user.username)
-                user.last_login = datetime.now()
-                user.is_bounce = False
-                user.referer = request.session.get("referer", "")
-                user.save()
-                login(request, user)
-                return HttpResponseRedirect("/social/user/update/")
-        else:
-            return render(
-                request,
-                "404.html",
-                {
-                    "message": "Sorry, We didnt find your email id through facebook",
-                    "reason": "Please verify your email id in facebook and try again",
-                    "email": settings.DEFAULT_FROM_EMAIL,
-                },
-                status=404,
-            )
-
-        login(request, user)
-        if "design" in request.session.keys():
-            if request.session.get("job_id"):
-                post = JobPost.objects.filter(
-                    id=request.session["job_id"], status="Live"
-                )
-                return HttpResponseRedirect(post[0].slug)
-            return HttpResponseRedirect("/jobs/")
-        # Apply job after login starts
-        if request.session.get("job_id"):
-            log_apply = login_and_apply(request)
-            if log_apply:
-                return HttpResponseRedirect(
-                    log_apply[0].slug + "?job_apply=" + log_apply[1]
-                )
-        # Apply job after login ends
-        if user.profile_completion_percentage < 50:
-            return HttpResponseRedirect(reverse("my:profile"))
-        return HttpResponseRedirect("/")
-    elif "error" in request.GET:
-        # TODO : llog the error and transfer to error page
-        return HttpResponseRedirect("/jobs/")
-    else:
-        print(settings.FB_APP_ID)
-
-        rty = (
-            "https://graph.facebook.com/oauth/authorize?client_id="
-            + settings.FB_APP_ID
-            + "&redirect_uri="
-            + request.scheme
-            + "://"
-            + request.META["HTTP_HOST"]
-            + reverse("social:facebook_login")
-            + "&scope=email"
-        )
-        return HttpResponseRedirect(rty)
 
 
 def google_login(request):
@@ -396,20 +258,44 @@ def google_login(request):
             return HttpResponseRedirect(reverse("my:profile"))
         return HttpResponseRedirect("/")
     else:
-        rty = (
-            "https://accounts.google.com/o/oauth2/auth?client_id="
-            + settings.GOOGLE_CLIENT_ID
-            + "&response_type=code"
-        )
-        rty += (
-            "&scope=https://www.googleapis.com/auth/userinfo.profile \
-               https://www.googleapis.com/auth/userinfo.email&redirect_uri="
-            + settings.GOOGLE_LOGIN_HOST
-            + reverse("social:google_login")
-            + "&state=1235dfghjkf123"
-        )
+        client_id = settings.GOOGLE_CLIENT_ID or settings.GOOGLE_OAUTH2_CLIENT_ID
+        if not client_id:
+            return render(
+                request,
+                "404.html",
+                {
+                    "message": "Google login is not configured",
+                    "reason": "Missing GOOGLE_CLIENT_ID environment variable.",
+                    "email": settings.DEFAULT_FROM_EMAIL,
+                },
+                status=500,
+            )
 
-        return HttpResponseRedirect(rty)
+        redirect_uri = settings.GOOGLE_LOGIN_HOST or request.build_absolute_uri(
+            reverse("social:google_login")
+        )
+        # Ensure final redirect has the google_login path included
+        if not redirect_uri.endswith(reverse("social:google_login")):
+            redirect_uri = redirect_uri.rstrip("/") + reverse("social:google_login")
+
+        state = request.session.setdefault("google_oauth_state", get_random_string(24))
+        scopes = " ".join(
+            [
+                "https://www.googleapis.com/auth/userinfo.profile",
+                "https://www.googleapis.com/auth/userinfo.email",
+            ]
+        )
+        query = urlencode(
+            {
+                "client_id": client_id,
+                "response_type": "code",
+                "scope": scopes,
+                "redirect_uri": redirect_uri,
+                "state": state,
+            }
+        )
+        auth_url = f"https://accounts.google.com/o/oauth2/auth?{query}"
+        return HttpResponseRedirect(auth_url)
 
 
 # TODO: need to think about this a lot because github will return lot of email ids including no-reply.github.com.
@@ -580,4 +466,3 @@ def github_login(request):
             + "&scope=read:user user:email&state=dia123456789ramya"
         )
         return HttpResponseRedirect(rty)
-

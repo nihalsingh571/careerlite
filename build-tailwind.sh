@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Build Tailwind CSS for PeelJobs
+# Build Tailwind CSS for CareerLite
 echo "🔨 Building Tailwind CSS..."
 
 # Build the CSS

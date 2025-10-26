@@ -820,7 +820,7 @@ def tech_skills(request):
 def edit_tech_skills(skill, request):
     if request.FILES.get("icon"):
         if skill.icon:
-            url = str(skill.icon).split("cdn.peeljobs.com")[-1:]
+            url = str(skill.icon).split("cdn.careerlite.com")[-1:]
             AWS().cloudfront_invalidate(paths=url)
         file_path = get_aws_file_path(
             request.FILES.get("icon"),

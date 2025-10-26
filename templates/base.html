@@ -1,6 +1,6 @@
 {% load thumbnail %}{% load compress %}{% load searchtags %}{% load page_tags %}{% load static %}{% load cache %}<!DOCTYPE html>
 <html>
-  <head prefix="og: https://ogp.me/ns# fb: https://ogp.me/ns/fb# peeljobs: https://ogp.me/ns/fb/peeljobs#">
+  <head prefix="og: https://ogp.me/ns# fb: https://ogp.me/ns/fb# careerlite: https://ogp.me/ns/fb/careerlite#">
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-11720509-7"></script>
 <script>
@@ -12,7 +12,7 @@
 </script>
     <link rel="icon" type="image/x-icon" href="{{logo}}" />
     <meta property="fb:app_id" content="469881999753251" />
-    <meta property="og:type"   content="peeljobs:job" />
+    <meta property="og:type"   content="careerlite:job" />
     <meta charset="utf-8">
     {% block block_title %}
       {% include 'meta_data/home.html' %}
@@ -164,7 +164,7 @@
                       {% elif request.user.photo %}
                         <img class="profile_picture" src="{{request.user.photo}}" >
                       {% else %}
-                        <img class="profile_picture" src="https://cdn.peeljobs.com/dummy.jpg">
+                        <img class="profile_picture" src="https://cdn.careerlite.com/dummy.jpg">
                       {% endif %}
                       </span>
                     </li>
@@ -286,14 +286,14 @@
               <div class="row mar_lr_0">
                 {% block pj_info %}
                   <div class="col-md-4 col-sm-12 col-xs-12 about">
-                    <strong class="logo">Peeljobs</strong>
-                    <p>Peeljobs is a platform to connect recruiters and job seekers from all over India. The features which make us stand out amongst the many available job portals is our uniqueness and the ease of use of our platform. We have many free of cost services in the platter, to offer to Job-seekers as well as to the recruiters.</p>
+                    <strong class="logo">CareerLite</strong>
+                    <p>CareerLite is a platform to connect recruiters and job seekers from all over India. The features which make us stand out amongst the many available job portals is our uniqueness and the ease of use of our platform. We have many free of cost services in the platter, to offer to Job-seekers as well as to the recruiters.</p>
                   </div>
                 {% endblock %}
                 <div class="col-md-5 col-sm-12 col-xs-12 links">
                   <ul class="footer_links">
                     <li class="text-uppercase">About Us</li>
-                    <li><a href="{% url 'pages' 'about-us' %}" target="_blank">About Peeljobs</a></li>
+                    <li><a href="{% url 'pages' 'about-us' %}" target="_blank">About CareerLite</a></li>
                     <li><a href="{% url 'sitemap' %}" target="_blank">Sitemap</a></li>
                     <li><a href="{% url 'pages' 'terms-conditions' %}" target="_blank">Terms &amp; Conditions</a></li>
                     <li><a href="{% url 'pages' 'privacy-policy' %}" target="_blank">Privacy Policy</a></li>
@@ -336,13 +336,13 @@
                   {% cache 604800 social_footer_links %}
                   <div class="social_links text-center">
                     <ul>
-                      <li><a target="_blank" href="https://facebook.com/peeljobs/"><i class="fa-brands fa-facebook-f"></i></a></li>
-                      <li><a target="_blank" href="https://www.linkedin.com/company/peeljobs?trk=top_nav_home"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                      <li><a target="_blank" href="https://facebook.com/careerlite/"><i class="fa-brands fa-facebook-f"></i></a></li>
+                      <li><a target="_blank" href="https://www.linkedin.com/company/careerlite?trk=top_nav_home"><i class="fa-brands fa-linkedin-in"></i></a></li>
                       <li ><a href="{% url 'social:google_login' %}"><strong>G</strong></a></li>
-                      <li><a target="_blank" href="https://twitter.com/PeelJobs"><i class="fa-brands fa-twitter"></i></a></li>
+                      <li><a target="_blank" href="https://twitter.com/CareerLite"><i class="fa-brands fa-twitter"></i></a></li>
                     </ul>
                   </div>
-                  <div class="copy_right text-center">Copyright &copy; {% now "Y" %} Peeljobs.com<br><a href="https://micropyramid.com" title="MicroPyramid Informatics Private Ltd" target="_blank">Development + SEO by MicroPyramid</a>
+                  <div class="copy_right text-center">Copyright &copy; {% now "Y" %} CareerLite.com<br><a href="https://careerlite.com" title="CareerLite" target="_blank">Crafted with care by the CareerLite team</a>
                   </div>
                   {% endcache %}
                 </div>
@@ -386,4 +386,3 @@
     {% block extra_js %}
     {% endblock %}
 </html>
-

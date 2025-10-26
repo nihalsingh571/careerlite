@@ -9,8 +9,8 @@ DEBUG=True/False
 SECRET_KEY=""
 HTML_MINIFY=True/False
 ENV_TYPE="DEV" or "PROD"
-DEFAULT_FROM_EMAIL='PeelJobs <peeljobs@micropyramid.com>'
-PEEL_URL="http://peeljobs.com/"
+DEFAULT_FROM_EMAIL='CareerLite <careerlite@careerlite.com>'
+PEEL_URL="http://careerlite.com/"
 CACHE_BACKEND = "memcached://127.0.0.1:11211/"
 
 ## Celery keys
@@ -28,7 +28,7 @@ HAYSTACKURL='http://127.0.0.1:9200/'
 
 ## Postgresql DB keys
 
-DB_NAME='peeljobs'
+DB_NAME='careerlite'
 DB_USER='postgres'
 DB_PASSWORD='root'
 DB_HOST='127.0.0.1'
@@ -39,13 +39,6 @@ DB_PORT='5432'
 
 GITAPPID=""
 GITAPPSECRET=""
-
-
-## Facebook Integration keys
-
-FACEBOOK_APP_ID=""
-FACEBOOK_APP_SECRET=""
-FBPEELJOBSPAGEID=""
 
 ## Google recaptcha keys
 

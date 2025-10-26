@@ -2,7 +2,7 @@ Dear Copilot,
 
 ## Project Overview
 
-PeelJobs is a dynamic, user-centric job board platform designed to streamline the entire hiring process, from job posting to application management. Built with modern web technologies, it offers a seamless experience for job seekers, recruiters, and administrators through robust role-based access control (RBAC).
+CareerLite is a dynamic, user-centric job board platform designed to streamline the entire hiring process, from job posting to application management. Built with modern web technologies, it offers a seamless experience for job seekers, recruiters, and administrators through robust role-based access control (RBAC).
 Each user role is equipped with tailored functionalities to enhance efficiency, engagement, and management, ensuring a streamlined and secure recruitment process.
 
 user types we have
@@ -16,7 +16,7 @@ user types we have
 
 ## Project Context
 
-PeelJobs is a modern job board application built with:
+CareerLite is a modern job board application built with:
 - **Framework**: django 5.2
 - **Styling**: bootstrap and migrating to tailwind 4.1.x css one by one with a new base template
 - **Database**: postgresql

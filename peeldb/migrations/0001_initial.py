@@ -791,7 +791,7 @@ class Migration(migrations.Migration):
                         choices=[
                             ("Page", "Page"),
                             ("Group", "Group"),
-                            ("PeelJobs", "PeelJobs"),
+                            ("CareerLite", "CareerLite"),
                         ],
                         max_length=50,
                     ),

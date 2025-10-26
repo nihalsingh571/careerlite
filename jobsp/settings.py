@@ -11,10 +11,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DEBUG = os.getenv("DEBUG", True)
 TEMPLATE_DEBUG = DEBUG
 
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "peeljobs@micropyramid.com")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "careerlite@careerlite.com")
+
+# Ensure locally installed Node CLI tools (e.g., sass) are discoverable
+NODE_BIN_PATH = os.path.join(BASE_DIR, "node_modules", ".bin")
+if os.path.isdir(NODE_BIN_PATH):
+    os.environ["PATH"] = NODE_BIN_PATH + os.pathsep + os.environ.get("PATH", "")
 
 
-PEEL_URL = os.getenv("PEEL_URL", "http://peeljobs.com/")
+PEEL_URL = os.getenv("PEEL_URL", "http://careerlite.com/")
 
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/1")
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
@@ -28,7 +33,7 @@ logging = "DEBUG"
 GIT_APP_ID = os.getenv("GITAPPID")
 GIT_APP_SECRET = os.getenv("GITAPPSECRET")
 
-ALLOWED_HOSTS = ["peeljobs.com", "test.peeljobs.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["careerlite.com", "test.careerlite.com", "localhost", "127.0.0.1"]
 
 # tw app
 tw_oauth_token_secret = os.getenv("twoauthtokensecret")
@@ -154,7 +159,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:4200", "http://127.0.0.1:4200"]
 CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://\w+\.peeljobs\.com$",
+    r"^https://\w+\.careerlite\.com$",
 ]
 CORS_ALLOW_METHODS = list(default_methods)
 CORS_ALLOW_HEADERS = list(default_headers)
@@ -338,7 +343,7 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 SUPPORT_EMAILS = [
-    "ashwin@micropyramid.com",
+    "ashwin@careerlite.com",
 ]
 
 
@@ -387,16 +392,16 @@ FB_DEL_ACCESS_TOKEN = os.getenv("FBDELACCESSTOKEN")
 REC_FB_ACCESS_TOKEN = os.getenv("RECFBACCESSTOKEN")
 
 URLS = [
-    "http://stage.peeljobs.com/",
-    "http://stage.peeljobs.com/fresher-jobs/",
-    "http://stage.peeljobs.com/jobs/",
-    "http://stage.peeljobs.com/companies/",
+    "http://stage.careerlite.com/",
+    "http://stage.careerlite.com/fresher-jobs/",
+    "http://stage.careerlite.com/jobs/",
+    "http://stage.careerlite.com/companies/",
 ]
 
 DAILY_REPORT_USERS = [
     "kamal.seo@gmail.com",
-    "varun@micropyramid.com",
-    "ashwin@micropyramid.com",
+    "varun@careerlite.com",
+    "ashwin@careerlite.com",
 ]
 # MIDDLEWARE_CLASSES = MIDDLEWARE
 

@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = "Peeljobs"
-copyright = "2020, MicroPyramid"
-author = "MicroPyramid"
+project = "CareerLite"
+copyright = "2025, CareerLite Contributors"
+author = "CareerLite Team"
 
 # The full version, including alpha/beta/rc tags
 release = "0.9.0"

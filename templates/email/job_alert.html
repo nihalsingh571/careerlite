@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Peeljobs Job Alert Confirmation</title>
+    <title>CareerLite Job Alert Confirmation</title>
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
   </head>
   <body style="width:100% !important; margin:0 !important; padding:0 !important; -webkit-text-size-adjust:none; -ms-text-size-adjust:none;font-size:12px; font-family: 'Poppins', sans-serif;color: #45586d; background: #fff; ">
@@ -19,17 +19,17 @@
                   <table style="width:600px;background:#fff;padding:0;" cellpadding="0" cellspacing="0">
                     <tr>
                       <td style="background: #0358a6;height:30px;padding: 10px 15px;">
-                        <a href="https://peeljobs.com/" style="text-overflow: ellipsis;overflow: hidden;color: #fff !important;margin-left: 0 !important;display: inline-block;margin: 0; padding:0;font-weight: 600;font-size: 18px;text-decoration:none;"><i class="fa fa-line-chart" aria-hidden="true"></i> Peeljobs</a>
+                        <a href="https://careerlite.com/" style="text-overflow: ellipsis;overflow: hidden;color: #fff !important;margin-left: 0 !important;display: inline-block;margin: 0; padding:0;font-weight: 600;font-size: 18px;text-decoration:none;"><i class="fa fa-line-chart" aria-hidden="true"></i> CareerLite</a>
                         <span style="float:right;color: #fff;letter-spacing: 0.7px;position: relative;top:5px;">
-                        {% if alert %}Job Alert{% elif subscriber %}Subscription Alerts{% else %}PeelJobs Notifications{% endif %}</span>
+                        {% if alert %}Job Alert{% elif subscriber %}Subscription Alerts{% else %}CareerLite Notifications{% endif %}</span>
                       </td>
                     </tr>
                     <tr style="background:#fff;">
                       <td style="text-align:left;padding:20px 15px;color: #131e26;font-weight: bold;font-size: 17px;">
-                        <strong style="margin-bottom:15px;color:#45586d;font-size: 13px;font-weight:600;display:block;">Welcome to Peeljobs</strong>
+                        <strong style="margin-bottom:15px;color:#45586d;font-size: 13px;font-weight:600;display:block;">Welcome to CareerLite</strong>
                         <small style="margin-bottom:15px;color:#45586d;font-size: 13px;font-weight:500;display:block;">Dear User,</small>
                          <p style="color: #4f657d;font-size: 12px;font-weight: 400;line-height:23px;margin-bottom:0px;">
-                         {% if jobposts %} Here are the Jobs posted in peeljobs today That matched your {% if subscriber %} Subscribtion{% elif alert %}
+                         {% if jobposts %} Here are the Jobs posted in careerlite today That matched your {% if subscriber %} Subscribtion{% elif alert %}
                          Alert skills with Name {{ alert.name }} 
                          {% else %}Profile.{% endif %}{% endif %}
                          {% if new_alert %}
@@ -91,7 +91,7 @@
                     <tr>
                       <td>
                          {% if alert %}
-                         <a href="https://peeljobs.com/alert/results/{{alert.id}}/" style="display:inline-block;width:190px;background:#62bb46;margin:10px auto;margin-bottom: 10px;padding:7px 10px;text-align:center;color:#fff;font-size: 12px;font-weight:500;letter-spacing:0.7px;text-decoration:none;display:block;">Click here to View JobAlert</a>
+                         <a href="https://careerlite.com/alert/results/{{alert.id}}/" style="display:inline-block;width:190px;background:#62bb46;margin:10px auto;margin-bottom: 10px;padding:7px 10px;text-align:center;color:#fff;font-size: 12px;font-weight:500;letter-spacing:0.7px;text-decoration:none;display:block;">Click here to View JobAlert</a>
                          {% endif %}
                       </td>
                     </tr>
@@ -99,7 +99,7 @@
                     {% if user.is_authenticated and new_alert %}
                     <tr>
                     <td> 
-                        <p style="margin-top:15px;margin-left:15px;">Update your job alert, to get the best relevant jobs  <a href="https://peeljobs.com/alert/modify/{{ alert.id }}/" style="font-size:12px;font-weight:normal;background:#0358a6;color:#fff;display: inline-block;letter-spacing: 0.6px;text-decoration:none;padding:3px 10px;">Update Now</a></p>
+                        <p style="margin-top:15px;margin-left:15px;">Update your job alert, to get the best relevant jobs  <a href="https://careerlite.com/alert/modify/{{ alert.id }}/" style="font-size:12px;font-weight:normal;background:#0358a6;color:#fff;display: inline-block;letter-spacing: 0.6px;text-decoration:none;padding:3px 10px;">Update Now</a></p>
 
                     </td>
                     </tr>
@@ -113,10 +113,10 @@
                       <tr>
                         <td style="padding-left: 25%; padding-top: 35px;">
                          {% if user.is_authenticated and new_alert %}
-                         <a href="https://peeljobs.com/alert/modify/{{ alert.id }}/"  target="_blank" style="font-size:12px;font-weight:normal;background:#0358a6;color:#fff;display: inline-block;letter-spacing: 0.6px;text-decoration:none;padding:3px 10px;">Edit This Job Alert</a>
+                         <a href="https://careerlite.com/alert/modify/{{ alert.id }}/"  target="_blank" style="font-size:12px;font-weight:normal;background:#0358a6;color:#fff;display: inline-block;letter-spacing: 0.6px;text-decoration:none;padding:3px 10px;">Edit This Job Alert</a>
                          {% endif %}
                          {% if new_alert %}
-                        <a href="https://peeljobs.com/alert/create/"  target="_blank" style="font-size:12px;font-weight:normal;background:#62bb46;color:#fff;display: inline-block;letter-spacing: 0.6px;text-decoration:none;padding:3px 10px;">Create Another Job Alert</a>{% endif %}
+                        <a href="https://careerlite.com/alert/create/"  target="_blank" style="font-size:12px;font-weight:normal;background:#62bb46;color:#fff;display: inline-block;letter-spacing: 0.6px;text-decoration:none;padding:3px 10px;">Create Another Job Alert</a>{% endif %}
                         </td>
                       </tr>
                         {% endif %}
@@ -127,18 +127,18 @@
                           {% for job in jobposts %}
                           <div style="font-size:12px;letter-spacing:0.6px;padding:8px 0;width:570px;border-bottom:1px solid #e0e0e0;">
                             <div style="width:400px;float:left;">
-                              <a href="https://peeljobs.com{{job.slug}}" style="color:#0358a6;font-weight:500;">{{ job.title }}</a>
-                              <p style="margin:5px 0">{% if job.company.slug and job.company.is_active %}<a href="https://peeljobs.com/{{job.company.slug}}-job-openings/">{{job.company.name|capfirst}}</a>{% else %}{{job.company.name|capfirst}}{% endif %} , [{% if job.min_year == 0 and job.max_year == 0 %}Fresher{% else %}{{ job.min_year }} - {{ job.max_year }}Years Exp{% endif %}]</p>
+                              <a href="https://careerlite.com{{job.slug}}" style="color:#0358a6;font-weight:500;">{{ job.title }}</a>
+                              <p style="margin:5px 0">{% if job.company.slug and job.company.is_active %}<a href="https://careerlite.com/{{job.company.slug}}-job-openings/">{{job.company.name|capfirst}}</a>{% else %}{{job.company.name|capfirst}}{% endif %} , [{% if job.min_year == 0 and job.max_year == 0 %}Fresher{% else %}{{ job.min_year }} - {{ job.max_year }}Years Exp{% endif %}]</p>
                                <p style="margin:5px 0">Keyskills:{% for skill in  job.skills.all %}
-                    <a  href="https://peeljobs.com{{skill.get_job_url}}" target="_blank">{{ skill }}{% if forloop.last %}{% else %}, {% endif %}</a>
+                    <a  href="https://careerlite.com{{skill.get_job_url}}" target="_blank">{{ skill }}{% if forloop.last %}{% else %}, {% endif %}</a>
                     {% endfor %} </p>
                                <p style="margin:5px 0">Industry:  {%for industry in job.industry.all %}<a href="{% url 'job_industries' industry.slug %}">{{ industry.name }}{% if forloop.last %}{% else %}, {% endif%}</a>{% endfor %}</p>
                                <p style="margin:5px 0">Location:  {%for location in job.location.all %}
-                      <a href="https://peeljobs.com{{location.get_job_url}}">{{ location.name }}{% if forloop.last %}{% else %},{% endif%}</a>
+                      <a href="https://careerlite.com{{location.get_job_url}}">{{ location.name }}{% if forloop.last %}{% else %},{% endif%}</a>
                       {% endfor %}</p>
                             </div>
                             <div style="width:170px;float:left;text-align:right;">
-                                 <a href="https://peeljobs.com{{job.slug}}" style="font-size:12px;font-weight:normal;background:#62bb46;color:#fff;display: inline-block;margin-top:7px;padding:5px 10px;letter-spacing:0.6px;text-decoration:none;">Apply Job</a>
+                                 <a href="https://careerlite.com{{job.slug}}" style="font-size:12px;font-weight:normal;background:#62bb46;color:#fff;display: inline-block;margin-top:7px;padding:5px 10px;letter-spacing:0.6px;text-decoration:none;">Apply Job</a>
                             </div>
                             <br clear="all">
                           </div>
@@ -150,31 +150,31 @@
                     <tr>
                       <td style="padding-left:15px;">
                         <span style="color:#45586d;font-size: 12px;margin-top:30px;display:block;">Thanks & Regards,</span>
-                        <span style="color:#45586d;font-size: 12px;font-weight: 500;margin-top: 8px;display:block;margin-bottom: 30px;"><div>Peeljobs Team.</div>
-                        <div>peeljobs@micropyramid.com</div></span>
+                        <span style="color:#45586d;font-size: 12px;font-weight: 500;margin-top: 8px;display:block;margin-bottom: 30px;"><div>CareerLite Team.</div>
+                        <div>careerlite@careerlite.com</div></span>
                       </td>
                     </tr>
                      <tr>
                       <td>
                         <ul style="margin:0;padding:0;padding:0 8px;border-top:1px solid #e0e0e0;text-align:center;">
                           <li style="list-style:none;display:inline-block;">
-                            <a href="https://peeljobs.com/page/terms-conditions/" target="_blank" style="color:#0358a6;font-size: 12px;padding:15px 7px;text-decoration:none;display:inline-block;">Terms & Conditions</a>
+                            <a href="https://careerlite.com/page/terms-conditions/" target="_blank" style="color:#0358a6;font-size: 12px;padding:15px 7px;text-decoration:none;display:inline-block;">Terms & Conditions</a>
                           </li>
                            <li style="list-style:none;display:inline-block;">
-                            <a href="https://peeljobs.com/page/privacy-policy/" style="color:#0358a6;font-size: 12px;padding:15px 7px;text-decoration:none;display:inline-block;" target="_blank">Privacy Policy</a>
+                            <a href="https://careerlite.com/page/privacy-policy/" style="color:#0358a6;font-size: 12px;padding:15px 7px;text-decoration:none;display:inline-block;" target="_blank">Privacy Policy</a>
                           </li>
                            <li style="list-style:none;display:inline-block;">
-                            <a href="https://peeljobs.com/page/about-us/" style="color:#0358a6;font-size: 12px;padding:15px 7px;text-decoration:none;display:inline-block;" target="_blank">About Peeljobs</a>
+                            <a href="https://careerlite.com/page/about-us/" style="color:#0358a6;font-size: 12px;padding:15px 7px;text-decoration:none;display:inline-block;" target="_blank">About CareerLite</a>
                           </li>
                            <li style="list-style:none;display:inline-block;">
-                            <a href="https://peeljobs.com/page/faq/" style="color:#0358a6;font-size: 12px;padding:15px 7px;text-decoration:none;display:inline-block;" target="_blank">FAQ's</a>
+                            <a href="https://careerlite.com/page/faq/" style="color:#0358a6;font-size: 12px;padding:15px 7px;text-decoration:none;display:inline-block;" target="_blank">FAQ's</a>
                           </li>
                            <li style="list-style:none;display:inline-block;">
-                            <a href="https://peeljobs.com/contact/" style="color:#0358a6;font-size: 12px;padding:15px 7px;text-decoration:none;display:inline-block;" target="_blank">Contact Us</a>
+                            <a href="https://careerlite.com/contact/" style="color:#0358a6;font-size: 12px;padding:15px 7px;text-decoration:none;display:inline-block;" target="_blank">Contact Us</a>
                           </li>
                           {% if alert or subscriber or user %}
                            <li style="list-style:none;display:inline-block;">
-                            <a href="https://peeljobs.com/unsubscribe_email/{% if subscriber %}subscriber{% elif alert %}alert{% else %}user{% endif %}/{% if alert %}{{alert.unsubscribe_code}}{% elif subscriber %}{{subscriber.unsubscribe_code}}{% else %}{{user.unsubscribe_code}}{% endif %}/" style="color:#0358a6;font-size: 12px;padding:15px 7px;margin-left:480px;text-decoration:none;display:inline-block;" target="_blank">Unsubscribe</a>
+                            <a href="https://careerlite.com/unsubscribe_email/{% if subscriber %}subscriber{% elif alert %}alert{% else %}user{% endif %}/{% if alert %}{{alert.unsubscribe_code}}{% elif subscriber %}{{subscriber.unsubscribe_code}}{% else %}{{user.unsubscribe_code}}{% endif %}/" style="color:#0358a6;font-size: 12px;padding:15px 7px;margin-left:480px;text-decoration:none;display:inline-block;" target="_blank">Unsubscribe</a>
                           </li>
                           {% endif %}
                         </ul>

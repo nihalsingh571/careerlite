@@ -533,22 +533,6 @@
             <button type="button" class='button cancel cancel_btn' id="cancel_btn">Cancel</button>
           </div>
           <!--/ button row -->
-          <!-- post on row -->
-          <div class="post_details">
-
-          {% if request.user.is_fb_connected %}
-          <span class='button fb'>
-            <input type="checkbox" name="fb_post" id="fb_post" checked><span class='name'>facebook</span></span>
-            {% else %}
-            <a  href="{% url 'recruiter:facebook_login' %}" class="fb_btn unlink_button">
-              <span class='button fb'>
-                <i class="fa-brands fa-facebook-f"></i>Get Connected With Facebook</span></a>
-          {% endif %}
-          </span>
-          
-          </span>
-          </div>
-          <!--/ post on row -->
           <!--/ content job post -->
           
           </form>
@@ -1046,15 +1030,6 @@
 
         $("button[data-select2-open]").click(function () {
             $("#" + $(this).data("select2-open")).select2("open");
-        });
-
-        $('#fb_post').click(function () {
-            if (document.getElementById('fb_post').checked) {
-                $(".social_wrap").show();
-            }
-            else {
-                $(".social_wrap").hide();
-            }
         });
 
         $("#last_date").datepicker({

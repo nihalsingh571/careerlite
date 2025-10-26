@@ -139,7 +139,7 @@ def status_change(request, post_id):
         post.save()
     c = {"job_post": post, "user": post.user}
     t = loader.get_template("email/jobpost.html")
-    subject = "PeelJobs JobPost Status"
+    subject = "CareerLite JobPost Status"
     rendered = t.render(c)
     mto = post.user.email
     user_active = True if post.user.is_active else False
@@ -608,7 +608,7 @@ def edit_govt_job(request, post_id):
 
             t = loader.get_template("email/jobpost.html")
             c = {"job_post": post, "user": post.user}
-            subject = "PeelJobs New JobPost"
+            subject = "CareerLite New JobPost"
             rendered = t.render(c)
             mto = [settings.DEFAULT_FROM_EMAIL]
             send_email.delay(mto, subject, rendered)
@@ -637,7 +637,7 @@ def edit_govt_job(request, post_id):
 
         if "other_location" in request.POST.keys():
             temp = loader.get_template("recruiter/email/add_other_fields.html")
-            subject = "PeelJobs New JobPost"
+            subject = "CareerLite New JobPost"
             mto = [settings.DEFAULT_FROM_EMAIL]
 
             c = {
@@ -786,7 +786,7 @@ def edit_job_title(request, post_id):
             if job_post.status == "Live" and send_mail:
                 t = loader.get_template("email/jobpost.html")
                 c = {"job_post": job_post, "user": job_post.user}
-                subject = "PeelJobs JobPost Status"
+                subject = "CareerLite JobPost Status"
                 rendered = t.render(c)
                 mto = [job_post.user.email]
                 user_active = True if job_post.user.is_active else False
@@ -822,7 +822,7 @@ def mail_to_recruiter(request, job_post_id):
     recruiter_email = user.email
     c = {"job_post": job_post, "user": user, "comments": request.POST.get("comments")}
     t = loader.get_template("email/mail_to_recruiter.html")
-    subject = "PeelJobs JobPost"
+    subject = "CareerLite JobPost"
     rendered = t.render(c)
     mto = recruiter_email
     send_email.delay(mto, subject, rendered)

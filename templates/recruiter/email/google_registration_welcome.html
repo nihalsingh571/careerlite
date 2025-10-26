@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Welcome to PeelJobs</title>
+    <title>Welcome to CareerLite</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -92,14 +92,14 @@
 </head>
 <body>
     <div class="header">
-        <h1>🎉 Welcome to PeelJobs!</h1>
+        <h1>🎉 Welcome to CareerLite!</h1>
         <p>Your account has been successfully created with Google</p>
     </div>
     
     <div class="content">
         <div class="welcome-message">
             <h2>Hello {{ user.first_name|default:"there" }}!</h2>
-            <p>Thank you for joining PeelJobs{% if is_company_user %} with {{ company.name }}{% endif %}. Your account has been successfully created and you're now part of India's fastest-growing recruitment platform.</p>
+            <p>Thank you for joining CareerLite{% if is_company_user %} with {{ company.name }}{% endif %}. Your account has been successfully created and you're now part of India's fastest-growing recruitment platform.</p>
             
             {% if is_company_user %}
             <p><strong>Company:</strong> {{ company.name }}</p>
@@ -137,7 +137,7 @@
         </div>
 
         <div style="text-align: center;">
-            <a href="https://peeljobs.com/recruiter/job/new/" class="cta-button">
+            <a href="https://careerlite.com/recruiter/job/new/" class="cta-button">
                 🎯 Post Your First Job
             </a>
         </div>
@@ -162,15 +162,15 @@
     </div>
 
     <div class="footer">
-        <p>Need help? Contact our support team at <a href="mailto:support@peeljobs.com">support@peeljobs.com</a></p>
-        <p>Visit our <a href="https://peeljobs.com/help">Help Center</a> for guides and tutorials</p>
+        <p>Need help? Contact our support team at <a href="mailto:support@careerlite.com">support@careerlite.com</a></p>
+        <p>Visit our <a href="https://careerlite.com/help">Help Center</a> for guides and tutorials</p>
         <p>
-            <a href="https://peeljobs.com">PeelJobs.com</a> | 
-            <a href="https://peeljobs.com/privacy">Privacy Policy</a> | 
-            <a href="https://peeljobs.com/terms">Terms of Service</a>
+            <a href="https://careerlite.com">CareerLite.com</a> | 
+            <a href="https://careerlite.com/privacy">Privacy Policy</a> | 
+            <a href="https://careerlite.com/terms">Terms of Service</a>
         </p>
         <p style="margin-top: 20px;">
-            <small>This email was sent to {{ user.email }}. You received this because you created an account on PeelJobs.</small>
+            <small>This email was sent to {{ user.email }}. You received this because you created an account on CareerLite.</small>
         </p>
     </div>
 </body>

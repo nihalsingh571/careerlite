@@ -6,13 +6,13 @@ deploy_live:
   environment:
     name: live
   script:
-    - sudo /bin/rm -rf /home/peeljobs/peeljobs/; cp -r . /home/peeljobs/peeljobs
-    - source /home/peeljobs/env/bin/activate
+    - sudo /bin/rm -rf /home/careerlite/careerlite/; cp -r . /home/careerlite/careerlite
+    - source /home/careerlite/env/bin/activate
     - pip install pipenv
     - pipenv install -d
-    - python /home/peeljobs/peeljobs/manage_server.py migrate --noinput
+    - python /home/careerlite/careerlite/manage_server.py migrate --noinput
     - sudo /usr/bin/supervisorctl restart all
   tags:
-    - peeljobs-live
+    - careerlite-live
   only:
     - master

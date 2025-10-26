@@ -233,7 +233,7 @@ def upload_profilepic(request):
             if str(ftype) in sup_formates:
                 if request.user.company.profile_pic:
                     url = str(request.user.company.profile_pic).split(
-                        "cdn.peeljobs.com"
+                        "cdn.careerlite.com"
                     )[-1:]
                     AWS().cloudfront_invalidate(paths=url)
                 file_path = get_aws_file_path(
@@ -290,7 +290,7 @@ def edit_company(request):
             company_obj = company_form.save(commit=False)
             if request.FILES.get("profile_pic"):
                 if company_obj.profile_pic:
-                    url = str(company.profile_pic).split("cdn.peeljobs.com")[-1:]
+                    url = str(company.profile_pic).split("cdn.careerlite.com")[-1:]
                     AWS().cloudfront_invalidate(paths=url)
                     file_path = get_aws_file_path(
                         request.FILES.get("profile_pic"),

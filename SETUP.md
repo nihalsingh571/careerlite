@@ -1,4 +1,4 @@
-# PeelJobs - Setup Guide
+# CareerLite - Setup Guide
 
 A dynamic job board platform built with Django 4.2.22, PostgreSQL, Redis, and modern web technologies.
 
@@ -62,18 +62,18 @@ Create `.env` file:
 ```env
 DEBUG=True
 SECRET_KEY="$(openssl rand -base64 50)"
-DATABASE_URL=postgresql://postgres:password@localhost/peeljobs
+DATABASE_URL=postgresql://postgres:password@localhost/careerlite
 REDIS_URL=redis://localhost:6379/0
 ELASTICSEARCH_URL=http://localhost:9200
 PEEL_URL=http://localhost:8000/
-DEFAULT_FROM_EMAIL=noreply@peeljobs.local
+DEFAULT_FROM_EMAIL=noreply@careerlite.local
 ```
 
 ### 3. Database Setup
 
 ```bash
 # Create database
-sudo -u postgres createdb peeljobs
+sudo -u postgres createdb careerlite
 sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'password';"
 
 # Run migrations
@@ -125,7 +125,7 @@ celery -A jobsp beat --loglevel=info
 ```env
 DEBUG=False
 SECRET_KEY="production-secret-key"
-DATABASE_URL=postgresql://peeljobs_user:password@localhost/peeljobs_prod
+DATABASE_URL=postgresql://careerlite_user:password@localhost/careerlite_prod
 REDIS_URL=redis://localhost:6379/1
 ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
 SENTRY_DSN=your_sentry_dsn_here
@@ -133,34 +133,34 @@ SENTRY_DSN=your_sentry_dsn_here
 
 ### Systemd Services
 
-**Django Service** (`/etc/systemd/system/peeljobs.service`):
+**Django Service** (`/etc/systemd/system/careerlite.service`):
 ```ini
 [Unit]
-Description=PeelJobs Django Application
+Description=CareerLite Django Application
 After=network.target
 
 [Service]
 User=www-data
-WorkingDirectory=/var/www/peeljobs
-Environment="PATH=/var/www/peeljobs/venv/bin"
-ExecStart=/var/www/peeljobs/venv/bin/gunicorn --workers 3 --bind unix:/run/peeljobs/peeljobs.sock jobsp.wsgi:application
+WorkingDirectory=/var/www/careerlite
+Environment="PATH=/var/www/careerlite/venv/bin"
+ExecStart=/var/www/careerlite/venv/bin/gunicorn --workers 3 --bind unix:/run/careerlite/careerlite.sock jobsp.wsgi:application
 Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-**Celery Service** (`/etc/systemd/system/peeljobs-celery.service`):
+**Celery Service** (`/etc/systemd/system/careerlite-celery.service`):
 ```ini
 [Unit]
-Description=PeelJobs Celery Worker
+Description=CareerLite Celery Worker
 After=network.target
 
 [Service]
 User=www-data
-WorkingDirectory=/var/www/peeljobs
-Environment="PATH=/var/www/peeljobs/venv/bin"
-ExecStart=/var/www/peeljobs/venv/bin/celery -A jobsp worker --loglevel=info
+WorkingDirectory=/var/www/careerlite
+Environment="PATH=/var/www/careerlite/venv/bin"
+ExecStart=/var/www/careerlite/venv/bin/celery -A jobsp worker --loglevel=info
 Restart=on-failure
 
 [Install]
@@ -175,19 +175,19 @@ server {
     server_name yourdomain.com;
 
     location /static/ {
-        root /var/www/peeljobs;
+        root /var/www/careerlite;
         expires 30d;
     }
     
     location /media/ {
-        root /var/www/peeljobs;
+        root /var/www/careerlite;
         expires 30d;
     }
 
     location / {
         proxy_set_header Host $http_host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_pass http://unix:/run/peeljobs/peeljobs.sock;
+        proxy_pass http://unix:/run/careerlite/careerlite.sock;
     }
 }
 ```

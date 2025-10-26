@@ -4,7 +4,7 @@ onCreate:
   - |
         sudo apt-get -y install postgresql postgresql-contrib
         sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'root'"
-        sudo -u postgres psql postgres -c "CREATE DATABASE peeljobs WITH OWNER = postgres"
+        sudo -u postgres psql postgres -c "CREATE DATABASE careerlite WITH OWNER = postgres"
   - |
         curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
         sudo apt-get install -y nodejs node-less
@@ -14,7 +14,7 @@ onCreate:
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
         sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
         sudo apt install docker-ce -y
-        docker run -d --name peeljobs-elasticsearch -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.6
+        docker run -d --name careerlite-elasticsearch -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.6
   - |
         virtualenv -p python3 ../venv
         . ../venv/bin/activate
@@ -33,7 +33,7 @@ onCreate:
 onStart:
   - |
         . ../venv/bin/activate
-        docker run -d --name peeljobs-elasticsearch -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.6
+        docker run -d --name careerlite-elasticsearch -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.6
         WS_DOMAIN=`cat /home/ubuntu/runcode/ws-url-domain.txt`
         printf "\nGO TO THIS URL TO VIEW PAGE \033[4;34m https://8000-${WS_DOMAIN}\033[0;30m\n\n"
         python manage.py runserver

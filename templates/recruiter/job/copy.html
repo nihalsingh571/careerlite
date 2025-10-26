@@ -587,18 +587,18 @@
                         <div class="input_element row marl_15">
                           <label class="col-md-3">Message</label>
                           <div class="col-md-9 pad_lr_0">
-                          <textarea class="input" id='published_message' name="published_message" rows="3" title="The message which you enter will display in peeljobs facebook page">{{ job_post.published_message }}</textarea>
-                           <span class="hint">It will be displayed in all peeljobs social networking sites to reach right candidates. <strong data-toggle="modal" data-target="#myModal" class="mytip"> View sample</strong>
+                          <textarea class="input" id='published_message' name="published_message" rows="3" title="The message which you enter will display in careerlite facebook page">{{ job_post.published_message }}</textarea>
+                           <span class="hint">It will be displayed in all careerlite social networking sites to reach right candidates. <strong data-toggle="modal" data-target="#myModal" class="mytip"> View sample</strong>
 
                           <span style="display:none" class="mylist">
                             <ol type="1" >
-                              <li>The message will be displayed in all peeljobs social networking sites to reach right candidates.</li>
+                              <li>The message will be displayed in all careerlite social networking sites to reach right candidates.</li>
                               <li>It should represent and enhance the Job Role</li>
                             <li>View Sample below</li>
                             </ol>
                             <div class="social_sample">
                               <div class="socail_image">
-                                <img src="https://cdn.peeljobs.com/static/pj_fb_job_profile.png">
+                                <img src="https://cdn.careerlite.com/static/pj_fb_job_profile.png">
                               </div>
                             </div>
                           </span>
@@ -629,23 +629,6 @@
     <div class="col-md-4 right_list_container">
     <!-- right div starts here-->
        <nav class="bs-docs-sidebar hidden-print hidden-sm hidden-xs affix" style="top:130px;">
-       <div class="social_links1">
-              <div class="panel panel-default content_fixed_block">
-                <div class="panel-content">
-                <p>Connect with social Networking sites to post jobs on your timeline</p>
-              <ul>
-               {% if request.user.is_fb_connected %}
-              <li class="facebook"><a href="{{ request.user.get_facebook_url }}" target="_blank"><i class="fa fa-facebook"></i><span>Connected</span> </a></li>
-              {% else %}
-               <li class="facebook"><a href="{% url 'recruiter:facebook_login' %}" target="_blank"><i class="fa fa-facebook"></i><span>Connect with facebook</span> </a></li>
-              {% endif %}
-              
-                <br clear="all">
-              </ul>
-              </div>
-            </div>
-            </div>
-
             <div class="panel panel-default content_fixed_block">
               <div class="panel-content">
                  <strong>Profile Update</strong>
@@ -671,24 +654,6 @@
     <!--right div ends here-->
     </div>
   </div>
-  <div class="bottom_connect_fixed text-capitalize">
-  Connect and post your job on your timeline
-        <!-- post on row -->
-                        <div class="post_details">
-                           <span class='button fb' onclick="location.href='{% url 'recruiter:facebook_login' %}'">
-                          {% if request.user.is_fb_connected %}
-                          <input type="checkbox" name="fb_post" id="fb_post" checked>
-                          <span class='name'>facebook</span>
-                        {% else %}
-                          <span class='name' ><i class="fa fa-facebook"></i>facebook</span>
-                          {% endif %}
-                          </span>
-                         
-                          </span>
-                            
-                        </div>
-                    <!--/ post on row -->
-      </div>
 </section>
 </div>
 
@@ -1462,15 +1427,6 @@ $("#published_date").datetimepicker({
 //     $( "#visa_type" ).prop( "disabled", true );
 // }
 // });
-
-$('#fb_post').click(function () {
- if(document.getElementById('fb_post').checked) {
-    $(".social_wrap").show();
-  }
-  else{
-    $(".social_wrap").hide();
-  }
-});
 
 CKEDITOR.config.allowedContent = true;
 CKEDITOR.config.forcePasteAsPlainText = true;

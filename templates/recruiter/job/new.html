@@ -43,7 +43,7 @@
   <div class="row marl_15 inner_main_container">
     <div class="job_text_upper col-md-12">
       <h3>Post a Job</h3>
-      <p>Peeljobs is offering unlimited job posting and for the unlimited time period<br>
+      <p>CareerLite is offering unlimited job posting and for the unlimited time period<br>
       Your post will be on live within one hour and you will get a notification mail if any job seeker applied for your job</p>
     </div>
     <div class="col-md-8 left_forms_container">
@@ -611,19 +611,19 @@
                         <div class="input_element row marl_15">
                           <label class="col-md-3">Message</label>
                           <div class="col-md-9 pad_lr_0">
-                          <textarea class="input" id='published_message' name="published_message" rows="3" title="The message which you enter will display in peeljobs facebook page"></textarea>
+                          <textarea class="input" id='published_message' name="published_message" rows="3" title="The message which you enter will display in careerlite facebook page"></textarea>
                           <span class="hint">
-                          It will be displayed in all peeljobs social networking sites to reach right candidates.  <strong data-toggle="modal" data-target="#myModal" class="mytip">View Sample</strong>
+                          It will be displayed in all careerlite social networking sites to reach right candidates.  <strong data-toggle="modal" data-target="#myModal" class="mytip">View Sample</strong>
 
                           <span style="display:none" class="mylist">
                             <ol type="1" >
-                              <li>The message will be displayed in all peeljobs social networking sites to reach right candidates.</li>
+                              <li>The message will be displayed in all careerlite social networking sites to reach right candidates.</li>
                               <li>It should represent and enhance the Job Role</li>
                               <li>View Sample below</li>
                             </ol>
                             <div class="social_sample">
                               <div class="socail_image">
-                                <img src="https://cdn.peeljobs.com/static/pj_fb_job_profile.png">
+                                <img src="https://cdn.careerlite.com/static/pj_fb_job_profile.png">
                               </div>
                             </div>
                           </span>
@@ -1253,15 +1253,6 @@ $( "select#agency_recruiters" ).select2( { placeholder: "Select A Recruiter" } )
     $( "#" + $( this ).data( "select2-open" ) ).select2( "open" );
     });
   
-    $('#fb_post').click(function () {
-    if(document.getElementById('fb_post').checked) {
-      $(".social_wrap").show();
-    }
-    else{
-      $(".social_wrap").hide();
-    }
-    });
-  
     $( "#last_date" ).datepicker({
       changeMonth: true,
       changeYear: true,
@@ -1324,7 +1315,7 @@ $( "select#agency_recruiters" ).select2( { placeholder: "Select A Recruiter" } )
             contentType: false,
             url: '.',
             success: function (data) {
-            $.blockUI({ message: '<img src="http://peeljobs.s3.amazonaws.com/static/img/loader-gif.gif" height="90px" width="90px"><h1>Please Wait...</h1>'});
+            $.blockUI({ message: '<img src="http://careerlite.s3.amazonaws.com/static/img/loader-gif.gif" height="90px" width="90px"><h1>Please Wait...</h1>'});
 
             if (data.error) {
                 $.unblockUI();
@@ -1393,7 +1384,7 @@ $( "select#agency_recruiters" ).select2( { placeholder: "Select A Recruiter" } )
 
             url: '.',
             success: function (data) {
-            $.blockUI({ message: '<img src="http://peeljobs.s3.amazonaws.com/static/img/loader-gif.gif" height="90px" width="90px"><h1>Please Wait...</h1>'});
+            $.blockUI({ message: '<img src="http://careerlite.s3.amazonaws.com/static/img/loader-gif.gif" height="90px" width="90px"><h1>Please Wait...</h1>'});
 
             if (data.error) {
           /*    $('#save').removeAttr("disabled");*/
@@ -1464,7 +1455,7 @@ $( "select#agency_recruiters" ).select2( { placeholder: "Select A Recruiter" } )
             url: '.',
             success: function (data) {
 
-            $.blockUI({ message: '<img src="http://peeljobs.s3.amazonaws.com/static/img/loader-gif.gif" height="150px" width="150px"><h1>Please Wait...</h1>'});
+            $.blockUI({ message: '<img src="http://careerlite.s3.amazonaws.com/static/img/loader-gif.gif" height="150px" width="150px"><h1>Please Wait...</h1>'});
 
           if (data.error) {
           /*    $('#save').removeAttr("disabled");*/

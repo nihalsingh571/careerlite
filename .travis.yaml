@@ -26,7 +26,7 @@ install:
 #creating a database
 before_script:
   - sleep 20
-  - psql -c 'create database peeljobs;' -U postgres
+  - psql -c 'create database careerlite;' -U postgres
 
 # command to run tests
 script:

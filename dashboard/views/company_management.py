@@ -169,7 +169,7 @@ def edit_company(request, company_id):
                 company.meta_description = request.POST.get("meta_description")
             if request.FILES.get("profile_pic"):
                 if company.profile_pic:
-                    url = str(company.profile_pic).split("cdn.peeljobs.com")[-1:]
+                    url = str(company.profile_pic).split("cdn.careerlite.com")[-1:]
                     AWS().cloudfront_invalidate(paths=url)
                 file_path = get_aws_file_path(
                     request.FILES.get("profile_pic"), "company/logo/", company.slug
@@ -177,7 +177,7 @@ def edit_company(request, company_id):
                 company.profile_pic = file_path
             if request.FILES.get("campaign_icon"):
                 if company.campaign_icon:
-                    url = str(company.campaign_icon).split("cdn.peeljobs.com")[-1:]
+                    url = str(company.campaign_icon).split("cdn.careerlite.com")[-1:]
                     AWS().cloudfront_invalidate(paths=url)
                 file_path = get_aws_file_path(
                     request.FILES.get("campaign_icon"),

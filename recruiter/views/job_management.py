@@ -285,7 +285,7 @@ def new_job(request, status):
         adding_other_fields_data(request.POST, validate_post, request.user)
         c = {"job_post": validate_post, "user": request.user}
         t = loader.get_template("email/jobpost_notification.html")
-        subject = "PeelJobs New JobPost"
+        subject = "CareerLite New JobPost"
         rendered = t.render(c)
         mto = settings.SUPPORT_EMAILS
         send_email.delay(mto, subject, rendered)
@@ -495,7 +495,7 @@ def copy_job(request, status):
         adding_other_fields_data(request.POST, validate_post, request.user)
         c = {"job_post": validate_post, "user": request.user}
         t = loader.get_template("email/jobpost_notification.html")
-        subject = "PeelJobs New JobPost"
+        subject = "CareerLite New JobPost"
         rendered = t.render(c)
         mto = settings.SUPPORT_EMAILS
         send_email.delay(mto, subject, rendered)
@@ -568,9 +568,9 @@ def view_job(request, job_post_id):
             except:
                 profile_pic = request.user.photo
             if not user_pic:
-                user_pic = "https://cdn.peeljobs.com/dummy.jpg"
+                user_pic = "https://cdn.careerlite.com/dummy.jpg"
             if not profile_pic:
-                profile_pic = "https://cdn.peeljobs.com/dummy.jpg"
+                profile_pic = "https://cdn.careerlite.com/dummy.jpg"
             applicant = render_to_string(
                 "recruiter/job/applicant_profile.html",
                 {

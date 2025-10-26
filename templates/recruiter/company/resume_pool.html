@@ -64,16 +64,16 @@
           {% if agency_resumes %}
           <div class='resume_list' id='resume_list'>
             {% for resume in agency_resumes %}
-              <div class="resume-preview-frame resume-detail" id="{{ resume.id }}" data-url="https://docs.google.com/gview?url=http://peeljobs.s3.amazonaws.com/{{ resume.resume }}&embedded=true" >
+              <div class="resume-preview-frame resume-detail" id="{{ resume.id }}" data-url="https://docs.google.com/gview?url=http://careerlite.s3.amazonaws.com/{{ resume.resume }}&embedded=true" >
               <div class='overlay'></div>
                 <input type="checkbox" class='check_resume' value='{{ resume.id }}' autocomplete="off" title="Select Resumes and attach to Jobs">
                 <div class="resume-file-content"> 
                   <div class="resume-preview-data">
                     <div class="resume-preview-other" style="overflow:hidden">
                     {% if resume.resume|is_resume_pdf %}
-                      <embed src="https://cdn.peeljobs.com/{{ resume.resume }}#toolbar=0&navpanes=0&scrollbar=0" height="150" width='170'>
+                      <embed src="https://cdn.careerlite.com/{{ resume.resume }}#toolbar=0&navpanes=0&scrollbar=0" height="150" width='170'>
                     {% else %}
-                     <iframe src="https://docs.google.com/gview?url=http://cdn.peeljobs.com/{{ resume.resume }}&embedded=true"  height="150" width='170' sandbox></iframe>
+                     <iframe src="https://docs.google.com/gview?url=http://cdn.careerlite.com/{{ resume.resume }}&embedded=true"  height="150" width='170' sandbox></iframe>
                     {% endif %}
                     </div>
                   </div>

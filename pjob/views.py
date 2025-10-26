@@ -1000,7 +1000,7 @@ def job_apply(request, job_id):
                             import urllib.request
                             resume_filename = str(request.user.email) + ".docx"
                             urllib.request.urlretrieve(
-                                "https://peeljobs.s3.amazonaws.com/"
+                                "https://careerlite.s3.amazonaws.com/"
                                 + str(
                                     request.user.resume.encode("ascii", "ignore").decode(
                                         "ascii"
@@ -1694,10 +1694,10 @@ def each_company_jobs(request, company_name, **kwargs):
         data = {
             "message": "Sorry, no jobs available for " + company_name + " jobs",
             "reason": "Unfortunately, we are unable to locate the job you are looking for",
-            "meta_title": "404 - Page Not Found - " + company_name + " - Peeljobs",
+            "meta_title": "404 - Page Not Found - " + company_name + " - CareerLite",
             "meta_description": "404 No Jobs available for "
             + company_name
-            + " - Peeljobs",
+            + " - CareerLite",
             "data_empty": True,
         }
         if request.user.is_authenticated:
@@ -2748,7 +2748,7 @@ def user_subscribe(request):
                     + "/"
                 )
                 c = {"user_email": email, "skills": skills, "redirect_url": url}
-                subject = "PeelJobs New Subscription"
+                subject = "CareerLite New Subscription"
                 rendered = t.render(c)
                 mto = [email]
                 send_email.delay(mto, subject, rendered)

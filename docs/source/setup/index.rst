@@ -1,12 +1,12 @@
-Configuration of Peeljobs
+Configuration of CareerLite
 =========================
 
-1. Create a directory using mkdir peeljobs, move to it using cd
+1. Create a directory using mkdir careerlite, move to it using cd
 
    .. code-block:: python
 
-		mkdir peeljobs
-		cd peeljobs
+		mkdir careerlite
+		cd careerlite
 
 2. Install virtualenv in your local using following command
 
@@ -21,12 +21,12 @@ Configuration of Peeljobs
 		virtualenv -p python3 env
 		source ../env/bin/activate
 
-4. Again create another peeljobs directory for clonning the project.
+4. Again create another careerlite directory for clonning the project.
 
    .. code-block:: python
 
-		mkdir peeljobs
-		cd peeljobs
+		mkdir careerlite
+		cd careerlite
 
 5. Make sure git installed in your machine or else install by following below command.
 
@@ -47,17 +47,17 @@ Configuration of Peeljobs
    		git init
 
 
-7. Include peeljobs repository using following command.
+7. Include careerlite repository using following command.
 
    .. code-block:: python
 
-		git remote add origin https://github.com/MicroPyramid/opensource-job-portal.git
+	git remote add origin https://github.com/careerlite/careerlite.git
 
-7. Pull the code of peeljobs using following command
+7. Pull the code of careerlite using following command
 
    .. code-block:: python
 
-		git pull origin master
+	git pull origin main
 
 8. Install requirements, node and sass using following
 
@@ -78,7 +78,7 @@ Configuration of Peeljobs
 
 		sudo su - postgres
 		psql
-		create database peeldb;
+	create database careerlite;
 
 10. We have to use third party related keys. We have to had those keys in order to run the application.
 		
@@ -90,13 +90,7 @@ Configuration of Peeljobs
 		
 		ENABLE_GOOGLE_LOGIN=<variable to configure google login in application>
 
-		**Facebook details**
-
-		FB_APP_ID = <facebook access key id>
-		
-		FB_SECRET = <facebook access secret-key>
-
-		**Aws account details**
+	**AWS account details**
 
 		AWSBUCKETNAME = <aws bucket name>
 		
@@ -104,11 +98,11 @@ Configuration of Peeljobs
 		
 		AWS_SECRET_ACCESS_KEY = <aws access secret-key>
 
-		**Git account details**
+	**GitHub account details**
 
-		GIT_APP_ID = <git api id>
-		
-		GIT_APP_SECRET = <git secret-key>
+	GIT_APP_ID = <github oauth app id>
+	
+	GIT_APP_SECRET = <github oauth app secret>
 
 
 11. Apply migrations to database using the following command
@@ -130,6 +124,6 @@ Configuration of Peeljobs
 
     .. code-block:: python
 
-      celery -A peeljobs worker -l info
+      celery -A careerlite worker -l info
 
-      celery -A peeljobs beat -l info
+      celery -A careerlite beat -l info

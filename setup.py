@@ -20,15 +20,15 @@ for dirpath, dirnames, filenames in os.walk(PROJECT_NAME):
             data_files.append(os.path.join(dirpath[len(PROJECT_NAME) + 1 :], f))
 
 setup(
-    name="opensource-job-portal",
+    name="careerlite",
     version="0.1.0",
     packages=find_packages(exclude=["tests", "tests.*"]),
     include_package_data=True,
     description="An opensourse Job Portal with Unlimited free job posting, Social Api authentication.",
     long_description=README,
-    url="https://github.com/MicroPyramid/opensource-job-portal.git",
-    author="Micropyramid",
-    author_email="hello@micropyramid.com",
+    url="https://github.com/careerlite/careerlite.git",
+    author="CareerLite Contributors",
+    author_email="support@careerlite.com",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: Django",

@@ -9,4 +9,4 @@ run apt-get install -y npm
 run npm install -g less
 run ln -s /usr/bin/nodejs /usr/bin/node
 
-# pip3 install -r /home/peeljobs/requirements.txt
+# pip3 install -r /home/careerlite/requirements.txt

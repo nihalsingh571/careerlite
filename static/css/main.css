@@ -3008,7 +3008,7 @@ footer .subscribe_social_copy .copy_right a:hover {
   font-weight: normal;
 }
 #login_register .modal-content .modal-body .social_panel .icons_list .customGPlusSignIn span.icon {
-  background: url("http://cdn.peeljobs.com/images/google_logo.png") transparent 5px 50% no-repeat;
+  background: url("http://cdn.careerlite.com/images/google_logo.png") transparent 5px 50% no-repeat;
   background-size: 25px;
   display: inline-block;
   vertical-align: middle;
@@ -3384,7 +3384,7 @@ footer .subscribe_social_copy .copy_right a:hover {
   font-weight: normal;
 }
 #loginModal .modal-dialog .modal-content .modal-body .social_panel .icons_list .customGPlusSignIn span.icon {
-  background: url("http://cdn.peeljobs.com/images/google_logo.png") transparent 5px 50% no-repeat;
+  background: url("http://cdn.careerlite.com/images/google_logo.png") transparent 5px 50% no-repeat;
   background-size: 25px;
   display: inline-block;
   vertical-align: middle;
@@ -3792,7 +3792,7 @@ footer .subscribe_social_copy .copy_right a:hover {
   overflow: hidden;
   text-indent: 100%;
   white-space: nowrap;
-  background: url(https://s3.amazonaws.com/peeljobs/static/mobile/img/top1.png) no-repeat center 50%;
+  background: url(https://s3.amazonaws.com/careerlite/static/mobile/img/top1.png) no-repeat center 50%;
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.3s 0s, visibility 0s 0.3s;
@@ -5282,7 +5282,7 @@ Triangle breadcrumb
   overflow: hidden;
   text-indent: 100%;
   white-space: nowrap;
-  background: url(https://s3.amazonaws.com/peeljobs/static/mobile/img/top1.png) no-repeat center 50%;
+  background: url(https://s3.amazonaws.com/careerlite/static/mobile/img/top1.png) no-repeat center 50%;
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.3s 0s, visibility 0s 0.3s;
@@ -6415,7 +6415,7 @@ Triangle breadcrumb
   left: 0;
   height: 100%;
   width: 100%;
-  background: rgba(255, 255, 255, 0.2) url('https://peeljobs.s3.amazonaws.com/static/img/loader-gif.gif"') 50% 50% no-repeat;
+  background: rgba(255, 255, 255, 0.2) url('https://careerlite.s3.amazonaws.com/static/img/loader-gif.gif"') 50% 50% no-repeat;
   background-size: 60px 60px;
 }
 

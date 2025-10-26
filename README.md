@@ -1,12 +1,8 @@
-# PeelJobs - Dynamic Job Board Platform
+# CareerLite - Dynamic Job Board Platform
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/105a3bf03bec4cfbac70d7c30e574bea)](https://www.codacy.com/manual/ashwin/opensource-job-portal?utm_source=github.com&utm_medium=referral&utm_content=MicroPyramid/opensource-job-portal&utm_campaign=Badge_Grade)  
-[![Build Status](https://travis-ci.org/MicroPyramid/opensource-job-portal.svg?branch=master)](https://travis-ci.org/MicroPyramid/opensource-job-portal)  
-[![Coverage Status](https://coveralls.io/repos/github/MicroPyramid/opensource-job-portal/badge.svg?branch=master)](https://coveralls.io/github/MicroPyramid/opensource-job-portal?branch=master)
+**CareerLite** is a dynamic, user-centric job board platform designed to streamline the entire hiring process, from job posting to application management. Built with modern web technologies, it offers a seamless experience for job seekers, recruiters, and administrators through robust role-based access control (RBAC).
 
-**PeelJobs** is a dynamic, user-centric job board platform designed to streamline the entire hiring process, from job posting to application management. Built with modern web technologies, it offers a seamless experience for job seekers, recruiters, and administrators through robust role-based access control (RBAC).
-
-🔗 **Documentation**: https://opensource-job-portal.readthedocs.io/en/latest/  
+🔗 **Documentation**: https://careerlite.readthedocs.io/en/latest/  
 📋 **Setup Guide**: See [SETUP.md](SETUP.md) for complete development and deployment instructions
 
 ---
@@ -26,7 +22,7 @@
 
 ## Project Overview
 
-PeelJobs transforms the traditional hiring process by providing a comprehensive platform that serves multiple user types with tailored functionalities. Each role is equipped with specific tools to enhance efficiency, engagement, and management, ensuring a streamlined and secure recruitment process.
+CareerLite transforms the traditional hiring process by providing a comprehensive platform that serves multiple user types with tailored functionalities. Each role is equipped with specific tools to enhance efficiency, engagement, and management, ensuring a streamlined and secure recruitment process.
 
 ### Mission
 To democratize job searching and hiring by providing a powerful, free, and open-source platform that connects talent with opportunities efficiently.
@@ -38,7 +34,7 @@ Creating the most user-friendly and feature-rich job board platform that scales 
 
 ## User Roles & Permissions
 
-PeelJobs implements a comprehensive role-based access control system with distinct user types:
+CareerLite implements a comprehensive role-based access control system with distinct user types:
 
 ### 🏢 Company Users
 - **Recruiters**: Post jobs, manage applications, conduct interviews
@@ -116,8 +112,8 @@ PeelJobs implements a comprehensive role-based access control system with distin
 ### Basic Setup
 ```bash
 # Clone repository
-git clone https://github.com/MicroPyramid/opensource-job-portal.git
-cd opensource-job-portal
+git clone https://github.com/careerlite/careerlite.git
+cd careerlite
 
 # Setup environment
 python3 -m venv venv
@@ -125,7 +121,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Configure database
-createdb peeljobs_dev
+createdb careerlite_dev
 python manage.py migrate
 python manage.py createsuperuser
 
@@ -164,7 +160,7 @@ python manage.py runserver
 
 ## API Integration
 
-PeelJobs provides comprehensive RESTful APIs for third-party integrations:
+CareerLite provides comprehensive RESTful APIs for third-party integrations:
 
 - **Job Listings API**: Retrieve and filter job postings
 - **Application API**: Submit and track job applications
@@ -212,7 +208,7 @@ This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for d
 
 ## Support & Community
 
-- **Documentation**: https://opensource-job-portal.readthedocs.io/en/latest/
+- **Documentation**: https://careerlite.readthedocs.io/en/latest/
 - **Issues**: Report bugs and request features on GitHub Issues
 - **Discussions**: Join community discussions on GitHub Discussions
 

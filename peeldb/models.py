@@ -332,7 +332,7 @@ class Company(models.Model):
     def get_logo_url(self):
         if self.profile_pic:
             return str(self.profile_pic)
-        return "https://cdn.peeljobs.com/static/company_logo.png"
+        return "https://cdn.careerlite.com/static/company_logo.png"
 
     def get_description(self):
         from bs4 import BeautifulSoup
@@ -362,7 +362,7 @@ class Company(models.Model):
     def get_logo_url(self):
         if self.profile_pic:
             return str(self.profile_pic)
-        return "https://cdn.peeljobs.com/static/company_logo.png"
+        return "https://cdn.careerlite.com/static/company_logo.png"
 
 
 class EducationInstitue(models.Model):
@@ -1512,7 +1512,7 @@ class JobPost(models.Model):
 POST = (
     ("Page", "Page"),
     ("Group", "Group"),
-    ("PeelJobs", "PeelJobs"),
+    ("CareerLite", "CareerLite"),
 )
 
 POST_STATUS = (

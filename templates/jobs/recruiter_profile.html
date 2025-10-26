@@ -168,7 +168,7 @@
 <div class="col-md-3 right_container">
   <!-- upload_btn_block starts here -->
   <div class="similar_job_posts" style="margin-bottom:10px;">
-    <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fpeeljobs%2F&width=300&height=150&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=892560280818752" width="300" height="150" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+    <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fcareerlite%2F&width=300&height=150&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=892560280818752" width="300" height="150" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
   </div>
   {% if request.user.is_authenticated %}
   {% if request.user.is_jobseeker and not request.user.resume %}
@@ -250,7 +250,7 @@
         <li class="recruiter_block" id="{% url 'recruiter_profile' recruiter.username %}">
           <div class="img_part">
             <img src="{% if recruiter.profile_pic %}{% thumbnail recruiter.profile_pic.url "45x45" crop="80% top" %}
-            {% else %}{% thumbnail 'https://cdn.peeljobs.com/dummy.jpg' "30x30" crop="80% top" %}{% endif %}" alt="Jobs Posted By {{ recruiter.get_full_name }}"/>
+            {% else %}{% thumbnail 'https://cdn.careerlite.com/dummy.jpg' "30x30" crop="80% top" %}{% endif %}" alt="Jobs Posted By {{ recruiter.get_full_name }}"/>
           </div>
           <div class="content">
             <strong class="title"><a href="{% url 'recruiter_profile' recruiter.username %}" target="_blank">{{ recruiter.get_full_name }}</a></strong>

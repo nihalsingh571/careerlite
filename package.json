@@ -1,7 +1,7 @@
 {
-  "name": "peeljobs",
+  "name": "careerlite",
   "version": "1.0.0",
-  "description": "Peel Jobs - Open Source Job Portal",
+  "description": "CareerLite - Open Source Job Portal",
   "main": "index.js",
   "directories": {
     "doc": "docs"
@@ -17,15 +17,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MicroPyramid/opensource-job-portal.git"
+    "url": "git+https://github.com/careerlite/careerlite.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "CareerLite Contributors",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/MicroPyramid/opensource-job-portal/issues"
+    "url": "https://github.com/careerlite/careerlite/issues"
   },
-  "homepage": "https://github.com/MicroPyramid/opensource-job-portal#readme",
+  "homepage": "https://github.com/careerlite/careerlite#readme",
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/postcss": "^4.1.8",
@@ -33,6 +33,7 @@
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.4",
     "postcss-cli": "^11.0.1",
+    "sass": "^1.93.2",
     "tailwindcss": "^4.1.8"
   }
 }

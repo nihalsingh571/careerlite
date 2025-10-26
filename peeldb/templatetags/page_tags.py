@@ -591,7 +591,7 @@ def get_skill_icon(value):
     if skills and skills[0].icon and skills[0].status == "Active":
         return skills[0].icon
     else:
-        return "http://cdn.peeljobs.com/jobopenings1.png"
+        return "http://cdn.careerlite.com/jobopenings1.png"
 
 
 @register.simple_tag

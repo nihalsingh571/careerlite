@@ -80,7 +80,7 @@ def applicants(request, job_post_id):
             job_post_id=job_post_id, status=prev_status
         ).count()
         temp = loader.get_template("email/applicant_apply_job.html")
-        subject = "Application Status - PeelJobs"
+        subject = "Application Status - CareerLite"
         if request.POST.get("type") == "resume":
             mto = [user.resume_applicant.email]
         else:

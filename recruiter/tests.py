@@ -159,7 +159,7 @@ class company_form_test(TestCase):
                 "name": "company123",
                 "email": "company123@gmail.com",
                 "short_code": "comp123",
-                "website": "https://micropyramid.com",
+                "website": "https://careerlite.com",
                 "phone_number": "9876543210",
                 "company_type": "Company",
             }
@@ -254,7 +254,7 @@ class personal_info_form_test(TestCase):
         }
         data = {
             "username": "mp",
-            "first_name": "micropyramid",
+            "first_name": "careerlite",
             "last_name": "mp",
             "name": "micro",
             "city": self.city.id,
@@ -279,7 +279,7 @@ class personal_info_form_test(TestCase):
         form = PersonalInfoForm(
             data={
                 "username": "mp",
-                "first_name": "micropyramid",
+                "first_name": "careerlite",
                 "last_name": "mp",
                 "name": "micro",
                 "city": self.city.id,
@@ -326,7 +326,7 @@ class mail_template_form_test(TestCase):
 
 class menu_form_test(TestCase):
     def test_menu_form_for_valid(self):
-        form = MenuForm(data={"title": "mp", "url": "https://micropyramid.com"})
+        form = MenuForm(data={"title": "mp", "url": "https://careerlite.com"})
         self.assertTrue(form.is_valid())
 
     def test_menu_form_invalid(self):
@@ -339,7 +339,7 @@ class recruiter_form_test(TestCase):
         form = RecruiterForm(
             data={
                 "mobile": "8977455970",
-                "email": "nikhila@micropyramid.com",
+                "email": "nikhila@careerlite.com",
                 "job_role": "developer",
                 "first_name": "nikhila",
                 "password": "Mp1234@",
@@ -351,7 +351,7 @@ class recruiter_form_test(TestCase):
         form = RecruiterForm(
             data={
                 "mobile": "9101010747",
-                "email": "nikhila@micropyramid.com",
+                "email": "nikhila@careerlite.com",
                 "job_role": "developer",
                 "first_name": "nikhila",
                 "password": "Mp1234@",
@@ -1276,7 +1276,6 @@ class recruiter_get_views_test(TestCase):
                 "salary_type": "Year",
                 "min_salary": "1",
                 "max_salary": "3",
-                "fb_post": "on",
                 "tw_post": "on",
                 "ln_post": "on",
                 "agency_amount": "10000",
@@ -1335,7 +1334,6 @@ class recruiter_get_views_test(TestCase):
                 "min_salary": "1000",
                 "max_salary": "2000",
                 "salary_type": "Month",
-                "fb_post": "on",
                 "tw_post": "on",
                 "ln_post": "on",
                 "agency_amount": "10000",
@@ -1646,7 +1644,6 @@ class recruiter_get_views_test(TestCase):
                 "salary_type": "Year",
                 "min_salary": "1",
                 "max_salary": "3",
-                "fb_post": "on",
                 "tw_post": "on",
                 "ln_post": "on",
                 "agency_amount": "10000",
@@ -1705,7 +1702,6 @@ class recruiter_get_views_test(TestCase):
                 "min_salary": "1000",
                 "max_salary": "2000",
                 "salary_type": "Year",
-                "fb_post": "on",
                 "tw_post": "on",
                 "ln_post": "on",
                 "agency_amount": "10000",
@@ -2008,7 +2004,7 @@ class recruiter_get_views_test(TestCase):
         self.assertTrue(user_login)
         self.menu = Menu.objects.create(
             title="menu-test",
-            url="http://micropyramid.com/testing",
+            url="http://careerlite.com/testing",
             lvl="123",
             company=self.recruiter.company,
         )
@@ -2072,7 +2068,7 @@ class recruiter_get_views_test(TestCase):
         self.assertTrue(user_login)
         self.menu = Menu.objects.create(
             title="test-mneu",
-            url="http://micropyramid.com",
+            url="http://careerlite.com",
             lvl="123",
             company=self.recruiter.company,
         )
@@ -2298,7 +2294,3 @@ class recruiter_get_views_test(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "recruiter/job/add_interview_location.html")
-
-    def test_facebook_login(self):
-        response = self.client.post(reverse("recruiter:facebook_login"))
-        self.assertEqual(response.status_code, 302)
