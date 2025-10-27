@@ -1,221 +1,181 @@
-# PeelJobs - Dynamic Job Board Platform
+# CareerLite - Open Source Job Portal
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/105a3bf03bec4cfbac70d7c30e574bea)](https://www.codacy.com/manual/ashwin/opensource-job-portal?utm_source=github.com&utm_medium=referral&utm_content=MicroPyramid/opensource-job-portal&utm_campaign=Badge_Grade)  
-[![Build Status](https://travis-ci.org/MicroPyramid/opensource-job-portal.svg?branch=master)](https://travis-ci.org/MicroPyramid/opensource-job-portal)  
-[![Coverage Status](https://coveralls.io/repos/github/MicroPyramid/opensource-job-portal/badge.svg?branch=master)](https://coveralls.io/github/MicroPyramid/opensource-job-portal?branch=master)
+CareerLite is a modern, lightweight job board with an emphasis on authenticity and verifiable skills. It provides a clean end‑to‑end hiring flow for candidates and recruiters, plus a trust‑based recommendation engine that matches candidates to internships using a transparent TF‑IDF + Cosine Similarity model multiplied by a Trust Score.
 
-**PeelJobs** is a dynamic, user-centric job board platform designed to streamline the entire hiring process, from job posting to application management. Built with modern web technologies, it offers a seamless experience for job seekers, recruiters, and administrators through robust role-based access control (RBAC).
-
-🔗 **Documentation**: https://opensource-job-portal.readthedocs.io/en/latest/  
-📋 **Setup Guide**: See [SETUP.md](SETUP.md) for complete development and deployment instructions
-
----
-
-## Table of Contents
-
-1. [Project Overview](#project-overview)
-2. [User Roles & Permissions](#user-roles--permissions)
-3. [Core Features](#core-features)
-4. [Technology Stack](#technology-stack)
-5. [Quick Start](#quick-start)
-6. [Usage Guide](#usage-guide)
-7. [Contributing](#contributing)
-8. [License](#license)
+Useful links:
+- See SETUP.md for deeper setup details
+- Use the GitHub tracker in this repository for issues/PRs
 
 ---
 
 ## Project Overview
 
-PeelJobs transforms the traditional hiring process by providing a comprehensive platform that serves multiple user types with tailored functionalities. Each role is equipped with specific tools to enhance efficiency, engagement, and management, ensuring a streamlined and secure recruitment process.
-
-### Mission
-To democratize job searching and hiring by providing a powerful, free, and open-source platform that connects talent with opportunities efficiently.
-
-### Vision
-Creating the most user-friendly and feature-rich job board platform that scales from startups to enterprise-level recruitment needs.
+CareerLite streamlines hiring with candidate skill verification, recruiter tools, and a transparent recommendation system. It’s designed to run well on low‑resource infra (college/institution servers) while being easy to develop and maintain.
 
 ---
 
 ## User Roles & Permissions
 
-PeelJobs implements a comprehensive role-based access control system with distinct user types:
-
-### 🏢 Company Users
-- **Recruiters**: Post jobs, manage applications, conduct interviews
-- **Company Admin**: Oversee company-wide recruitment activities and manage recruiter accounts
-
-### 👤 Job Seekers
-- **Candidates**: Search jobs, apply for positions, manage applications, receive alerts
-- **Profile Management**: Build professional profiles with skills, experience, and preferences
-
-### 🔧 Platform Administration
-- **Super Admin**: Complete platform oversight and management capabilities
-- **Support Staff**: Restricted access to specific functionality and reports based on assigned roles
+CareerLite implements role‑based access control with distinct user types:
+- Recruiters, Recruiter Admin, Agency Admin, Agency Recruiter
+- Candidates (Job Seekers)
+- Admin/Support (optional)
 
 ---
 
 ## Core Features
 
-### 🎯 For Recruiters & Companies
-- **Smart Job Posting**: Create detailed job listings with rich formatting and media support
-- **Application Management**: Streamlined applicant tracking and communication tools
-- **Walk-in Events**: Schedule and manage on-site interview events with Google Maps integration
-- **Bulk Operations**: Copy, edit, and manage multiple job postings efficiently
-- **Analytics Dashboard**: Track job performance, application metrics, and hiring insights
-- **Social Authentication**: Quick registration via Google OAuth and email/password
+### For Recruiters & Companies
+- Job posting and management, applicant tracking, interview coordination
+- Email templates, bulk ops, metrics dashboard
 
-### 🔍 For Job Seekers
-- **Intelligent Search**: Advanced filtering by location, salary, skills, and experience level
-- **Real-time Alerts**: Personalized email notifications for matching opportunities
-- **Application Tracking**: Comprehensive history of applied positions and their status
-- **Profile Builder**: Professional profile creation with skill assessments and portfolio links
-- **Mobile-Optimized**: Responsive design for seamless mobile job searching
-- **Favorites System**: Save and organize interesting job opportunities
+### For Candidates
+- Profile builder, resume upload, application tracking, alerts
+- Skill verification via 5 MCQs (20s easy / 30s tough)
+- Recommendations based on verified skills and trust score
 
-### ⚡ Technical Excellence
-- **Lightning-Fast Search**: Elasticsearch-powered full-text search with instant results
-- **Background Processing**: Redis + Celery for email notifications and heavy operations
-- **Smart Caching**: Memcached integration for optimized page load times
-- **RESTful APIs**: Comprehensive API endpoints for third-party integrations
-- **Scalable Architecture**: Built to handle high traffic and large datasets
-- **Security First**: Role-based permissions, secure authentication, and data protection
+### Technical Highlights
+- Django + PostgreSQL core
+- Tailwind/Bootstrap hybrid UI, with Sass/Less precompilers
+- Optional Celery + Redis for background jobs (email etc.)
+- Optional Elasticsearch (legacy search pages)
 
 ---
 
 ## Technology Stack
 
-### Backend Infrastructure
-- **Framework**: Django 4.2.22 (Python)
-- **Database**: PostgreSQL with optimized queries
-- **Search Engine**: Elasticsearch 7.17.6
-- **Task Queue**: Celery 5.5.0 with Redis broker
-- **Caching**: Redis + Memcached for multi-layer caching
+### Backend
+- Django 5.x, Python 3.12+ (3.13 works)
+- PostgreSQL 14+
+- Optional: Redis + Celery, Elasticsearch 7.x
 
-### Frontend & UI
-- **Styling**: Bootstrap 5 + Tailwind CSS 4.1.x (progressive migration)
-- **Icons**: FontAwesome (migrating to Lucide Icons)
-- **Build Tools**: Node.js, npm, Less/Sass compilation
-- **Responsive Design**: Mobile-first approach with PWA capabilities
-
-### Development & Operations
-- **Code Quality**: Black formatter, Prospector linting, Coverage reporting
-- **Testing**: Django Test Suite, BDD with Behave Django
-- **CI/CD**: Travis CI integration with automated testing
-- **Containerization**: Docker support for easy deployment
-- **Monitoring**: Built-in admin tools and performance monitoring
+### Frontend & Assets
+- Tailwind CSS (compiled to `static/css/tailwind-output.css`)
+- Bootstrap + jQuery (legacy pages)
+- Precompilers: `sass`, `lessc` via Node.js
 
 ---
 
 ## Quick Start
 
-> **📋 For complete setup instructions, see [SETUP.md](SETUP.md)**
+For a complete setup, see SETUP.md. The basics are below.
 
 ### Prerequisites
-- Python 3.12+, PostgreSQL, Node.js, Redis
+- Python 3.12+
+- PostgreSQL 14+
+- Node.js LTS + npm
+- Optional: Redis (Celery), Elasticsearch 7.x
 
-### Basic Setup
-```bash
-# Clone repository
-git clone https://github.com/MicroPyramid/opensource-job-portal.git
-cd opensource-job-portal
+### Environment (.env)
+Create a `.env` in the repo root (example values):
 
-# Setup environment
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-
-# Configure database
-createdb peeljobs_dev
-python manage.py migrate
-python manage.py createsuperuser
-
-# Start development server
-python manage.py runserver
+```
+SECRET_KEY=change-me
+DEBUG=True
+DB_NAME=dobsp
+DB_USER=root
+DB_PASSWORD=123456
+DB_HOST=127.0.0.1
+DB_PORT=5432
+COMPRESS_ENABLED=True
+COMPRESS_OFFLINE=False
 ```
 
-**Access Points:**
-- Application: http://localhost:8000
-- Admin Panel: http://localhost:8000/admin/
-- Schema Viewer: http://localhost:8000/schema-viewer/
+### PostgreSQL (Docker example)
+```
+docker run --name careerlite-postgres \
+  -e POSTGRES_USER=root \
+  -e POSTGRES_PASSWORD=123456 \
+  -e POSTGRES_DB=dobsp \
+  -p 5432:5432 -d postgres:14
+```
+
+### Install and Run (Windows PowerShell; macOS/Linux similar)
+```
+python -m venv .venv
+.venv\Scripts\activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+# Frontend
+npm install
+npm install -g sass less
+npm run build
+
+# Django
+.venv\Scripts\python.exe manage.py migrate
+.venv\Scripts\python.exe manage.py createsuperuser
+.venv\Scripts\python.exe manage.py runserver
+```
+
+Access:
+- App: http://127.0.0.1:8000/
+- Admin: http://127.0.0.1:8000/admin/
 
 ---
 
-## Usage Guide
+## New Features In This Fork
 
-### For Recruiters
-1. **Register**: Create account via email/password or Google OAuth
-2. **Post Jobs**: Dashboard → "Post New Job" → Fill details → Publish
-3. **Manage Applications**: Review candidates, schedule interviews, track status
-4. **Analytics**: Monitor job performance and application metrics
+### Skill Verification (MCQs)
+- When a candidate adds a skill, they can verify it by answering 5 MCQs.
+- Time limits: 20 seconds for easy, 30 seconds for tough.
+- URL: `/candidate/skill/verify/<skill_id>/` (`candidate:verify_skill`).
 
-### For Job Seekers
-1. **Search**: Use keyword filters on homepage for relevant opportunities
-2. **Apply**: Click "Apply Now" and submit application with resume
-3. **Track**: Monitor application status in your profile dashboard
-4. **Alerts**: Enable email notifications for matching job opportunities
+### Trust Score (Transparent)
+- Combines Assessment Accuracy, Recruiter Rating (with a confidence factor when data is sparse), and Verification Recency.
+- Default formula: `0.4*Accuracy + 0.4*AdjRecruiter + 0.2*Recency` (or `0.7*Accuracy + 0.3*Recency` if no rating).
 
-### For Administrators
-1. **User Management**: Oversee user accounts and permissions
-2. **Content Moderation**: Review and approve job postings
-3. **Analytics**: Access platform-wide metrics and reports
-4. **System Monitoring**: Track performance and usage statistics
+### TF‑IDF + Cosine Recommender
+- Pure‑Python TF‑IDF vectorization + cosine similarity (no external ML libs).
+- Final score: `cosine_similarity × trust_score`.
+- Endpoint: `/candidate/recommendations/` returns JSON top internships.
+- Candidate Dashboard shows a “Recommended Internships” card fetching this data.
 
----
-
-## API Integration
-
-PeelJobs provides comprehensive RESTful APIs for third-party integrations:
-
-- **Job Listings API**: Retrieve and filter job postings
-- **Application API**: Submit and track job applications
-- **User Management API**: Handle user registration and profiles
-- **Search API**: Advanced job search capabilities
-
-For detailed API documentation, visit: [SETUP.md](SETUP.md)
+### Branding & UI
+- Project rebranded to CareerLite (logo, titles, footer).
+- Dev CSS fallbacks so the site stays styled if precompilers are not installed.
 
 ---
 
-## Contributing
+## Teammates: Get The Latest And Run
 
-We welcome contributions from the community! Here's how to get started:
+1) Pull latest code
+- `git checkout main`
+- `git pull --ff-only`
 
-### Development Process
-1. **Fork** the repository on GitHub
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Make** your changes with proper tests
-4. **Format** code with `black .` and check dependencies with `pipdeptree`
-5. **Commit** changes (`git commit -m "Add amazing feature"`)
-6. **Push** to your fork (`git push origin feature/amazing-feature`)
-7. **Submit** a Pull Request with detailed description
+2) Python deps
+- Windows: `.venv\Scripts\activate`  |  Unix: `source .venv/bin/activate`
+- `pip install -r requirements.txt`
 
-### Code Standards
-- Follow Django best practices and PEP 8
-- Write comprehensive tests for new features
-- Update documentation for API changes
-- Use meaningful commit messages
+3) Node and CSS tooling
+- `npm install`
+- `npm install -g sass less`
+- `npm run build`
 
-### Areas for Contribution
-- 🐛 Bug fixes and improvements
-- 🔍 Enhanced search functionality
-- 📱 Mobile experience optimization
-- 🎨 UI/UX improvements
-- 🔒 Security enhancements
-- 📊 Analytics and reporting features
+4) Database & migrations
+- Ensure PostgreSQL is running
+- `.venv\Scripts\python.exe manage.py migrate`
+
+5) Run
+- `.venv\Scripts\python.exe manage.py runserver`
+
+Optional services
+- Celery + Redis for background tasks (emails, jobs). Registration is resilient without them in dev.
+- Elasticsearch for legacy search pages.
+
+Environment flags
+- `COMPRESS_ENABLED=True` uses `sass`/`lessc` for SCSS/LESS in templates.
+- `COMPRESS_OFFLINE=False` recommended in dev (avoid template scan).
+
+Skill verification quick test
+- Add a skill on the Candidate Dashboard, then open the verification link (or `/candidate/skill/verify/<skill_id>/`).
+
+Recommendations quick test
+- Visit `/candidate/recommendations/` (JSON) or check the “Recommended Internships” card on the dashboard.
 
 ---
 
 ## License
 
-This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
+MIT License. See LICENSE.
 
----
-
-## Support & Community
-
-- **Documentation**: https://opensource-job-portal.readthedocs.io/en/latest/
-- **Issues**: Report bugs and request features on GitHub Issues
-- **Discussions**: Join community discussions on GitHub Discussions
-
----
-
-**Happy coding! 🚀**
