@@ -1,0 +1,9 @@
+{
+    "github.copilot.chat.codeGeneration.instructions": [
+        {
+            "file": "requirements.txt"
+        }
+    ],
+    "git.autorefresh": true,
+    "git.autofetch": "all"
+}

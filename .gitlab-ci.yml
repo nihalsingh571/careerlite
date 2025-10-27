@@ -1,0 +1,18 @@
+stages:
+  - deploy
+
+deploy_live:
+  stage: deploy
+  environment:
+    name: live
+  script:
+    - sudo /bin/rm -rf /home/peeljobs/peeljobs/; cp -r . /home/peeljobs/peeljobs
+    - source /home/peeljobs/env/bin/activate
+    - pip install pipenv
+    - pipenv install -d
+    - python /home/peeljobs/peeljobs/manage_server.py migrate --noinput
+    - sudo /usr/bin/supervisorctl restart all
+  tags:
+    - peeljobs-live
+  only:
+    - master
