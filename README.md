@@ -177,5 +177,4 @@ Recommendations quick test
 
 ## License
 
-MIT License. See LICENSE.
 

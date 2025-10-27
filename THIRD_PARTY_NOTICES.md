@@ -1,3 +1,9 @@
+# Third‑Party Notices
+
+This project includes code derived from the MicroPyramid “Open Source Job Portal” project, which is provided under the MIT License.
+
+The following notice applies to those portions:
+
 MIT License
 
 Copyright (c) 2017 MicroPyramid
@@ -19,3 +25,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+If you redistribute any portion of the code covered by this notice, you must retain the above copyright and license text.
+
+Additional third‑party libraries are used under their respective licenses (see `requirements.txt`, npm packages, and vendor documentation).
