@@ -1,0 +1,966 @@
+{% extends 'dashboard/base.html' %}
+{% load thumbnail %}
+{% load page_tags %}
+{% block stage %}
+<style type="text/css">
+    .skills-manager {
+        background: #f8fafc;
+        padding: 56px 0 36px;
+    }
+
+    .skills-container {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .skills-manager__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 24px;
+    }
+
+    .skills-manager__header h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 6px;
+    }
+
+    .skills-manager__header p {
+        margin: 0;
+        color: #64748b;
+        font-size: .95rem;
+    }
+
+    .skills-summary {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(120px, 1fr);
+        gap: 16px;
+    }
+
+    .skills-summary__card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        padding: 12px 16px;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .skills-summary__label {
+        font-size: .72rem;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: #64748b;
+    }
+
+    .skills-summary__value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .skills-manager__controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .skills-filter-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .skills-filter {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: .8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        border: 1px solid #d1d9e6;
+        color: #1d4ed8;
+        background: #eef2ff;
+        transition: all .18s ease;
+    }
+
+    .skills-filter span {
+        background: rgba(37, 99, 235, 0.15);
+        color: #1d4ed8;
+        border-radius: 999px;
+        padding: 1px 8px;
+        font-size: .72rem;
+    }
+
+    .skills-filter.is-active,
+    .skills-filter:hover {
+        background: #1d4ed8;
+        color: #ffffff;
+        border-color: #1d4ed8;
+    }
+
+    .skills-filter.is-active span,
+    .skills-filter:hover span {
+        background: rgba(255, 255, 255, 0.18);
+        color: inherit;
+    }
+
+    .skills-search {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .skills-search input[type="text"] {
+        border-radius: 10px;
+        border: 1px solid #dbe2f3;
+        padding: 8px 12px;
+        font-size: .9rem;
+        min-width: 220px;
+        background: #ffffff;
+        color: #0f172a;
+    }
+
+    .skills-search button {
+        border-radius: 10px;
+        border: none;
+        background: #1d4ed8;
+        color: #ffffff;
+        font-weight: 600;
+        padding: 8px 18px;
+        transition: background .18s ease, transform .18s ease;
+        box-shadow: 0 6px 16px rgba(29, 78, 216, 0.2);
+    }
+
+    .skills-search button:hover {
+        background: #1e40af;
+        transform: translateY(-1px);
+    }
+
+    .skills-manager__forms {
+        background: #ffffff;
+        border-radius: 14px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        padding: 20px;
+    }
+
+    .skills-manager__forms h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 14px;
+        color: #0f172a;
+    }
+
+    .skills-manager__forms .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+    }
+
+    .skills-manager__forms label {
+        display: block;
+        font-size: .8rem;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: #64748b;
+        margin-bottom: 6px;
+    }
+
+    .skills-manager__forms input[type="text"],
+    .skills-manager__forms select,
+    .skills-manager__forms input[type="file"] {
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid #dbe2f3;
+        padding: 10px 12px;
+        font-size: .92rem;
+        color: #0f172a;
+        background: #ffffff;
+    }
+
+    .skills-manager__forms button {
+        align-self: end;
+        justify-self: start;
+        border-radius: 10px;
+        border: none;
+        background: #0ea5e9;
+        color: #ffffff;
+        font-weight: 600;
+        padding: 10px 20px;
+        box-shadow: 0 6px 16px rgba(14, 165, 233, 0.2);
+        transition: background .18s ease, transform .18s ease;
+    }
+
+    .skills-manager__forms button:hover {
+        background: #0284c7;
+        transform: translateY(-1px);
+    }
+
+    .skills-result-count {
+        font-size: .85rem;
+        color: #64748b;
+        margin-top: 12px;
+    }
+
+    .skills-grid {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .skill-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 20px;
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .skill-card--inactive {
+        border-style: dashed;
+        border-color: #e0e6f4;
+        background: #f7fafc;
+        opacity: .92;
+    }
+
+    .skill-card__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .skill-card__title {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 4px;
+    }
+
+    .skill-card__type {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: .72rem;
+        font-weight: 600;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: #1d4ed8;
+        background: #eef2ff;
+        border-radius: 999px;
+        padding: 4px 10px;
+    }
+
+    .skill-card__status {
+        font-size: .72rem;
+        font-weight: 600;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        border-radius: 999px;
+        padding: 4px 12px;
+        background: #dcfce7;
+        color: #166534;
+        white-space: nowrap;
+    }
+
+    .skill-card--inactive .skill-card__status {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .skill-card__content {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .skill-card__icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        background: #eff6ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        color: #1d4ed8;
+        overflow: hidden;
+    }
+
+    .skill-card__icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        background: #ffffff;
+    }
+
+    .skill-card__metrics {
+        flex: 1;
+        display: grid;
+        gap: 8px;
+    }
+
+    .skill-card__metric {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 8px 12px;
+        font-size: .85rem;
+        color: #475569;
+    }
+
+    .skill-card__metric span:last-child {
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .skill-card__footer {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .skill-card__slug {
+        font-size: .78rem;
+        color: #94a3b8;
+        word-break: break-all;
+    }
+
+    .skill-card__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .skill-card__action {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        padding: 8px 12px;
+        font-size: .8rem;
+        font-weight: 600;
+        color: #1d4ed8;
+        background: #ffffff;
+        transition: all .18s ease;
+    }
+
+    .skill-card__action.view-link {
+        background: #dcfce7;
+        color: #166534;
+        border-color: transparent;
+    }
+
+    .skill-card__action.danger {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-color: transparent;
+    }
+
+    .skill-card__action:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(29, 78, 216, 0.15);
+    }
+
+    .skill-card__edit {
+        display: none;
+        margin-top: 12px;
+        border-top: 1px dashed #dbe2f3;
+        padding-top: 16px;
+    }
+
+    .skill-card__edit form {
+        display: grid;
+        gap: 12px;
+    }
+
+    .skill-card__edit-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+    }
+
+    .skill-card__edit label {
+        font-size: .76rem;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: #64748b;
+    }
+
+    .skill-card__edit input[type="text"],
+    .skill-card__edit select,
+    .skill-card__edit textarea,
+    .skill-card__edit input[type="file"] {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid #dbe2f3;
+        padding: 8px 10px;
+        font-size: .88rem;
+        color: #0f172a;
+    }
+
+    .skill-card__edit textarea {
+        min-height: 70px;
+    }
+
+    .skill-card__edit button {
+        justify-self: start;
+        border-radius: 8px;
+        border: none;
+        background: #1d4ed8;
+        color: #ffffff;
+        font-weight: 600;
+        padding: 8px 18px;
+        box-shadow: 0 6px 14px rgba(29, 78, 216, 0.2);
+    }
+
+    .skills-empty-state {
+        text-align: center;
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px dashed #dbe2f3;
+        padding: 48px 24px;
+        color: #64748b;
+        font-size: 1rem;
+        box-shadow: inset 0 0 0 1px rgba(219, 226, 243, 0.35);
+    }
+
+    .skills-pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 28px;
+    }
+
+    .skills-pagination__track {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        width: 100%;
+        max-width: 980px;
+        padding: 12px 20px;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    .skills-pagination__group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        color: #4b5563;
+    }
+
+    .skills-pagination__group strong {
+        color: #1f2937;
+    }
+
+    .skills-pagination__button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 10px;
+        padding: 10px 18px;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        color: #1f2937;
+        font-weight: 600;
+        transition: all .16s ease;
+    }
+
+    .skills-pagination__button:hover {
+        border-color: #9ca3af;
+        color: #111827;
+        box-shadow: 0 8px 18px rgba(17, 24, 39, 0.12);
+    }
+
+    .skills-pagination__button--primary {
+        color: #1d4ed8;
+        border-color: #bfdbfe;
+    }
+
+    .skills-pagination__button--primary:hover {
+        background: #eff6ff;
+        border-color: #93c5fd;
+        color: #1e3a8a;
+    }
+
+    .skills-pagination__button--disabled {
+        border-color: #e5e7eb;
+        color: #9ca3af;
+        pointer-events: none;
+        background: #f9fafb;
+        box-shadow: none;
+    }
+
+    @media (max-width: 992px) {
+        .skills-summary {
+            grid-auto-flow: row;
+            grid-template-columns: repeat(2, minmax(120px, 1fr));
+        }
+
+        .skills-manager__header {
+            flex-direction: column;
+        }
+
+        .skills-search {
+            margin-left: 0;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .skills-manager__forms .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .skills-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .skills-manager__controls {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .skills-search input[type="text"] {
+            min-width: 100%;
+        }
+
+        .skills-search {
+            justify-content: flex-start;
+        }
+    }
+</style>
+<section class="skills-manager" id="tech_skills">
+    <div class="skills-container">
+        <header class="skills-manager__header">
+            <div>
+                <h1>Technical Skills</h1>
+                <p>Keep your taxonomy up to date so recruiters and candidates can discover the right expertise faster.</p>
+            </div>
+            <div class="skills-summary">
+                <div class="skills-summary__card">
+                    <span class="skills-summary__label">Total Skills</span>
+                    <span class="skills-summary__value">{{ metrics.total }}</span>
+                </div>
+                <div class="skills-summary__card">
+                    <span class="skills-summary__label">Active</span>
+                    <span class="skills-summary__value">{{ metrics.active }}</span>
+                </div>
+                <div class="skills-summary__card">
+                    <span class="skills-summary__label">Inactive</span>
+                    <span class="skills-summary__value">{{ metrics.inactive }}</span>
+                </div>
+                <div class="skills-summary__card">
+                    <span class="skills-summary__label">IT Skills</span>
+                    <span class="skills-summary__value">{{ metrics.it }}</span>
+                </div>
+                <div class="skills-summary__card">
+                    <span class="skills-summary__label">Non-IT</span>
+                    <span class="skills-summary__value">{{ metrics.non_it }}</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="skills-manager__controls">
+            <div class="skills-filter-bar">
+                <a class="skills-filter{% if not status %} is-active{% endif %}" href="{% url 'dashboard:tech_skills' %}{% if search %}?search={{ search|urlencode }}{% endif %}">
+                    All
+                    <span>{{ metrics.total }}</span>
+                </a>
+                {% for filter in filters %}
+                    <a class="skills-filter{% if status == filter.key %} is-active{% endif %}" href="?{% if search %}search={{ search|urlencode }}&{% endif %}status={{ filter.key }}">
+                        {{ filter.label }}
+                        <span>{{ filter.count }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+            <form id="search_form" class="skills-search" method="GET">
+                <input type="text" name="search" id="search" placeholder="Search by skill name" value="{{ request.GET.search }}">
+                <input type="hidden" name="status" value="{% if status %}{{ status }}{% endif %}">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <div class="skills-manager__forms">
+            <h3>Add a new skill</h3>
+            <form id="addform" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div>
+                        <label for="name">Skill name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="e.g. ReactJS">
+                    </div>
+                    <div>
+                        <label for="skill_type">Skill type</label>
+                        <select class="form-control" name="skill_type" id="skill_type">
+                            <option value="">Select skill type</option>
+                            {% for type in skill_types %}
+                                <option value="{{ type.0 }}">{{ type.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="icon">Icon (optional)</label>
+                        <input type="file" class="form-control" id="icon" name="icon">
+                        <input type="hidden" name="mode" value="add_skill">
+                    </div>
+                    <div>
+                        <label>&nbsp;</label>
+                        <button type="submit"><i class="fa fa-plus"></i> Add Skill</button>
+                    </div>
+                </div>
+            </form>
+            <p class="skills-result-count">Showing {{ skills|length }} of {{ total_results }} matching skills.</p>
+        </div>
+
+        {% if skills %}
+            <div class="skills-grid">
+                {% for skill in skills %}
+                    <article class="skill-card{% if skill.status != 'Active' %} skill-card--inactive{% endif %}">
+                        <div class="skill-card__header">
+                            <div>
+                                <span class="skill-card__type">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    {{ skill.skill_type|default:"Unassigned"|upper }}
+                                </span>
+                                <div class="skill-card__title">{{ skill.name }}</div>
+                            </div>
+                            <div class="skill-card__status">{{ skill.status }}</div>
+                        </div>
+                        <div class="skill-card__content">
+                            <div class="skill-card__icon">
+                                {% if skill.icon_is_class %}
+                                    <i class="{{ skill.icon_class }}"></i>
+                                {% else %}
+                                    <img src="{{ skill.icon_url }}" alt="{{ skill.name }}" onerror="this.onerror=null;this.src='{{ skill.icon_fallback }}';">
+                                {% endif %}
+                            </div>
+                            <div class="skill-card__metrics">
+                                <div class="skill-card__metric">
+                                    <span>Live job posts</span>
+                                    <span>{{ skill.get_no_of_jobposts|length }}</span>
+                                </div>
+                                <div class="skill-card__metric">
+                                    <span>Applicants</span>
+                                    <span>{{ skill.get_no_of_applicants|length }}</span>
+                                </div>
+                                <div class="skill-card__metric">
+                                    <span>Resume matches</span>
+                                    <span>{{ skill.get_no_of_resume_applicants|length }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="skill-card__footer">
+                            <div class="skill-card__slug">Slug: {{ skill.slug }}</div>
+                            <div class="skill-card__actions">
+                                {% if skill.status == 'Active' %}
+                                    <a class="skill-card__action view-link" href="/{{ skill.slug }}-jobs/" target="_blank">
+                                        <i class="fa-solid fa-arrow-up-right-from-square"></i> View public page
+                                    </a>
+                                {% endif %}
+                                <button type="button" class="skill-card__action edit" data-skill-id="{{ skill.id }}">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit details
+                                </button>
+                                {% if skill.status == 'InActive' %}
+                                    <button type="button" class="skill-card__action enable-skill" data-skill-id="{{ skill.id }}">
+                                        <i class="fa-solid fa-toggle-on"></i> Activate
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="skill-card__action deactivate-skill" data-skill-id="{{ skill.id }}">
+                                        <i class="fa-solid fa-toggle-off"></i> Deactivate
+                                    </button>
+                                {% endif %}
+                                <button type="button" data-href="{% url 'dashboard:delete_skill' skill_id=skill.id %}" class="skill-card__action danger delete_skill">
+                                    <i class="fa-solid fa-trash-can"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div class="skill-card__edit edit_panel">
+                            <form class="editform" id="{{ skill.id }}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ skill.id }}">
+                                <input type="hidden" name="mode" value="edit_skill">
+                                <div class="skill-card__edit-grid">
+                                    <div>
+                                        <label for="skill_name_{{ skill.id }}">Skill name</label>
+                                        <input type="text" id="skill_name_{{ skill.id }}" name="name" value="{{ skill.name }}">
+                                    </div>
+                                    <div>
+                                        <label for="skill_slug_{{ skill.id }}">Slug</label>
+                                        <input type="text" id="skill_slug_{{ skill.id }}" name="slug" value="{{ skill.slug }}">
+                                    </div>
+                                    <div>
+                                        <label for="skill_type_{{ skill.id }}">Skill type</label>
+                                        <select id="skill_type_{{ skill.id }}" name="skill_type">
+                                            <option value="">Select skill type</option>
+                                            {% for type in skill_types %}
+                                                <option value="{{ type.0 }}" {% if skill.skill_type == type.0 %}selected{% endif %}>{{ type.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="skill_icon_{{ skill.id }}">Icon</label>
+                                        <input type="file" id="skill_icon_{{ skill.id }}" name="icon">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="skill_meta_{{ skill.id }}">Meta data (JSON)</label>
+                                    <textarea id="skill_meta_{{ skill.id }}" name="meta" placeholder='{"key": "value"}'>{{ skill.meta_text }}</textarea>
+                                </div>
+                                <div>
+                                    <label for="ckeditor_page_content_{{ skill.id }}">Page content</label>
+                                    <textarea class="ckeditor_page_content" name="ckeditor_page_content_{{ skill.id }}" id="ckeditor_page_content_{{ skill.id }}" placeholder="HTML content for the landing page">{{ skill.page_content }}</textarea>
+                                    <input type="hidden" name="page_content" id="page_content_{{ skill.id }}">
+                                </div>
+                                <input type="hidden" name="page" value="{{ current_page }}">
+                                <button class="update_btn" type="submit">
+                                    <i class="fa-solid fa-floppy-disk"></i> Update skill
+                                </button>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="skills-empty-state">
+                <i class="fa-solid fa-lightbulb"></i>
+                <p>No technical skills found. Use the form above to add your first skill.</p>
+            </div>
+        {% endif %}
+
+        {% if skills %}
+            {% get_page current_page last_page as pages %}
+            <nav class="skills-pagination" aria-label="Technical skill pagination">
+                <div class="skills-pagination__track">
+                    <div class="skills-pagination__group">
+                        {% if current_page > 1 %}
+                            <a class="skills-pagination__button skills-pagination__button--primary" href="?{% if search %}search={{ search|urlencode }}&{% endif %}{% if status %}status={{ status }}&{% endif %}page=1">&laquo;</a>
+                            <a class="skills-pagination__button" href="?{% if search %}search={{ search|urlencode }}&{% endif %}{% if status %}status={{ status }}&{% endif %}page={{ previous_page }}">&lsaquo; Previous</a>
+                        {% else %}
+                            <span class="skills-pagination__button skills-pagination__button--disabled">&laquo;</span>
+                            <span class="skills-pagination__button skills-pagination__button--disabled">&lsaquo; Previous</span>
+                        {% endif %}
+                    </div>
+                    <div class="skills-pagination__group">
+                        <span>Page <strong>{{ current_page }}</strong> of {{ last_page }}</span>
+                    </div>
+                    <div class="skills-pagination__group">
+                        {% if current_page < last_page %}
+                            <a class="skills-pagination__button" href="?{% if search %}search={{ search|urlencode }}&{% endif %}{% if status %}status={{ status }}&{% endif %}page={{ aft_page }}">Next &rsaquo;</a>
+                            <a class="skills-pagination__button skills-pagination__button--primary" href="?{% if search %}search={{ search|urlencode }}&{% endif %}{% if status %}status={{ status }}&{% endif %}page={{ last_page }}">Last &raquo;</a>
+                        {% else %}
+                            <span class="skills-pagination__button skills-pagination__button--disabled">Next &rsaquo;</span>
+                            <span class="skills-pagination__button skills-pagination__button--disabled">Last &raquo;</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        {% endif %}
+    </div>
+</section>
+{% endblock stage %}
+
+{% block script %}
+<script type="text/javascript">
+    (function ($) {
+        function formatMessage(message) {
+            if (Array.isArray(message)) {
+                return message.join(', ');
+            }
+            if (typeof message === 'object' && message !== null) {
+                return Object.values(message).join(', ');
+            }
+            return message;
+        }
+
+        function initialiseEditor($textarea) {
+            if (!$textarea.length) {
+                return;
+            }
+            CKEDITOR.config.allowedContent = true;
+            $textarea.each(function () {
+                var $field = $(this);
+                var fieldId = $field.attr('id');
+                if (!$field.data('ckeditor-initialised')) {
+                    CKEDITOR.replace(fieldId);
+                    $field.data('ckeditor-initialised', true);
+                }
+            });
+        }
+
+        function serialiseEditorContent($form) {
+            var $editorField = $form.find('.ckeditor_page_content');
+            if ($editorField.length) {
+                var editorId = $editorField.attr('id');
+                if (CKEDITOR.instances[editorId]) {
+                    var data = CKEDITOR.instances[editorId].getData();
+                    $form.find('#page_content_' + $form.attr('id')).val(data);
+                }
+            }
+        }
+
+        var csrfToken = $('input[name="csrfmiddlewaretoken"]').first().val();
+
+        function postJSON(url, payload, successCallback, errorCallback) {
+            payload = payload || {};
+            payload['csrfmiddlewaretoken'] = csrfToken;
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: payload,
+                dataType: 'json',
+                success: successCallback,
+                error: errorCallback || function () {
+                    open_dialog('Something went wrong. Please try again.', 'Error!!');
+                }
+            });
+        }
+
+        function handleSkillStatus(url, successMessage) {
+            postJSON(url, {}, function (data) {
+                if (data.error) {
+                    open_dialog(data.response || data.message, 'Error!!');
+                } else {
+                    open_dialog_with_url(successMessage, 'Success!!!', "{{ request.get_full_path }}");
+                }
+            });
+        }
+
+        $(function () {
+            var $skillsSection = $('#tech_skills');
+
+            $('#addform').on('submit', function (e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                formData.append('csrfmiddlewaretoken', csrfToken);
+                $.ajax({
+                    url: "{% url 'dashboard:tech_skills' %}",
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.error === false) {
+                            open_dialog_with_url(data.message, 'Success!!!', "{{ request.get_full_path }}");
+                        } else {
+                            for (var key in data.message) {
+                                if (data.message.hasOwnProperty(key)) {
+                                    open_dialog(data.message[key], 'Error!!');
+                                }
+                            }
+                        }
+                    },
+                    error: function () {
+                        open_dialog('Unable to add the skill right now.', 'Error!!');
+                    }
+                });
+            });
+
+            $('.editform').on('submit', function (e) {
+                e.preventDefault();
+                var $form = $(this);
+                serialiseEditorContent($form);
+                var formData = new FormData(this);
+                formData.append('csrfmiddlewaretoken', csrfToken);
+                $.ajax({
+                    url: "{% url 'dashboard:tech_skills' %}",
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.error === false) {
+                            open_dialog_with_url(data.message, 'Success!!!', "{{ request.get_full_path }}");
+                        } else if (data.message) {
+                            open_dialog(formatMessage(data.message), 'Error!!');
+                        } else if (data.response) {
+                            for (var key in data.response) {
+                                if (data.response.hasOwnProperty(key)) {
+                                    open_dialog(key + ': ' + data.response[key], 'Error!!');
+                                }
+                            }
+                        }
+                    },
+                    error: function () {
+                        open_dialog('Unable to update this skill right now.', 'Error!!');
+                    }
+                });
+            });
+
+            $skillsSection.on('click', '.skill-card__action.edit', function (e) {
+                e.preventDefault();
+                var $panel = $(this).closest('.skill-card').find('.edit_panel');
+                $panel.stop(true, true).slideToggle(180);
+                initialiseEditor($panel.find('.ckeditor_page_content'));
+            });
+
+            $skillsSection.on('click', '.deactivate-skill', function (e) {
+                e.preventDefault();
+                var skillId = $(this).data('skill-id');
+                if (!confirm('Do you want to deactivate this skill?')) {
+                    return;
+                }
+                handleSkillStatus('/dashboard/skill/status/' + skillId + '/', 'Skill Disabled Successfully');
+                return false;
+            });
+
+            $skillsSection.on('click', '.enable-skill', function (e) {
+                e.preventDefault();
+                var skillId = $(this).data('skill-id');
+                if (!confirm('Do you want to activate this skill?')) {
+                    return;
+                }
+                handleSkillStatus('/dashboard/skill/status/' + skillId + '/', 'Skill Activated Successfully');
+                return false;
+            });
+
+            $skillsSection.on('click', '.delete_skill', function (e) {
+                e.preventDefault();
+                var href = $(this).attr('data-href');
+                if (!confirm('Do you want to permanently remove this skill?')) {
+                    return;
+                }
+                postJSON(href, {}, function (data) {
+                    if (data.error) {
+                        open_dialog(data.message, 'Error!!');
+                    } else {
+                        open_dialog_with_url(data.message, 'Success!!!', "{{ request.get_full_path }}");
+                    }
+                });
+                return false;
+            });
+        });
+    })(jQuery);
+</script>
+{% endblock script %}

@@ -1,0 +1,940 @@
+{% extends 'dashboard/base.html' %}
+{% load page_tags %}
+
+{% block stage %}
+    <style>
+    .location-manager {
+        background: #f8fafc;
+        min-height: 100%;
+        padding: 56px 0 48px;
+    }
+
+    .location-container {
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+    }
+
+    .location-header {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 24px;
+        align-items: flex-end;
+    }
+
+    .location-header__content span {
+        display: inline-block;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #64748b;
+        margin-bottom: 6px;
+    }
+
+    .location-header__content h1 {
+        margin: 0;
+        font-size: 1.9rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .location-header__content p {
+        margin: 10px 0 0;
+        color: #475569;
+        max-width: 640px;
+        line-height: 1.5;
+    }
+
+    .location-status {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-end;
+    }
+
+    .location-status__label {
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #64748b;
+    }
+
+    .location-status__filters {
+        display: inline-flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .location-filter {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 18px;
+        border-radius: 999px;
+        border: 1px solid #d1d9e6;
+        background: #ffffff;
+        color: #1f2937;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.18s ease;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+    }
+
+    .location-filter:hover {
+        transform: translateY(-1px);
+        border-color: #93c5fd;
+        color: #1d4ed8;
+    }
+
+    .location-filter--active {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 12px 28px rgba(37, 99, 235, 0.32);
+    }
+
+    .location-insights {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 16px;
+    }
+
+    .location-insights__card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 16px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    .location-insights__label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #64748b;
+    }
+
+    .location-insights__value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .location-tools {
+        display: grid;
+        gap: 20px;
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.1);
+        padding: 24px;
+    }
+
+    .location-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .location-form label {
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #64748b;
+    }
+
+    .location-form__fields {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .location-form__fields input,
+    .location-form__fields select {
+        flex: 1;
+        min-width: 220px;
+        border-radius: 12px;
+        border: 1px solid #d1d9e6;
+        background: #ffffff;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        color: #0f172a;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .location-form__fields input:focus,
+    .location-form__fields select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+        outline: none;
+    }
+
+    .location-form__fields button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        white-space: nowrap;
+    }
+
+    .location-form__fields button.location-search-button {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #ffffff;
+        box-shadow: 0 14px 32px rgba(37, 99, 235, 0.32);
+    }
+
+    .location-form__fields button.location-search-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 36px rgba(37, 99, 235, 0.36);
+    }
+
+    .location-results {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        color: #475569;
+        font-size: 0.95rem;
+    }
+
+    .location-results strong {
+        color: #0f172a;
+    }
+
+    .location-results__reset {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+        color: #2563eb;
+        text-decoration: none;
+    }
+
+    .location-results__reset:hover {
+        text-decoration: underline;
+    }
+
+    .location-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+    }
+
+    .location-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        box-shadow: 0 18px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .location-card__header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .location-card__identity {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .location-card__title {
+        margin: 0;
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: #0f172a;
+        line-height: 1.35;
+        word-break: break-word;
+    }
+
+    .location-card__subtitle {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin: 0;
+    }
+
+    .location-card__meta {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    .location-card__meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: #1d4ed8;
+        font-weight: 500;
+    }
+
+    .location-card__status {
+        background: #ecfdf5 !important;
+        color: #047857 !important;
+    }
+
+    .location-card__status--disabled {
+        background: #fef3c7 !important;
+        color: #d97706 !important;
+    }
+
+    .location-card__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .location-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 10px 14px;
+        border-radius: 12px;
+        border: 1px solid #d1d9e6;
+        color: #1f2937;
+        background: #ffffff;
+        text-decoration: none;
+        transition: all 0.18s ease;
+        cursor: pointer;
+        flex: 1 1 calc(50% - 10px);
+        min-width: 140px;
+    }
+
+    .location-action:hover {
+        transform: translateY(-1px);
+        background: #f1f5f9;
+    }
+
+    .location-action--ghost {
+        color: #2563eb;
+        border-color: #dbeafe;
+        background: #f8fafc;
+    }
+
+    .location-action--ghost:hover {
+        background: #eff6ff;
+    }
+
+    .location-action--primary {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #2563eb;
+    }
+
+    .location-action--primary:hover {
+        background: #1e40af;
+    }
+
+    .location-action--danger {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-color: #fecaca;
+    }
+
+    .location-action--danger:hover {
+        background: #fecaca;
+        color: #991b1b;
+    }
+
+    .location-card__edit {
+        display: none;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 16px;
+    }
+
+    .location-edit-form {
+        display: grid;
+        gap: 12px;
+    }
+
+    .location-edit-form label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #475569;
+    }
+
+    .location-edit-form input,
+    .location-edit-form select,
+    .location-edit-form textarea {
+        border-radius: 12px;
+        border: 1px solid #d1d9e6;
+        padding: 10px 14px;
+        font-size: 0.95rem;
+        color: #0f172a;
+        width: 100%;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .location-edit-form input:focus,
+    .location-edit-form select:focus,
+    .location-edit-form textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+        outline: none;
+    }
+
+    .location-edit-form textarea {
+        resize: vertical;
+        min-height: 70px;
+    }
+
+    .location-edit-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .location-empty {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px dashed #cbd5f5;
+        padding: 60px 24px;
+        text-align: center;
+        color: #475569;
+        display: grid;
+        gap: 14px;
+        justify-items: center;
+        box-shadow: 0 18px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .location-empty i {
+        font-size: 2.8rem;
+        color: #2563eb;
+    }
+
+    .location-pagination {
+        display: flex;
+        justify-content: center;
+    }
+
+    .location-pagination__inner {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+        padding: 12px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .location-pagination__group {
+        display: inline-flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .location-pagination__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        color: #1f2937;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        transition: all 0.18s ease;
+    }
+
+    .location-pagination__button:hover {
+        background: #e2e8f0;
+    }
+
+    .location-pagination__button--primary {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.32);
+    }
+
+    .location-pagination__button--disabled {
+        color: #94a3b8;
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .location-modal .modal-content {
+        border-radius: 18px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 22px 36px rgba(15, 23, 42, 0.16);
+    }
+
+    .location-modal .modal-header {
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .location-modal .modal-footer {
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .location-modal .form-select {
+        border-radius: 12px;
+    }
+
+    @media (max-width: 960px) {
+        .location-card__actions .location-action {
+            flex: 1 1 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .location-manager {
+            padding: 40px 0 36px;
+        }
+
+        .location-container {
+            padding: 0 18px;
+            gap: 24px;
+        }
+
+        .location-header__content h1 {
+            font-size: 1.6rem;
+        }
+
+        .location-status {
+            align-items: flex-start;
+        }
+
+        .location-card {
+            padding: 20px;
+        }
+
+        .location-card__header {
+            flex-direction: column;
+        }
+
+        .location-card__actions {
+            gap: 8px;
+        }
+
+        .location-card__actions .location-action {
+            flex: 1 1 100%;
+        }
+
+        .location-pagination__inner {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .location-pagination__group {
+            justify-content: space-between;
+        }
+        }
+    </style>
+
+<section class="location-manager" id="locations">
+    <div class="location-container">
+        <div class="location-header">
+            <div class="location-header__content">
+                <span>Data management</span>
+                <h1>Locations library</h1>
+                <p>Manage cities and their job postings across different states and countries. Edit location details, move jobs between cities, or adjust their status to keep your location data organized.</p>
+        </div>
+            <div class="location-status">
+                <span class="location-status__label">Quick filter</span>
+                <div class="location-status__filters">
+                    <a class="location-filter{% if status == 'active' %} location-filter--active{% endif %}"
+                       href="{% url 'dashboard:locations' 'active' %}">Active</a>
+                    <a class="location-filter{% if status == 'inactive' %} location-filter--active{% endif %}"
+                       href="{% url 'dashboard:locations' 'inactive' %}">Inactive</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="location-insights">
+            <div class="location-insights__card">
+                <span class="location-insights__label">Visible rows</span>
+                <span class="location-insights__value">{{ locations|length }}</span>
+                <small class="text-muted">items on this page</small>
+            </div>
+            <div class="location-insights__card">
+                <span class="location-insights__label">Current page</span>
+                <span class="location-insights__value">{{ current_page }}</span>
+                <small class="text-muted">of {{ last_page }}</small>
+            </div>
+            <div class="location-insights__card">
+                <span class="location-insights__label">Status</span>
+                <span class="location-insights__value">{{ status|capfirst }}</span>
+                <small class="text-muted">locations</small>
+            </div>
+        </div>
+
+        <div class="location-tools">
+            <form id="location-search-form" method="post" class="location-form">
+                <label for="location-search-input">Search & Sort</label>
+                <div class="location-form__fields">
+                    <input type="text" id="location-search-input" name="search"
+                           value="{{ search_term }}"
+                           placeholder="Search by city name…">
+                    <select name="sort" id="sort" class="location-form__fields">
+                    <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort by Name</option>
+                    <option value="job_posts_asc" {% if sort_by == 'job_posts_asc' %}selected{% endif %}>Job Posts (Low to High)</option>
+                    <option value="job_posts_desc" {% if sort_by == 'job_posts_desc' %}selected{% endif %}>Job Posts (High to Low)</option>
+                  </select>
+                    <button type="submit" class="location-search-button">
+                        <i class="fa fa-search"></i>
+                        Apply search
+                    </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="location-results">
+            <span>Showing <strong>{{ locations|length }}</strong> result{% if locations|length != 1 %}s{% endif %} · Status:
+                <strong>{{ status|capfirst }}</strong>
+                {% if search_term %} · Matching "{{ search_term }}"{% endif %}
+                {% if sort_by != 'name' %} · Sorted by {{ sort_by|title }}{% endif %}
+            </span>
+            {% if search_term %}
+                <a class="location-results__reset" href="{% url 'dashboard:locations' status %}">
+                    <i class="fa fa-rotate-left"></i>
+                    Clear search
+                </a>
+            {% endif %}
+        </div>
+
+        {% if locations %}
+            <div class="location-grid">
+                {% for location in locations %}
+                    <article class="location-card">
+                        <div class="location-card__header">
+                            <div class="location-card__identity">
+                                <h2 class="location-card__title">{{ location.name }}</h2>
+                                <p class="location-card__subtitle">{{ location.state.name }}, {{ location.state.country.name }}</p>
+                                <div class="location-card__meta">
+                                    <span>
+                                        <i class="fa-solid fa-briefcase"></i>
+                                        {{ location.num_posts }} job post{% if location.num_posts != 1 %}s{% endif %}
+                                    </span>
+                                    <span class="location-card__status {% if location.status == 'Disabled' %}location-card__status--disabled{% endif %}">
+                                        <i class="fa-solid fa-circle"></i>
+                                        {{ location.status }}
+                                    </span>
+                                </div>
+                            </div>
+                          </div>
+
+                        <div class="location-card__actions">
+                            <button type="button" class="location-action location-action--ghost location-card__action--edit" data-target="#location-edit-{{ location.id }}">
+                                <i class="fa fa-pen-to-square"></i>
+                                Edit details
+                            </button>
+
+                            {% if location.num_posts > 0 %}
+                                <button type="button"
+                                        class="location-action location-action--primary move-jobs-btn"
+                                        data-location-id="{{ location.id }}"
+                                        data-location-name="{{ location.name }} - {{ location.state.name }} - {{ location.state.country.name }}"
+                                        data-job-count="{{ location.num_posts }}">
+                                    <i class="fa fa-exchange"></i>
+                                    Move jobs
+                                </button>
+                            {% endif %}
+
+                            <a href="#" class="location-action location-action--danger delete-location"
+                               data-location-id="{{ location.id }}"
+                               data-location-name="{{ location.name }}">
+                                <i class="fa fa-trash-can"></i>
+                                Delete
+                            </a>
+                          </div>
+
+                        <div class="location-card__edit" id="location-edit-{{ location.id }}">
+                            <form id="editform{{ location.id }}" method="post" action="." class="location-edit-form">
+                              <input type="hidden" name="id" value="{{ location.id }}">
+                              <input type="hidden" name="mode" value="edit">
+                                
+                                <label for="state_{{ location.id }}">State</label>
+                                <select name="state" id="state_{{ location.id }}">
+                                {% for state in states %}
+                                  <option value="{{ state.id }}" {% if state.id == location.state.id %}selected{% endif %}>
+                                    {{ state.name }} - {{ state.country.name }}
+                                  </option>
+                                {% endfor %}
+                              </select>
+
+                                <label for="name_{{ location.id }}">City Name</label>
+                                <textarea name="name" id="name_{{ location.id }}" required>{{ location.name }}</textarea>
+
+                                <label for="slug_{{ location.id }}">Slug</label>
+                                <input type="text" name="slug" id="slug_{{ location.id }}" value="{{ location.slug }}" placeholder="city-slug">
+
+                                <label for="status_{{ location.id }}">Status</label>
+                                <select name="status" id="status_{{ location.id }}">
+                                <option value="Enabled" {% if location.status == "Enabled" %}selected{% endif %}>Enabled</option>
+                                <option value="Disabled" {% if location.status == "Disabled" %}selected{% endif %}>Disabled</option>
+                              </select>
+
+                                <label for="meta_{{ location.id }}">Meta Data (JSON)</label>
+                                <textarea name="meta" id="meta_{{ location.id }}" placeholder="Meta Data in JSON Format">{{ location.get_meta_data }}</textarea>
+
+                                <label for="ckeditor_page_content_{{ location.id }}">Page Content</label>
+                                <textarea class="ckeditor_page_content"
+                                          name="ckeditor_page_content_{{ location.id }}"
+                                          id="ckeditor_page_content_{{ location.id }}"
+                                          placeholder="Page Content">{{ location.page_content }}</textarea>
+                                <input type="hidden" name="page_content" id="page_content_{{ location.id }}">
+
+                                <div class="location-edit-actions">
+                                    <button type="button" class="location-action location-action--ghost location-edit-cancel" data-target="#location-edit-{{ location.id }}">Cancel</button>
+                                    <button type="submit" class="location-action location-action--primary update-location" data-location-id="{{ location.id }}">
+                                        <i class="fa fa-check"></i>
+                                        Save changes
+                              </button>
+                                </div>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="location-empty">
+                <i class="fa-solid fa-map-marker-alt"></i>
+                <p>No locations found. Adjust your filters or search terms to see existing entries.</p>
+            </div>
+        {% endif %}
+
+        {% if locations %}
+            <div class="location-pagination">
+                <div class="location-pagination__inner" aria-label="Locations pagination">
+                    <div class="location-pagination__group">
+                        {% if current_page > 1 %}
+                            <a class="location-pagination__button location-pagination__button--primary"
+                               href="?{% if search_term %}search={{ search_term|urlencode }}&{% endif %}{% if sort_by %}sort={{ sort_by|urlencode }}&{% endif %}page=1">&laquo;</a>
+                            <a class="location-pagination__button"
+                               href="?{% if search_term %}search={{ search_term|urlencode }}&{% endif %}{% if sort_by %}sort={{ sort_by|urlencode }}&{% endif %}page={{ prev_page }}">&lsaquo; Previous</a>
+                        {% else %}
+                            <span class="location-pagination__button location-pagination__button--disabled">&laquo;</span>
+                            <span class="location-pagination__button location-pagination__button--disabled">&lsaquo; Previous</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="location-pagination__group">
+                        <span class="location-pagination__button" style="border: none; background: transparent; color: #1f2937;">Page {{ current_page }} of {{ last_page }}</span>
+                    </div>
+
+                    <div class="location-pagination__group">
+                        {% if current_page < last_page %}
+                            <a class="location-pagination__button"
+                               href="?{% if search_term %}search={{ search_term|urlencode }}&{% endif %}{% if sort_by %}sort={{ sort_by|urlencode }}&{% endif %}page={{ aft_page }}">Next &rsaquo;</a>
+                            <a class="location-pagination__button location-pagination__button--primary"
+                               href="?{% if search_term %}search={{ search_term|urlencode }}&{% endif %}{% if sort_by %}sort={{ sort_by|urlencode }}&{% endif %}page={{ last_page }}">&raquo;</a>
+                        {% else %}
+                            <span class="location-pagination__button location-pagination__button--disabled">Next &rsaquo;</span>
+                            <span class="location-pagination__button location-pagination__button--disabled">&raquo;</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        </div>
+    </section>
+    
+<!-- Modal for Moving Jobs -->
+<div class="modal fade location-modal" id="moveJobsModal" tabindex="-1" aria-labelledby="moveJobsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="moveJobsModalLabel">Move Jobs to Another City</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="moveJobsForm">
+                    <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="sourceCity" class="form-label">Source City</label>
+                        <input type="text" class="form-control" id="sourceCity" readonly>
+                        <small class="form-text text-muted">This city has <span id="jobCount">0</span> job(s).</small>
+                        </div>
+                    <div class="mb-3">
+                        <label for="targetCity" class="form-label">Target City</label>
+                        <select class="form-select location-modal" id="targetCity" name="to_city_id" required>
+                            <option value="">Select a city...</option>
+                                {% for city in cities %}
+                                    <option value="{{ city.id }}">{{ city.name }} - {{ city.state.name }} - {{ city.state.country.name }}</option>
+                                {% endfor %}
+                            </select>
+                        <input type="hidden" id="sourceCityId" name="from_city_id">
+                        <input type="hidden" name="mode" value="move_jobs">
+                        </div>
+                        <div class="alert alert-warning">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            This will move all job posts from the source city to the destination city. This action cannot be undone.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Move Jobs</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+{% endblock stage %}
+
+{% block script %}
+    <script type="text/javascript">
+    (function ($) {
+        // Setup CSRF token for AJAX requests
+        var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                }
+            }
+        });
+
+        // Initialize CKEditor for all textareas with the class
+        function initializeEditor($textarea) {
+            if (!$textarea.length) {
+                return;
+            }
+            CKEDITOR.config.allowedContent = true;
+            $textarea.each(function () {
+                var $field = $(this);
+                var fieldId = $field.attr('id');
+                if (!$field.data('ckeditor-initialised')) {
+                    CKEDITOR.replace(fieldId);
+                    $field.data('ckeditor-initialised', true);
+                }
+            });
+        }
+
+        // Initialize all CKEditor instances on page load
+        initializeEditor($('.ckeditor_page_content'));
+
+        // Handle edit form toggle
+        $(document).on('click', '.location-card__action--edit', function(e) {
+            e.preventDefault();
+            var target = $(this).data('target');
+            $('.location-card__edit').not($(target)).slideUp('fast');
+            $(target).slideToggle('fast', function() {
+                // Initialize CKEditor when the edit form is shown
+                if ($(this).is(':visible')) {
+                    initializeEditor($(this).find('.ckeditor_page_content'));
+                }
+            });
+        });
+
+        $(document).on('click', '.location-edit-cancel', function(e) {
+            e.preventDefault();
+            var target = $(this).data('target');
+            $(target).slideUp('fast');
+        });
+
+        // Handle move jobs button
+        $(document).on('click', '.move-jobs-btn', function() {
+            var locationId = $(this).data('location-id');
+            var locationName = $(this).data('location-name');
+            var jobCount = $(this).data('job-count');
+            
+            $('#sourceCityId').val(locationId);
+            $('#sourceCity').val(locationName);
+            $('#jobCount').text(jobCount);
+            $('#targetCity').val('');
+            
+            $('#moveJobsModal').modal('show');
+        });
+
+        // Handle move jobs form submission
+        $('#moveJobsForm').submit(function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            
+            $.post('.', formData, function(data) {
+                if (data.error === false) {
+                    $('#moveJobsModal').modal('hide');
+                    open_dialog_with_url(data.message, 'Success!', window.location.href);
+                } else {
+                    open_dialog(data.message, 'Error!');
+                }
+            }, 'json');
+        });
+
+        // Handle delete location
+        $(document).on('click', '.delete-location', function(e) {
+            e.preventDefault();
+            var locationId = $(this).data('location-id');
+            var locationName = $(this).data('location-name');
+            
+            if (confirm('Are you sure you want to delete "' + locationName + '"? This action cannot be undone.')) {
+                $.post('.', {mode: 'remove_city', id: locationId}, function(data) {
+                    if (data.error === false) {
+                        open_dialog_with_url(data.message, 'Success!', window.location.href);
+                    } else {
+                        open_dialog(data.message, 'Error!');
+                    }
+                }, 'json');
+            }
+        });
+
+        // Handle update location
+        $(document).on('click', '.update-location', function(e) {
+            e.preventDefault();
+            var locationId = $(this).data('location-id');
+            
+            // Get the editor content and put it in the hidden field
+            var editorId = 'ckeditor_page_content_' + locationId;
+            if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances[editorId]) {
+                var content = CKEDITOR.instances[editorId].getData();
+                $('#page_content_' + locationId).val(content);
+            }
+            
+            var $form = $('#editform' + locationId);
+            var formData = $form.serialize();
+            
+            $.post('.', formData, function(data) {
+                if (data.error === false) {
+                    open_dialog_with_url(data.message, 'Success!', window.location.href);
+                } else {
+                    if (typeof data.message === 'object') {
+                        $('p.error').remove();
+                        for (var key in data.message) {
+                            $('#' + key + '_' + data.id).after("<p class='error'>" + data.message[key] + "</p>");
+                        }
+                    } else {
+                        open_dialog(data.message, 'Error!');
+                    }
+            }
+            }, 'json');
+        });
+    })(jQuery);
+    </script>
+
+{% endblock script %}

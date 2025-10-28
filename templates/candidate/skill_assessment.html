@@ -1,0 +1,123 @@
+{% extends 'auth_base.html' %}
+{% load static %}
+{% block title %}Verify {{ skill.name }} - CareerLite{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto py-8">
+  <h1 class="text-2xl font-semibold mb-4">Verify Skill: {{ skill.name }}</h1>
+
+  <div id="assessment" class="bg-white shadow p-6 rounded-md">
+    <div class="flex items-center justify-between mb-4">
+      <div>Question <span id="q-index">1</span> / <span id="q-total">{{ questions|length }}</span></div>
+      <div class="text-red-600">Time left: <span id="timer">--</span>s</div>
+    </div>
+
+    <div id="q-title" class="font-medium mb-2"></div>
+    <div id="q-desc" class="text-gray-600 mb-4"></div>
+    <div id="q-options" class="space-y-2"></div>
+    <button id="next-btn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Next</button>
+  </div>
+
+  <div id="result" class="hidden bg-white shadow p-6 rounded-md mt-6"></div>
+</div>
+
+<script>
+  const attemptId = {{ attempt.id }};
+  const questions = {{ questions|safe }};
+  let idx = 0;
+  let current = null;
+  let timer = null;
+  let remaining = 0;
+  const qIndexEl = document.getElementById('q-index');
+  const qTitleEl = document.getElementById('q-title');
+  const qDescEl = document.getElementById('q-desc');
+  const qOptionsEl = document.getElementById('q-options');
+  const qTotalEl = document.getElementById('q-total');
+  const timerEl = document.getElementById('timer');
+  const nextBtn = document.getElementById('next-btn');
+  const resultEl = document.getElementById('result');
+
+  function renderQuestion() {
+    current = questions[idx];
+    qIndexEl.textContent = (idx + 1);
+    qTitleEl.textContent = current.title;
+    qDescEl.textContent = current.description || '';
+    qOptionsEl.innerHTML = '';
+    current.options.forEach(op => {
+      const id = 'op-' + op.id;
+      qOptionsEl.insertAdjacentHTML('beforeend', `
+        <label class="flex items-center space-x-2">
+          <input type="radio" name="option" value="${op.id}" id="${id}">
+          <span>${op.text}</span>
+        </label>
+      `);
+    });
+    remaining = current.time_limit || (current.difficulty === 'tough' ? 30 : 20);
+    timerEl.textContent = remaining;
+    if (timer) clearInterval(timer);
+    timer = setInterval(() => {
+      remaining -= 1;
+      timerEl.textContent = remaining;
+      if (remaining <= 0) {
+        clearInterval(timer);
+        submitAnswer(true);
+      }
+    }, 1000);
+  }
+
+  async function submitAnswer(auto=false) {
+    if (timer) clearInterval(timer);
+    const chosen = document.querySelector('input[name="option"]:checked');
+    const optionId = chosen ? chosen.value : '';
+    const form = new FormData();
+    form.append('question_id', current.id);
+    form.append('option_id', optionId);
+    form.append('time_taken_sec', current.time_limit - remaining);
+    try {
+      await fetch(`/candidate/skill/assessment/${attemptId}/answer/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        body: form
+      });
+    } catch(e) {}
+    idx += 1;
+    if (idx < questions.length) {
+      renderQuestion();
+    } else {
+      finishAssessment();
+    }
+  }
+
+  async function finishAssessment() {
+    const form = new FormData();
+    const resp = await fetch(`/candidate/skill/assessment/${attemptId}/finish/`, {
+      method: 'POST', headers: { 'X-CSRFToken': getCookie('csrftoken') }, body: form
+    });
+    const data = await resp.json();
+    document.getElementById('assessment').classList.add('hidden');
+    resultEl.classList.remove('hidden');
+    resultEl.innerHTML = `<h2 class="text-lg font-semibold mb-2">Completed</h2>
+      <p>Score: ${(data.score*100).toFixed(0)}% (${data.correct}/${data.total})</p>`;
+  }
+
+  nextBtn.addEventListener('click', () => submitAnswer(false));
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  // init
+  renderQuestion();
+</script>
+{% endblock %}
+

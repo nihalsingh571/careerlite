@@ -1,0 +1,460 @@
+{% extends 'dashboard/base.html' %}
+{% load page_tags %}
+{% load static %}
+
+{% block stage %}
+<style>
+/* Modern Search Summary Styling */
+.search-summary-page {
+    background: #f8fafc;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.page-header {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.page-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin: 0 0 20px 0;
+}
+
+.type-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.type-tab {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.type-tab.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.type-tab:not(.active) {
+    background: #f1f5f9;
+    color: #64748b;
+    border-color: #e2e8f0;
+}
+
+.type-tab:not(.active):hover {
+    background: #e2e8f0;
+    color: #475569;
+    text-decoration: none;
+}
+
+.controls-section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.controls-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 20px 0;
+}
+
+.search-filters {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr;
+    gap: 16px;
+    align-items: end;
+}
+
+.search-input {
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.date-input {
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.submit-btn {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+    background: #059669;
+}
+
+.chart-section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.chart-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.chart-note {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.chart-container {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 500px;
+    border: 1px solid #e2e8f0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.stat-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+    margin: 0 0 8px 0;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: #64748b;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    color: #cbd5e1;
+    margin-bottom: 16px;
+}
+
+.empty-state-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #475569;
+    margin: 0 0 8px 0;
+}
+
+.empty-state-text {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .search-summary-page {
+        padding: 16px;
+    }
+    
+    .search-filters {
+        grid-template-columns: 1fr;
+    }
+    
+    .type-tabs {
+        justify-content: center;
+    }
+    
+    .chart-container {
+        min-height: 400px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="search-summary-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Daily Search Summary</h1>
+        <p class="page-subtitle">Analyze search patterns and trends across different categories</p>
+        
+        <!-- Type Tabs -->
+        <div class="type-tabs">
+            <a href="{% url 'dashboard:search_summary' 'skills' %}" 
+               class="type-tab {% if search_type == 'skills' %}active{% endif %}">
+                Skills
+            </a>
+            <a href="{% url 'dashboard:search_summary' 'other-skills' %}" 
+               class="type-tab {% if search_type == 'other-skills' %}active{% endif %}">
+                Other Skills
+            </a>
+            <a href="{% url 'dashboard:search_summary' 'locations' %}" 
+               class="type-tab {% if search_type == 'locations' %}active{% endif %}">
+                Locations
+            </a>
+            <a href="{% url 'dashboard:search_summary' 'other-locations' %}" 
+               class="type-tab {% if search_type == 'other-locations' %}active{% endif %}">
+                Other Locations
+            </a>
+        </div>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <h2 class="controls-title">Search & Filter Summary</h2>
+        
+        <form id="search_form" name="adv-search-form" class="search-form" method="POST" action=".">
+            <div class="search-filters">
+                <div>
+                    <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151;">Search Values</label>
+                    <input type="text" class="search-input" id="search" name="search" 
+                           value="{{ request.POST.search }}" 
+                           placeholder="Enter search values (e.g., python, java)">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151;">Date Range</label>
+                    <input type="text" class="date-input" id="reportrange" name="timestamp" 
+                           value="{{ request.POST.timestamp }}" 
+                           placeholder="Select date range" autocomplete="off">
+                </div>
+                <div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fa fa-search"></i>
+                        Search
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="chart-section">
+        <div class="chart-header">
+            <div>
+                <h2 class="chart-title">
+                    <i class="fa fa-chart-line"></i>
+                    Number of Searches
+                </h2>
+                <p class="chart-note">Interactive chart showing search trends and popular terms</p>
+            </div>
+        </div>
+        
+        <div id="myChart" class="chart-container"></div>
+        
+        <div id="values" style="display:none;">{{ values|safe }}</div>
+        <div id="count" style="display:none;">{{ count|safe }}</div>
+        <div id="no_of_jobposts" style="display:none;">{{ no_of_jobposts|safe }}</div>
+        
+        <!-- Additional Stats -->
+        <div class="stats-grid" id="stats-container"></div>
+    </div>
+</div>
+{% endblock stage %}
+
+{% block script %}
+<script type="text/javascript" src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+    // Chart configuration
+    var chartLayout = {
+        title: 'Number of Searches - Top Results',
+        xaxis: {
+            title: 'Search Terms',
+            showgrid: true,
+            gridcolor: '#e2e8f0'
+        },
+        yaxis: {
+            title: 'Number of Searches',
+            showgrid: true,
+            gridcolor: '#e2e8f0'
+        },
+        height: 500,
+        plot_bgcolor: '#ffffff',
+        paper_bgcolor: '#f8fafc',
+        font: {
+            color: '#475569',
+            family: 'system-ui, -apple-system, sans-serif'
+        },
+        hoverlabel: {
+            bgcolor: '#1e293b',
+            bordercolor: '#1e293b',
+            font: {
+                color: '#ffffff'
+            }
+        }
+    };
+
+    // Prepare data
+    var values = [];
+    var counts = [];
+    
+    try {
+        var valuesData = JSON.parse($('#values').html() || '[]');
+        var countsData = JSON.parse($('#count').html() || '[]');
+        
+        values = valuesData;
+        counts = countsData;
+    } catch (e) {
+        console.error('Error parsing data:', e);
+    }
+
+    // Create trace for the line chart
+    var trace1 = {
+        x: values,
+        y: counts,
+        type: 'bar',
+        name: 'Number of Searches',
+        marker: {
+            color: '#3b82f6',
+            line: {
+                color: '#2563eb',
+                width: 1
+            }
+        }
+    };
+
+    var chartData = [trace1];
+
+    // Plot the chart
+    Plotly.newPlot('myChart', chartData, chartLayout, {
+        displaylogo: false,
+        displayModeBar: true,
+        responsive: true,
+        modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'autoScale2d', 'resetScale2d']
+    });
+
+    // Generate statistics
+    if (counts.length > 0) {
+        var totalSearches = counts.reduce(function(a, b) { return a + b; }, 0);
+        var maxSearches = Math.max.apply(Math, counts);
+        var maxIndex = counts.indexOf(maxSearches);
+        var topSearch = values[maxIndex] || 'N/A';
+        var avgSearches = (totalSearches / counts.length).toFixed(1);
+        
+        var statsHTML = `
+            <div class="stat-card">
+                <p class="stat-label">Total Results</p>
+                <p class="stat-value">${counts.length}</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Total Searches</p>
+                <p class="stat-value">${totalSearches}</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Most Searched</p>
+                <p class="stat-value" style="font-size: 1.2rem;">${topSearch}</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Avg Searches</p>
+                <p class="stat-value">${avgSearches}</p>
+            </div>
+        `;
+        
+        $('#stats-container').html(statsHTML);
+    } else {
+        $('#stats-container').html(`
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fa fa-chart-bar"></i>
+                </div>
+                <h3 class="empty-state-title">No Search Data Available</h3>
+                <p class="empty-state-text">
+                    {% if request.POST.search or request.POST.timestamp %}
+                        No data found matching your search criteria. Try adjusting your filters.
+                    {% else %}
+                        No search data has been recorded yet. Search summaries will appear here once searches are performed.
+                    {% endif %}
+                </p>
+            </div>
+        `);
+    }
+
+    // Update empty state if no data
+    if (values.length === 0) {
+        $('#myChart').html(`
+            <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                <div style="text-align: center;">
+                    <i class="fa fa-chart-line" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 16px;"></i>
+                    <h3 style="font-size: 1.25rem; font-weight: 600; color: #475569; margin: 0 0 8px 0;">No Data Available</h3>
+                    <p style="font-size: 0.95rem; color: #64748b; margin: 0;">No search data to display for the selected criteria.</p>
+                </div>
+            </div>
+        `);
+    }
+</script>
+{% endblock script %}

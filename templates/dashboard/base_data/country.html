@@ -1,0 +1,1142 @@
+{% extends 'dashboard/base.html' %}
+{% block stage %}
+<style type="text/css">
+    .dashboard-data-manager {
+        background: #f8fafc;
+        min-height: calc(100vh - 120px);
+        padding: 24px 0 32px;
+    }
+
+    .dashboard-summary .summary-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: #ffffff;
+        border-radius: 14px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+        padding: 16px 20px;
+        height: 100%;
+    }
+
+    .dashboard-summary .summary-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.05rem;
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .dashboard-summary .summary-icon.icon-states {
+        background: #fdf2f8;
+        color: #be185d;
+    }
+
+    .dashboard-summary .summary-icon.icon-cities {
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .dashboard-summary .summary-label {
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        font-size: .68rem;
+        color: #64748b;
+        margin: 0;
+    }
+
+    .dashboard-summary .summary-value {
+        font-size: 1.55rem;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.1;
+    }
+
+    .dashboard-summary .summary-meta .badge {
+        font-size: .68rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        border-radius: 999px;
+        padding: .28rem .6rem;
+    }
+
+    .status-enabled {
+        background: #dbf4ff !important;
+        color: #0c4a6e !important;
+    }
+
+    .status-disabled {
+        background: #fee2e2 !important;
+        color: #b91c1c !important;
+    }
+
+    .data-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+        padding: 20px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .data-card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 18px;
+    }
+
+    .data-card-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: #eff6ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1d4ed8;
+        font-size: 1rem;
+    }
+
+    .data-card .title {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: .25rem;
+    }
+
+    .data-card .subtitle {
+        margin: 0;
+        font-size: .85rem;
+        color: #6b7280;
+    }
+
+    .card-help {
+        font-size: .82rem;
+        color: #64748b;
+        margin-bottom: 14px;
+    }
+
+    .add_form_div,
+    .edit_form_div {
+        margin-bottom: 14px;
+        padding: 14px;
+        border: 1px dashed #cbd5f5;
+        border-radius: 12px;
+        background: #f8fafc;
+    }
+
+    .add_form_div.active_ticket_form,
+    .edit_form_div.active_ticket_form {
+        border-style: solid;
+        border-color: #2563eb;
+        background: #eff6ff;
+        box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.12);
+    }
+
+    .form-inline {
+        display: flex;
+        align-items: center;
+        gap: .55rem;
+        flex-wrap: wrap;
+    }
+
+    .form-inline .form-control,
+    .form-inline select,
+    .form-inline textarea {
+        flex: 1 1 auto;
+        min-width: 0;
+        border-radius: 10px;
+        border: 1px solid #dbe2f3;
+        padding: .52rem .85rem;
+        font-size: .9rem;
+        color: #0f172a;
+        background: #ffffff;
+    }
+
+    .form-inline textarea {
+        min-height: 80px;
+    }
+
+    .form-inline select {
+        max-width: 100%;
+    }
+
+    .form-inline button {
+        border: none;
+        border-radius: 9px;
+        padding: .55rem 1rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        background: #2563eb;
+        color: #ffffff;
+        transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.18);
+    }
+
+    .form-inline button i {
+        font-size: .85rem;
+    }
+
+    .form-inline button:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+    }
+
+    .save_button {
+        background: #1d4ed8;
+    }
+
+    .cancel_button {
+        background: #e2e8f0;
+        color: #1f2937;
+        box-shadow: none;
+    }
+
+    .cancel_button:hover {
+        background: #cbd5f5;
+    }
+
+    .list_div_wrap {
+        flex: 1;
+        overflow-y: auto;
+        margin-top: 12px;
+        padding-right: 4px;
+    }
+
+    .list_div_wrap::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .list_div_wrap::-webkit-scrollbar-thumb {
+        background: rgba(100, 116, 139, 0.3);
+        border-radius: 999px;
+    }
+
+    .ticket {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: .85rem 1rem;
+        margin-bottom: .65rem;
+        transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    .ticket:hover {
+        border-color: #2563eb;
+        box-shadow: 0 10px 22px rgba(37, 99, 235, 0.12);
+    }
+
+    .ticket.disabled_ticket {
+        background: #f1f5f9;
+        border-style: dashed;
+        border-color: #cbd5f5;
+        opacity: .85;
+    }
+
+    .ticket-info {
+        display: flex;
+        align-items: flex-start;
+        gap: .75rem;
+        flex: 1;
+    }
+
+    .ticket-info > div {
+        flex: 1 1 auto;
+    }
+
+    .ticket-info .name_ticket {
+        font-weight: 600;
+        color: #0f172a;
+        text-decoration: none;
+        text-transform: capitalize;
+    }
+
+    .ticket-info .ticket-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: .45rem;
+        margin-top: .25rem;
+        font-size: .75rem;
+        color: #64748b;
+    }
+
+    .ticket-info .ticket-meta span.ticket-slug {
+        padding: .18rem .5rem;
+        border-radius: 999px;
+        background: #e2e8f0;
+        color: #475569;
+        font-size: .72rem;
+    }
+
+    .ticket .badge.job_count {
+        background: #e0e7ff;
+        color: #3730a3;
+        border-radius: 999px;
+        padding: .18rem .55rem;
+        font-size: .7rem;
+        font-weight: 600;
+    }
+
+    .ticket-meta .view_link {
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+        background: #e2e8f0;
+        color: #1d4ed8;
+    }
+
+    .remove_ticket a,
+    .actions_ticket a,
+    .ticket-meta a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: #e2e8f0;
+        color: #1f2937;
+        transition: background .18s ease, color .18s ease;
+    }
+
+    .remove_ticket a:hover {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .actions_ticket a:hover {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .status-badge {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        border-radius: 999px;
+        padding: .18rem .55rem;
+        white-space: nowrap;
+    }
+
+    .active_ticket {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+        background: #eff6ff !important;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 32px 16px;
+        border: 1px dashed #cbd5f5;
+        border-radius: 12px;
+        background: #f8fafc;
+        color: #6b7280;
+    }
+
+    .empty-state i {
+        font-size: 1.6rem;
+        margin-bottom: .65rem;
+        color: #94a3b8;
+    }
+
+    .city-form-control {
+        width: 340px !important;
+    }
+
+    .meta_data {
+        display: none;
+    }
+
+    @media (max-width: 991px) {
+        .dashboard-summary .summary-card {
+            margin-bottom: 16px;
+        }
+
+        .data-card {
+            margin-bottom: 24px;
+        }
+
+        .form-inline .city-form-control {
+            flex: 1 1 100%;
+        }
+    }
+</style>
+    <section id='three_panel_layout' class="dashboard-data-manager">
+        <div class="container-fluid">
+            <div class="row g-3 dashboard-summary mb-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="summary-card">
+                        <div class="summary-icon icon-countries"><i class="fa-solid fa-earth-asia"></i></div>
+                        <div>
+                            <p class="summary-label mb-1">Countries</p>
+                            <div class="summary-value">{{ countries|length }}</div>
+                            <div class="summary-meta">
+                                <span class="badge status-enabled">{{ country_enabled_count }} active</span>
+                                <span class="badge status-disabled">{{ country_disabled_count }} inactive</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="summary-card">
+                        <div class="summary-icon icon-states"><i class="fa-solid fa-map-location-dot"></i></div>
+                        <div>
+                            <p class="summary-label mb-1">States</p>
+                            <div class="summary-value">{{ states|length }}</div>
+                            <div class="summary-meta">
+                                <span class="badge status-enabled">{{ state_enabled_count }} active</span>
+                                <span class="badge status-disabled">{{ state_disabled_count }} inactive</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="summary-card">
+                        <div class="summary-icon icon-cities"><i class="fa-solid fa-city"></i></div>
+                        <div>
+                            <p class="summary-label mb-1">Cities</p>
+                            <div class="summary-value">{{ cities|length }}</div>
+                            <div class="summary-meta">
+                                <span class="badge status-enabled">{{ city_enabled_count }} active</span>
+                                <span class="badge status-disabled">{{ city_disabled_count }} inactive</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4 country">
+                    <div class="data-card h-100">
+                        <div class="data-card-header">
+                            <div>
+                                <div class="title">Countries</div>
+                                <p class="subtitle">Manage the list of countries available to recruiters and job seekers.</p>
+                                <div class="summary-meta mt-2">
+                                    <span class="badge status-enabled">{{ country_enabled_count }} active</span>
+                                    <span class="badge status-disabled">{{ country_disabled_count }} inactive</span>
+                                </div>
+                            </div>
+                            <div class="data-card-icon icon-countries"><i class="fa-solid fa-earth-asia"></i></div>
+                        </div>
+                        <div class="data-card-body">
+                            <p class="card-help">Add a new country or click an item below to edit / toggle its availability.</p>
+                            <div class="add_form_div active_ticket_form" id="add_conform">
+                                <form id="newcountryform" method="post" autocomplete="off">
+                                    <div class="form-inline">
+                                        <input type="text" class="form-control" name="country" id="country" placeholder="Add a country">
+                                        <button type="submit"><i class="fa-solid fa-plus"></i><span>Add</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="edit_form_div" id="edit_conform">
+                                <form id="editcountryform" method="post" autocomplete="off">
+                                    <div class="form-inline">
+                                        <input type="text" class="form-control" id="country_name" placeholder="Country name" name="country">
+                                        <input type="hidden" id="country_id">
+                                        <input type="text" class="form-control" placeholder="Slug" id="country_slug" name="slug">
+                                        <button type="submit" class="save_button"><i class="fa-solid fa-floppy-disk"></i><span>Save</span></button>
+                                        <button id="btnconcancel" class="cancel_button" type="button"><i class="fa-solid fa-xmark"></i><span>Cancel</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="list_div_wrap" id="country-list-div">
+                                {% if countries %}
+                                    {% for country in countries %}
+                                        {% with status=country.status %}
+                                        <div class="ticket {% if status != 'Enabled' %}disabled_ticket{% endif %}">
+                                            <div class="ticket-info">
+                                                <div>
+                                                    <a class="name_ticket" id="{{ status }}" href="{{ country.id }}">{{ country.name }}</a>
+                                                    <div class="ticket-meta">
+                                                        <span class="badge job_count">{{ country.get_no_of_jobposts|length }} jobs</span>
+                                                        {% if country.slug %}
+                                                            <span class="ticket-slug">Slug: {{ country.slug }}</span>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <span class="status-badge {% if status == 'Enabled' %}status-enabled{% else %}status-disabled{% endif %}">{{ status }}</span>
+                                            </div>
+                                            <div class="remove_ticket remove_country">
+                                                <a class="delete btn-icon" href="{{ country.id }}" title="Delete country">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </a>
+                                            </div>
+                                            <div class="actions_ticket">
+                                                {% if status == 'Enabled' %}
+                                                    <a href="{{ country.id }}" id="{{ status }}" title="Disable country"><i class="fa-solid fa-toggle-off"></i></a>
+                                                {% else %}
+                                                    <a class="edit" href="{{ country.id }}" id="{{ status }}" title="Enable country"><i class="fa-solid fa-toggle-on"></i></a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% endwith %}
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="empty-state">
+                                        <i class="fa-solid fa-earth-asia"></i>
+                                        <p>No countries yet. Add your first country to begin.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 state">
+                    <div class="data-card h-100">
+                        <div class="data-card-header">
+                            <div>
+                                <div class="title">States</div>
+                                <p class="subtitle">Select a country to view and manage its states or provinces.</p>
+                                <div class="summary-meta mt-2">
+                                    <span class="badge status-enabled">{{ state_enabled_count }} active</span>
+                                    <span class="badge status-disabled">{{ state_disabled_count }} inactive</span>
+                                </div>
+                            </div>
+                            <div class="data-card-icon icon-states"><i class="fa-solid fa-map-location-dot"></i></div>
+                        </div>
+                        <div class="data-card-body">
+                            <p class="card-help">Choose a country on the left to populate this panel. Use the inputs below to add or edit states.</p>
+                            <div class="add_form_div active_ticket_form" id="add_stform">
+                                <form id="newstateform" method="post" autocomplete="off">
+                                    <div class="form-inline">
+                                        <input type="text" class="form-control" name="state" id="state" placeholder="Add a state">
+                                        <button type="submit"><i class="fa-solid fa-plus"></i><span>Add</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="edit_form_div" id="edit_stform">
+                                <form id="editstateform" method="post" autocomplete="off">
+                                    <div class="form-inline">
+                                        <input type="text" class="form-control" placeholder="State name" id="state_name" name="state">
+                                        <input type="hidden" id="state_id">
+                                        <select id="state_country" class="form-control" name="country">
+                                         {% for country in countries %}
+                                            <option value="{{ country.id }}" >{{ country.name }}</option>
+                                        {% endfor %}
+                                        </select>
+                                        <input type="text" class="form-control" id="state_slug" placeholder="Slug" name="slug">
+                                        <button type="submit" class="save_button"><i class="fa-solid fa-floppy-disk"></i><span>Save</span></button>
+                                        <button id="btnstcancel" class="cancel_button" type="button"><i class="fa-solid fa-xmark"></i><span>Cancel</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="list_div_wrap" id="state-list-div">
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    <p>Select a country to manage its states.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 city">
+                    <div class="data-card h-100">
+                        <div class="data-card-header">
+                            <div>
+                                <div class="title">Cities &amp; Localities</div>
+                                <p class="subtitle">Maintain the city list, update SEO metadata and manage alternative names.</p>
+                                <div class="summary-meta mt-2">
+                                    <span class="badge status-enabled">{{ city_enabled_count }} active</span>
+                                    <span class="badge status-disabled">{{ city_disabled_count }} inactive</span>
+                                </div>
+                            </div>
+                            <div class="data-card-icon icon-cities"><i class="fa-solid fa-city"></i></div>
+                        </div>
+                        <div class="data-card-body">
+                            <p class="card-help">Select a state to bring in its cities. Update metadata fields to improve search performance.</p>
+                            <div class="add_form_div active_ticket_form" id="add_ctform">
+                                <form id="newcityform" method="post" action="{% url 'dashboard:country' %}" autocomplete="off">
+                                    <div class="form-inline">
+                                        <input type="text" class="form-control" name="city" id="city" placeholder="Add a city">
+                                        <button type="submit"><i class="fa-solid fa-plus"></i><span>Add</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="edit_form_div" id="edit_ctform">
+                                <form id="editcityform" method="post" action="{% url 'dashboard:country' %}" autocomplete="off">
+                                    <div class="form-inline">
+                                        <input type="text" class="form-control city-form-control" id="editcity" name="city" placeholder="City name">
+                                         <select id="city_country" class="form-control" name="country">
+                                         {% for country in countries %}
+                                            <option value="{{ country.id }}" >{{ country.name }}</option>
+                                        {% endfor %}
+                                        </select>
+                                         <select id="city_state" class="form-control" name="state">
+                                            <option value="">Select state</option>
+                                         {% for state in states %}
+                                            <option value="{{ state.id }}" class="hide" id="city_{{ state.country.id }}">{{ state.name }}</option>
+                                        {% endfor %}
+                                        </select>
+                                        <input type="text" class="form-control city-form-control" placeholder="Slug" id="slug" name="slug">
+                                        <input type="hidden" id="city_id">
+                                    </div>
+                                    <div class="form-inline">
+                                        <textarea class="form-control city-form-control meta_title" name='meta_title' id='meta_title'
+                                                  placeholder='City meta title'></textarea>
+                                        <textarea class="form-control city-form-control meta_description" name='meta_description'
+                                                  id='meta_description'
+                                                  placeholder='City meta description'></textarea>
+                                    </div>
+                                    <div class="form-inline">
+                                        <textarea class="form-control city-form-control internship_meta_title"
+                                                  name='internship_meta_title' id='internship_meta_title'
+                                                  placeholder='Internship meta title'></textarea>
+                                        <textarea class="form-control city-form-control internship_meta_description"
+                                                  name='internship_meta_description' id='internship_meta_description'
+                                                  placeholder='Internship meta description'></textarea>
+                                    </div>
+                                    <div class="form-inline">
+                                        <button type="submit" class="save_button"><i class="fa-solid fa-floppy-disk"></i><span>Save</span></button>
+                                        <button id="btnctcancel" class="cancel_button" type="button"><i class="fa-solid fa-xmark"></i><span>Cancel</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="list_div_wrap" id="city-list-div">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <p>Select a state to manage its cities.</p>
+                            </div>
+                        </div>
+                            <div class="add_form_div" id='add_other_id'>
+                              <form id="othercityform" method="post" action="{% url 'dashboard:country' %}" autocomplete="off">
+                                <div class="form-inline">
+                                  <input type="text" class="form-control" name="name" id="other_city" placeholder="Add locality or neighbourhood">
+                                  <input type="hidden" class="form-control" name="state" id="other_city_state">
+                                  <input type="hidden" class="form-control" name="mode" value="add_other_city">
+                                  <button type="submit"><i class="fa-solid fa-plus"></i><span>Add</span></button>
+                                </div>
+                              </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock stage %}
+
+{% block script %}
+    <script type="text/javascript">
+        function formatMessage(message) {
+            if (Array.isArray(message)) {
+                return message.join(', ');
+            }
+            if (typeof message === 'object' && message !== null) {
+                return Object.values(message).join(', ');
+            }
+            return message;
+        }
+
+        function renderEmptyState(message) {
+            return '<div class="empty-state"><i class="fa-solid fa-circle-info"></i><p>' + message + '</p></div>';
+        }
+
+        function resetStateForm() {
+            $('#state_id').val('');
+            $('#state_name').val('');
+            $('#state_slug').val('');
+            $('#state-list-div').find('.active_ticket').removeClass('active_ticket');
+            $('#add_stform').addClass('active_ticket_form');
+            $('#edit_stform').removeClass('active_ticket_form');
+        }
+
+        function resetCityForm() {
+            $('#city_id').val('');
+            $('#editcity').val('');
+            $('#meta_title, #meta_description, #internship_meta_title, #internship_meta_description').val('');
+            $('#city-list-div').find('.active_ticket').removeClass('active_ticket');
+            $('#add_ctform').addClass('active_ticket_form');
+            $('#edit_ctform').removeClass('active_ticket_form');
+        }
+
+        function refreshStates(countryId, options) {
+            options = options || {};
+            var activeStateId = options.activeStateId || null;
+            var activeCityId = options.activeCityId || null;
+            if (!countryId) {
+                $('#state-list-div').html(renderEmptyState('Select a country to manage its states.'));
+                $('#city-list-div').html(renderEmptyState('Select a state to manage its cities.'));
+                resetStateForm();
+                resetCityForm();
+                return;
+            }
+            $('#state-list-div').html(renderEmptyState('Loading states…'));
+            $('#city-list-div').html(renderEmptyState('Select a state to manage its cities.'));
+            $.post('.', {mode: 'get_states', c_id: countryId}, function (data) {
+                if (data.error === true) {
+                    open_dialog(formatMessage(data.message), 'Error!');
+                    return;
+                }
+                var html = data.html || '';
+                $('#state-list-div').html(html || renderEmptyState('No states found for this country.'));
+                $('#country_slug').val(data.slug || '');
+                $('#state_country').val(countryId || $('#country_id').val());
+                $('#city_country').val(countryId || $('#country_id').val());
+                if (activeStateId) {
+                    activateState(activeStateId, activeCityId);
+                } else {
+                    resetStateForm();
+                    resetCityForm();
+                }
+            }, 'json');
+        }
+
+        function refreshCities(stateId, options) {
+            options = options || {};
+            var activeCityId = options.activeCityId || null;
+            if (!stateId) {
+                $('#city-list-div').html(renderEmptyState('Select a state to manage its cities.'));
+                resetCityForm();
+                return;
+            }
+            $('#city-list-div').html(renderEmptyState('Loading cities…'));
+            $.post('.', {mode: 'get_cities', s_id: stateId}, function (data) {
+                if (data.error === true) {
+                    open_dialog(formatMessage(data.message), 'Error!');
+                    return;
+                }
+                var html = data.html || '';
+                $('#city-list-div').html(html || renderEmptyState('No cities found for this state.'));
+                var countryForState = data.country || $('#country_id').val() || '';
+                $('#city_state').val(stateId);
+                $('#state_country').val(countryForState);
+                $('#state_slug').val(data.state_slug || '');
+                $('#city_country').val(countryForState);
+                $('select#city_state option').addClass('hide');
+                $('select#city_state option[value=""]').removeClass('hide');
+                if (countryForState) {
+                    $('select#city_state option[id="city_' + countryForState + '"]').removeClass('hide');
+                }
+                if (activeCityId) {
+                    activateCity(activeCityId);
+                } else {
+                    resetCityForm();
+                }
+            }, 'json');
+        }
+
+        function activateState(stateId, activeCityId) {
+            if (!stateId) {
+                return;
+            }
+            var $stateLink = $('#state-list-div').find('a.name_ticket[href="' + stateId + '"]');
+            if (!$stateLink.length) {
+                return;
+            }
+            var $ticket = $stateLink.closest('.ticket');
+            var countryId = $ticket.find('.remove_states a').attr('countryId') || $('#country_id').val();
+            $('#state-list-div').find('.active_ticket').removeClass('active_ticket');
+            $stateLink.parent().addClass('active_ticket');
+            $('#state_id').val(stateId);
+            $('#state_name').val($stateLink.text());
+            $('#state_country').val(countryId);
+            $('#city_country').val(countryId);
+            if ($stateLink.attr('id') === 'Disabled') {
+                $('#add_stform').removeClass('active_ticket_form');
+                $('#edit_stform').removeClass('active_ticket_form');
+                $('#add_ctform').removeClass('active_ticket_form');
+                $('#edit_ctform').removeClass('active_ticket_form');
+            } else {
+                $('#add_stform').removeClass('active_ticket_form');
+                $('#edit_stform').addClass('active_ticket_form');
+                $('#add_ctform').addClass('active_ticket_form');
+                $('#edit_ctform').removeClass('active_ticket_form');
+                $('#edit_conform').addClass('active_ticket_form');
+            }
+            resetCityForm();
+            refreshCities(stateId, {activeCityId: activeCityId});
+        }
+
+        function activateCity(cityId) {
+            if (!cityId) {
+                return;
+            }
+            var $cityLink = $('#city-list-div').find('a.name_ticket[href="' + cityId + '"]');
+            if (!$cityLink.length) {
+                return;
+            }
+            var $ticket = $cityLink.closest('.ticket');
+            var $actions = $ticket.find('.actions_ticket');
+            $('#city-list-div').find('.active_ticket').removeClass('active_ticket');
+            $cityLink.parent().addClass('active_ticket');
+            $('#city_id').val(cityId);
+            $('#editcity').val($cityLink.text());
+            $('#meta_title').val($actions.find('.meta_title').text());
+            $('#meta_description').val($actions.find('.meta_description').text());
+            $('#internship_meta_title').val($actions.find('.internship_meta_title').text());
+            $('#internship_meta_description').val($actions.find('.internship_meta_description').text());
+            if ($cityLink.attr('id') === 'Disabled') {
+                $('#add_ctform').removeClass('active_ticket_form');
+                $('#edit_ctform').removeClass('active_ticket_form');
+            } else {
+                $('#add_ctform').removeClass('active_ticket_form');
+                $('#edit_ctform').addClass('active_ticket_form');
+                $('#edit_stform').addClass('active_ticket_form');
+                $('#edit_conform').addClass('active_ticket_form');
+            }
+            $.post('.', {mode: 'get_city_info', city: cityId}, function (data) {
+                if (data) {
+                    $('#city_country').val(data.country);
+                    $('#city_state').val(data.state);
+                    $('#slug').val(data.slug);
+                    $('select#city_state option[id="city_' + data.country + '"]').removeClass('hide');
+                }
+            }, 'json');
+        }
+
+        $("#newcountryform").submit(function (e) {
+            e.preventDefault();
+            $.post('.', {mode: 'add_country', name: $('#country').val()}, function (data) {
+                if (data.error == false) {
+                    open_dialog_with_url(data.message, 'Success!!!', ".")
+                } else {
+                    open_dialog(formatMessage(data.message), 'Error!')
+                }
+            }, 'json');
+        });
+
+        $("#editcountryform").submit(function (e) {
+            e.preventDefault();
+            $.post('.', {
+                mode: 'edit_country',
+                id: $('#country_id').val(),
+                name: $('#country_name').val(),
+                slug: $('#country_slug').val()
+            }, function (data) {
+                if (data.error == false) {
+                    open_dialog_with_url(data.message, 'Success!!!', ".")
+                } else {
+                    for (key in data.message){
+                        $('#country_'+key).css('border', '1px solid red');
+                        $('#country_'+key).prop('title', data.message[key])
+                    }
+                }
+            }, 'json');
+        });
+
+        $('#country-list-div').on('click', '.ticket a.name_ticket', function (e) {
+            e.preventDefault();
+            $('#country_slug, #country_name').css('border', '1px solid #cdcdcd');
+            $('#country_name, #country_slug').prop('title', '')
+            $('#country_id').val($(this).attr('href'));
+            $('#country_name').val($(this).text());
+            $('#country-list-div').find('.active_ticket').removeClass('active_ticket');
+            $(this).parent().addClass('active_ticket');
+            $('#add_conform').removeClass('active_ticket_form');
+            $('#edit_conform').addClass('active_ticket_form');
+            if ($(this).attr('id') == "Disabled") {
+                $('#add_conform').removeClass('active_ticket_form');
+                $('#edit_conform').removeClass('active_ticket_form');
+                $('#add_stform').removeClass('active_ticket_form');
+                $('#edit_stform').removeClass('active_ticket_form');
+                $('#add_ctform').removeClass('active_ticket_form');
+                $('#edit_ctform').removeClass('active_ticket_form');
+            } else {
+                $('#add_stform').addClass('active_ticket_form');
+                $('#edit_stform').removeClass('active_ticket_form');
+            }
+            $('#city-list-div').html('');
+            $('#state').val('');
+            refreshStates($(this).attr('href'));
+        });
+
+        $('#country-list-div').on('click', '.ticket .actions_ticket a', function (e) {
+            e.preventDefault();
+            $.post('.', {mode: 'country_status', id: $(this).attr('href')}, function (data) {
+                if (data.error == false) {
+                    open_dialog_with_url(data.message, 'Success!!!', ".")
+                }
+            }, 'json');
+
+        });
+        $('#country-list-div').on('click', '.remove_country a', function (e) {
+            e.preventDefault();
+            var countryId = $(this).attr('href');
+            if (!confirm('Do you want to delete this country?')) {
+                return;
+            }
+            $.post('.', {mode: 'remove_country', id: countryId}, function (data) {
+                if (data.error == false) {
+                    open_dialog(data.message, 'Success!');
+                    $('#country-list-div a.name_ticket[href="' + countryId + '"]').closest('.ticket').remove();
+                    $('#btnconcancel').trigger('click');
+                    var $nextCountry = $('#country-list-div a.name_ticket').first();
+                    if ($nextCountry.length) {
+                        $nextCountry.trigger('click');
+                    } else {
+                        $('#state-list-div').html(renderEmptyState('Add a country to manage its states.'));
+                        $('#city-list-div').html(renderEmptyState('Add a state to manage its cities.'));
+                    }
+                } else {
+                    open_dialog(formatMessage(data.message), 'Error!');
+                }
+            }, 'json');
+        });
+
+        $('#btnconcancel').on("click", function (e) {
+            e.preventDefault();
+            $('#country_slug, #country_name').css('border', '1px solid #cdcdcd');
+            $('#country_name, #country_slug').prop('title', '')
+            $('#country-list-div').find('.active_ticket').removeClass('active_ticket');
+            $('#country_id').val("")
+            $('#add_conform').addClass('active_ticket_form');
+            $('#edit_conform').removeClass('active_ticket_form');
+            $('#add_stform').addClass('active_ticket_form');
+            $('#edit_stform').removeClass('active_ticket_form');
+            $('#add_ctform').addClass('active_ticket_form');
+            $('#edit_ctform').removeClass('active_ticket_form');
+            $('#state-list-div').html(renderEmptyState('Select a country to manage its states.'));
+            $('#city-list-div').html(renderEmptyState('Select a state to manage its cities.'));
+            resetStateForm();
+            resetCityForm();
+        });
+
+        $("#newstateform").submit(function (e) {
+            e.preventDefault();
+            if (!$('#country_id').val()) {
+                open_dialog("You can't add State, Please select country", 'Error!')
+                return;
+            }
+            $.post('.', {
+                mode: 'add_state',
+                country: $('#country_id').val(),
+                name: $('#state').val()
+            }, function (data) {
+                if (data.error == false) {
+                    open_dialog(data.message, 'Success!!');
+                    refreshStates($('#country_id').val(), {activeStateId: data.id});
+                } else {
+                    open_dialog(formatMessage(data.message), 'Error!')
+                }
+            }, 'json');
+            $('#state').val('');
+        });
+        $("#editstateform").submit(function (e) {
+            e.preventDefault();
+            $.post('.', {
+                mode: 'edit_state',
+                country: $('#state_country').val(),
+                id: $('#state_id').val(),
+                name: $('#state_name').val(),
+                slug: $('#state_slug').val(),
+            }, function (data) {
+                if (data.error == false) {
+                    open_dialog(data.message, 'Success!!');
+                    refreshStates($('#state_country').val(), {activeStateId: $('#state_id').val(), activeCityId: $('#city_id').val()});
+                } else {
+                    for (var key in data.message) {
+                        $('#state_'+key).css('border', '1px solid red');
+                        $('#state_'+key).prop('title', data.message[key])
+                        }
+                    open_dialog(formatMessage(data.message), 'Error!');
+                }
+            }, 'json');
+        });
+
+        $('#state-list-div').on('click', '.ticket a.name_ticket', function (e) {
+            e.preventDefault();
+            $('#state_name, #state_slug').css('border', '1px solid #cdcdcd');
+            $('#state_name, #state_slug').prop('title', '')
+            activateState($(this).attr('href'));
+        });
+
+        $('#state-list-div').on('click', '.ticket .actions_ticket a', function (e) {
+            e.preventDefault();
+            $('#add_stform').addClass('active_ticket_form');
+            $('#edit_stform').removeClass('active_ticket_form');
+            $('#add_ctform').addClass('active_ticket_form');
+            $('#edit_ctform').removeClass('active_ticket_form');
+            $('#city-list-div').html(renderEmptyState('Select a state to manage its cities.'));
+            resetCityForm();
+            $('#city').val('');
+            var _this = $(this)
+            var stateId = $(this).attr('href');
+            $.post('.', {mode: 'state_status', id: stateId}, function (data) {
+                if (data.error == false) {
+                    open_dialog(data.message, 'Success!!')
+                    refreshStates(data.country_id, {activeStateId: stateId});
+                } else {
+                    open_dialog(formatMessage(data.message), 'Error!');
+                }
+            }, 'json');
+        });
+        $('#state-list-div').on('click', '.remove_ticket a', function (e) {
+            e.preventDefault();
+            var stateId = $(this).attr('href');
+            var countryId = $('#country_id').val();
+            if (!stateId || !countryId) {
+                return;
+            }
+            if (!confirm('Do you want to delete this state?')) {
+                return;
+            }
+            $.post('.', {mode: 'remove_state', id: stateId}, function (data) {
+                if (data.error == false) {
+                    open_dialog(data.message, 'Success!');
+                    refreshStates(countryId);
+                } else {
+                    open_dialog(formatMessage(data.message), 'Error!');
+                }
+            }, 'json');
+        });
+
+
+        $('#btnstcancel').on("click", function (e) {
+            e.preventDefault();
+            $('#state_name, #state_slug').css('border', '1px solid #cdcdcd');
+            $('#state_name, #state_slug').prop('title', '')
+            $('#state-list-div').find('.active_ticket').removeClass('active_ticket');
+            $('#state_id').val("");
+            $('#add_stform').addClass('active_ticket_form');
+            $('#edit_stform').removeClass('active_ticket_form');
+            $('#add_ctform').addClass('active_ticket_form');
+            $('#edit_ctform').removeClass('active_ticket_form');
+            $('#city-list-div').html('');
+        });
+
+        $("#newcityform").submit(function (e) {
+            e.preventDefault();
+            if (!$('#state_id').val()) {
+                open_dialog("You can't add city, Please select State", 'Info!')
+                return;
+            }
+            $.post('.', {mode: 'add_city', state: $('#state_id').val(), name: $('#city').val()}, function (data) {
+                if (data.error == false) {
+                    open_dialog(data.message, 'Success!!')
+                    refreshCities($('#state_id').val(), {activeCityId: data.id});
+                } else {
+                    open_dialog(formatMessage(data.message), 'Error!')
+                }
+            }, 'json');
+            $('#city').val('');
+        });
+
+        $("#editcityform").submit(function (e) {
+            e.preventDefault();
+            $.post('.', {
+                mode: 'edit_city',
+                state: $('#city_state').val(),
+                id: $('#city_id').val(),
+                name: $('#editcity').val(),
+                slug : $('#slug').val(),
+                'meta_title': $('#meta_title').val(),
+                'meta_description': $('#meta_description').val(),
+                'internship_meta_description': $('#internship_meta_description').val(),
+                'internship_meta_title': $('#internship_meta_title').val()
+            }, function (data) {
+                if (data.error == false) {
+                    open_dialog(data.message, 'Success!!')
+                    refreshCities($('#city_state').val(), {activeCityId: $('#city_id').val()});
+                } else {
+                    open_dialog(formatMessage(data.message), 'Error!');
+                }
+            }, 'json');
+        });
+
+        $('#city-list-div').on('click', '.ticket a.name_ticket', function (e) {
+            e.preventDefault();
+            activateCity($(this).attr('href'));
+        });
+
+        $('#city-list-div').on('click', '.ticket .actions_ticket a', function (e) {
+            e.preventDefault();
+            $('#add_ctform').addClass('active_ticket_form');
+            $('#edit_ctform').removeClass('active_ticket_form');
+            $('#city').val('');
+            var cityId = $(this).attr('href');
+            $.post('.', {mode: 'city_status', id: cityId}, function (data) {
+                if (data.error == false) {
+                    open_dialog(data.message, 'Success!!')
+                    refreshCities(data.state_id, {activeCityId: cityId});
+                    refreshStates(data.country_id, {activeStateId: data.state_id, activeCityId: cityId});
+                } else {
+                    open_dialog(formatMessage(data.message), 'Alert!')
+                }
+            }, 'json');
+        });
+        $('#city-list-div').on('click', '.remove_city a', function (e) {
+            e.preventDefault();
+            var cityId = $(this).attr('href');
+            var stateId = $('#state_id').val();
+            var countryId = $('#country_id').val();
+            if (!cityId || !stateId) {
+                return;
+            }
+            if (!confirm('Do you want to delete this city?')) {
+                return;
+            }
+            $.post('.', {mode: 'remove_city', id: cityId}, function (data) {
+                if (data.error == false) {
+                    open_dialog(data.message, 'Success!');
+                    refreshCities(stateId);
+                    if (countryId) {
+                        refreshStates(countryId, {activeStateId: stateId});
+                    }
+                } else {
+                    open_dialog(formatMessage(data.message), 'Error!');
+                }
+            }, 'json');
+        });
+        $('#btnctcancel').on("click", function (e) {
+            e.preventDefault();
+            resetCityForm();
+        });
+
+  $("select#city_country").on('change', function (e) {
+      $('select#city_state option').addClass('hide');
+      $('select#city_state option[value=""]').removeClass('hide');
+      $('select#city_state').val('');
+      $('select#city_state option[id="city_'+ $('#city_country').val() + '"]').removeClass('hide');
+  });
+  $('#city-list-div').on('click', '.ticket a.add_other_city', function (e) {
+      if ($(this).find('.fa').hasClass('fa-plus')){
+          var other_form = $('#add_other_id').show().detach();
+          $(this).parent().append(other_form);
+          $(this).parent().find('#other_city_state').val($(this).attr('data-state'));
+      } else {
+          $(this).parent().find('#add_other_id').hide();
+      }
+      $(this).find('.fa').toggleClass('fa-plus fa-times');
+    });
+      $("#othercityform").submit(function (e) {
+         e.preventDefault();
+          var state = $(this).find('#other_city_state').val();
+          $.post('.', $(this).serialize(), function (data) {
+            if (data.error == false) {
+                  refreshCities(state, {activeCityId: data.id});
+                  open_dialog('Locality added successfully.', 'Success!!');
+              } else {
+                  open_dialog(formatMessage(data.message), 'Error!');
+              }
+          }, 'json');
+      });
+
+        var $initialCountry = $('#country-list-div a.name_ticket').first();
+        if ($initialCountry.length) {
+            $initialCountry.trigger('click');
+        } else {
+            $('#state-list-div').html(renderEmptyState('Add a country to manage its states.'));
+            $('#city-list-div').html(renderEmptyState('Add a state to manage its cities.'));
+        }
+    </script>
+{% endblock script %}

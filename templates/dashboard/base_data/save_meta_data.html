@@ -1,0 +1,685 @@
+{% extends 'dashboard/base.html' %}
+{% load page_tags %}
+
+{% block stage %}
+<style>
+    .meta-manager {
+        background: #f8fafc;
+        min-height: 100%;
+        padding: 56px 0 48px;
+    }
+
+    .meta-container {
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+    }
+
+    .meta-header {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 24px;
+        align-items: flex-end;
+    }
+
+    .meta-header__content span {
+        display: inline-block;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #64748b;
+        margin-bottom: 6px;
+    }
+
+    .meta-header__content h1 {
+        margin: 0;
+        font-size: 1.9rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .meta-header__content p {
+        margin: 10px 0 0;
+        color: #475569;
+        max-width: 640px;
+        line-height: 1.5;
+    }
+
+    .meta-header__actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-end;
+    }
+
+    .meta-add-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        box-shadow: 0 14px 32px rgba(37, 99, 235, 0.32);
+    }
+
+    .meta-add-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 36px rgba(37, 99, 235, 0.36);
+    }
+
+    .meta-add-button--cancel {
+        background: #64748b;
+        box-shadow: 0 14px 32px rgba(100, 116, 139, 0.32);
+    }
+
+    .meta-add-button--cancel:hover {
+        background: #475569;
+        box-shadow: 0 16px 36px rgba(71, 85, 105, 0.36);
+    }
+
+    .meta-insights {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 16px;
+    }
+
+    .meta-insights__card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 16px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    .meta-insights__label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #64748b;
+    }
+
+    .meta-insights__value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .meta-add-panel {
+        display: none;
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.1);
+        padding: 24px;
+    }
+
+    .meta-add-form {
+        display: grid;
+        gap: 16px;
+    }
+
+    .meta-add-form label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .meta-add-form input,
+    .meta-add-form textarea {
+        border-radius: 12px;
+        border: 1px solid #d1d9e6;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        color: #0f172a;
+        width: 100%;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        font-family: inherit;
+    }
+
+    .meta-add-form input:focus,
+    .meta-add-form textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+        outline: none;
+    }
+
+    .meta-add-form textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .meta-add-form button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        box-shadow: 0 14px 32px rgba(37, 99, 235, 0.32);
+        justify-self: flex-end;
+        width: fit-content;
+    }
+
+    .meta-add-form button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 36px rgba(37, 99, 235, 0.36);
+    }
+
+    .meta-results {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        color: #475569;
+        font-size: 0.95rem;
+    }
+
+    .meta-results strong {
+        color: #0f172a;
+    }
+
+    .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+    }
+
+    .meta-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        box-shadow: 0 18px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .meta-card__header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .meta-card__identity {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .meta-card__title {
+        margin: 0;
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: #0f172a;
+        line-height: 1.35;
+        word-break: break-word;
+    }
+
+    .meta-card__preview {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin: 0;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .meta-card__meta-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    .meta-card__meta-info span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: #1d4ed8;
+        font-weight: 500;
+    }
+
+    .meta-card__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .meta-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 10px 14px;
+        border-radius: 12px;
+        border: 1px solid #d1d9e6;
+        color: #1f2937;
+        background: #ffffff;
+        text-decoration: none;
+        transition: all 0.18s ease;
+        cursor: pointer;
+        flex: 1 1 calc(50% - 10px);
+        min-width: 140px;
+    }
+
+    .meta-action:hover {
+        transform: translateY(-1px);
+        background: #f1f5f9;
+    }
+
+    .meta-action--ghost {
+        color: #2563eb;
+        border-color: #dbeafe;
+        background: #f8fafc;
+    }
+
+    .meta-action--ghost:hover {
+        background: #eff6ff;
+    }
+
+    .meta-action--danger {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-color: #fecaca;
+    }
+
+    .meta-action--danger:hover {
+        background: #fecaca;
+        color: #991b1b;
+    }
+
+    .meta-card__edit {
+        display: none;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 16px;
+    }
+
+    .meta-edit-form {
+        display: grid;
+        gap: 12px;
+    }
+
+    .meta-edit-form label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #475569;
+    }
+
+    .meta-edit-form input,
+    .meta-edit-form textarea {
+        border-radius: 12px;
+        border: 1px solid #d1d9e6;
+        padding: 10px 14px;
+        font-size: 0.95rem;
+        color: #0f172a;
+        width: 100%;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        font-family: inherit;
+    }
+
+    .meta-edit-form input:focus,
+    .meta-edit-form textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+        outline: none;
+    }
+
+    .meta-edit-form textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .meta-edit-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .meta-empty {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px dashed #cbd5f5;
+        padding: 60px 24px;
+        text-align: center;
+        color: #475569;
+        display: grid;
+        gap: 14px;
+        justify-items: center;
+        box-shadow: 0 18px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .meta-empty i {
+        font-size: 2.8rem;
+        color: #2563eb;
+    }
+
+    .error {
+        background: #fee2e2 !important;
+        color: #b91c1c !important;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        margin-top: 4px;
+    }
+
+    @media (max-width: 960px) {
+        .meta-card__actions .meta-action {
+            flex: 1 1 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .meta-manager {
+            padding: 40px 0 36px;
+        }
+
+        .meta-container {
+            padding: 0 18px;
+            gap: 24px;
+        }
+
+        .meta-header__content h1 {
+            font-size: 1.6rem;
+        }
+
+        .meta-header__actions {
+            align-items: flex-start;
+        }
+
+        .meta-card {
+            padding: 20px;
+        }
+
+        .meta-card__header {
+            flex-direction: column;
+        }
+
+        .meta-card__actions {
+            gap: 8px;
+        }
+
+        .meta-card__actions .meta-action {
+            flex: 1 1 100%;
+        }
+}
+</style>
+
+<section class="meta-manager" id="meta-data">
+    <div class="meta-container">
+        <div class="meta-header">
+            <div class="meta-header__content">
+                <span>Data management</span>
+                <h1>Meta data library</h1>
+                <p>Manage SEO meta data entries including titles, descriptions, and H1 tags. Create, edit, and organize meta data to improve your site's search engine optimization.</p>
+            </div>
+            <div class="meta-header__actions">
+                <button type="button" class="meta-add-button" id="new_meta">
+                    <i class="fa fa-plus"></i>
+                    Add Meta Data
+                </button>
+          </div>
+    </div>
+
+        <div class="meta-insights">
+            <div class="meta-insights__card">
+                <span class="meta-insights__label">Total entries</span>
+                <span class="meta-insights__value">{{ meta_data|length }}</span>
+                <small class="text-muted">meta data items</small>
+            </div>
+            <div class="meta-insights__card">
+                <span class="meta-insights__label">Active entries</span>
+                <span class="meta-insights__value">{{ meta_data|length }}</span>
+                <small class="text-muted">available</small>
+            </div>
+            <div class="meta-insights__card">
+                <span class="meta-insights__label">Last updated</span>
+                <span class="meta-insights__value">Today</span>
+                <small class="text-muted">recent changes</small>
+            </div>
+        </div>
+
+        <div class="meta-add-panel" id="add_panel">
+            <form class="meta-add-form" id="addform" method="post">
+                <div>
+                    <label for="name">Meta Name</label>
+                    <input type="text" name="name" id="name" placeholder="Enter meta data name..." required>
+                </div>
+                <div>
+                    <label for="meta_title">Meta Title</label>
+                    <input type="text" name="meta_title" id="meta_title" placeholder="Enter meta title..." required>
+                </div>
+                <div>
+                    <label for="meta_description">Meta Description</label>
+                    <textarea name="meta_description" id="meta_description" placeholder="Enter meta description..." required></textarea>
+                </div>
+                <div>
+                    <label for="h1_tag">H1 Tag</label>
+                    <textarea name="h1_tag" id="h1_tag" placeholder="Enter H1 tag content..." required></textarea>
+                </div>
+                <input type="hidden" name="mode" value="add_data">
+                <button type="submit" class="meta-add-form">
+                    <i class="fa fa-check"></i>
+                    Add Meta Data
+                </button>
+            </form>
+        </div>
+
+        <div class="meta-results">
+            <span>Showing <strong>{{ meta_data|length }}</strong> meta data entr{% if meta_data|length != 1 %}ies{% else %}y{% endif %}</span>
+        </div>
+
+        {% if meta_data %}
+            <div class="meta-grid">
+                {% for meta in meta_data %}
+                    <article class="meta-card">
+                        <div class="meta-card__header">
+                            <div class="meta-card__identity">
+                                <h2 class="meta-card__title">{{ meta.name }}</h2>
+                                <p class="meta-card__preview">{{ meta.meta_description|truncatechars:120 }}</p>
+                                <div class="meta-card__meta-info">
+                                    <span>
+                                        <i class="fa-solid fa-tag"></i>
+                                        Meta Entry
+                                    </span>
+                                    <span>
+                                        <i class="fa-solid fa-heading"></i>
+                                        H1 Tag
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="meta-card__actions">
+                            <button type="button" class="meta-action meta-action--ghost meta-card__action--edit" data-target="#meta-edit-{{ meta.id }}">
+                                <i class="fa fa-pen-to-square"></i>
+                                Edit details
+                            </button>
+
+                            <button type="button" class="meta-action meta-action--danger delete-meta" data-meta-id="{{ meta.id }}" data-meta-name="{{ meta.name }}">
+                                <i class="fa fa-trash-can"></i>
+                                Delete
+                            </button>
+                        </div>
+
+                        <div class="meta-card__edit" id="meta-edit-{{ meta.id }}">
+                            <form class="meta-edit-form" id="editform{{ meta.id }}" method="post">
+                                <div>
+                                    <label for="name_{{ meta.id }}">Meta Name</label>
+                                    <input type="text" name="name" id="name_{{ meta.id }}" value="{{ meta.name }}" required>
+                                </div>
+                                <div>
+                                    <label for="meta_title_{{ meta.id }}">Meta Title</label>
+                                    <input type="text" name="meta_title" id="meta_title_{{ meta.id }}" value="{{ meta.meta_title }}" required>
+                                </div>
+                                <div>
+                                    <label for="meta_description_{{ meta.id }}">Meta Description</label>
+                                    <textarea name="meta_description" id="meta_description_{{ meta.id }}" required>{{ meta.meta_description }}</textarea>
+                                </div>
+                                <div>
+                                    <label for="h1_tag_{{ meta.id }}">H1 Tag</label>
+                                    <textarea name="h1_tag" id="h1_tag_{{ meta.id }}" required>{{ meta.h1_tag }}</textarea>
+                                </div>
+                                <input type="hidden" name="mode" value="edit_data">
+                                <input type="hidden" name="meta_id" value="{{ meta.id }}">
+
+                                <div class="meta-edit-actions">
+                                    <button type="button" class="meta-action meta-action--ghost meta-edit-cancel" data-target="#meta-edit-{{ meta.id }}">Cancel</button>
+                                    <button type="submit" class="meta-action meta-action--primary update-meta" data-meta-id="{{ meta.id }}">
+                                        <i class="fa fa-check"></i>
+                                        Save changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="meta-empty">
+                <i class="fa-solid fa-tags"></i>
+                <p>No meta data entries found. Create your first meta data entry to get started.</p>
+          </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock stage %}
+
+{% block script %}
+    <script type="text/javascript">
+    (function ($) {
+        // Setup CSRF token for AJAX requests
+        var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                }
+            }
+        });
+
+        // Handle add meta button toggle
+        $('#new_meta').click(function(e) {
+            e.preventDefault();
+            var $button = $(this);
+            var $panel = $('#add_panel');
+            
+            if ($panel.is(':visible')) {
+                $panel.slideUp('fast');
+                $button.html('<i class="fa fa-plus"></i> Add Meta Data');
+                $button.removeClass('meta-add-button--cancel');
+            } else {
+                $panel.slideDown('fast');
+                $button.html('<i class="fa fa-times"></i> Cancel');
+                $button.addClass('meta-add-button--cancel');
+            }
+        });
+
+        // Handle add meta form submission
+        $('#addform').submit(function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            
+            $.post('.', formData, function(data) {
+                if (data.error === false) {
+                    open_dialog_with_url(data.response, 'Success!', window.location.href);
+                } else {
+                    $('p.error').remove();
+                  for (var key in data.response) {
+                        $('#' + key).after('<p class="error">' + data.response[key] + '</p>');
+                    }
+                }
+            }, 'json');
+        });
+
+        // Handle edit form toggle
+        $(document).on('click', '.meta-card__action--edit', function(e) {
+            e.preventDefault();
+            var target = $(this).data('target');
+            $('.meta-card__edit').not($(target)).slideUp('fast');
+            $(target).slideToggle('fast');
+        });
+
+        $(document).on('click', '.meta-edit-cancel', function(e) {
+            e.preventDefault();
+            var target = $(this).data('target');
+            $(target).slideUp('fast');
+        });
+
+        // Handle update meta
+        $(document).on('click', '.update-meta', function(e) {
+            e.preventDefault();
+            var metaId = $(this).data('meta-id');
+            var $form = $('#editform' + metaId);
+            var formData = $form.serialize();
+            
+            $.post('.', formData, function(data) {
+                if (data.error === false) {
+                    open_dialog_with_url(data.response, 'Success!', window.location.href);
+                } else {
+                    if (data.message) {
+                        open_dialog_with_url(data.response, 'Success!', window.location.href);
+                    } else {
+                 for (var key in data.response) {
+                            open_dialog(key + ' : ' + data.response[key], 'Success!');
+                }
+                }
+            }
+            }, 'json');
+        });
+
+        // Handle delete meta
+        $(document).on('click', '.delete-meta', function(e) {
+          e.preventDefault();
+            var metaId = $(this).data('meta-id');
+            var metaName = $(this).data('meta-name');
+            
+            if (confirm('Are you sure you want to permanently remove "' + metaName + '"?')) {
+                $.post('.', {mode: 'delete_data', meta_id: metaId}, function(data) {
+                    if (data.error === false) {
+                        open_dialog_with_url(data.response, 'Success!', window.location.href);
+                          } else {
+                        open_dialog(data.response, 'Error!');
+                          }
+                        }, 'json');
+                      }
+        });
+    })(jQuery);
+    </script>
+
+{% endblock script %}

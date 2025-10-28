@@ -1,0 +1,621 @@
+{% extends 'dashboard/base.html' %}
+
+{% block stage %}
+<style>
+    .company-form-manager {
+        background: #f8fafc;
+        min-height: 100%;
+        padding: 56px 0 48px;
+    }
+
+    .company-form-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+    }
+
+    .company-form-header {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 24px;
+        align-items: flex-end;
+    }
+
+    .company-form-header__content span {
+        display: inline-block;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #64748b;
+        margin-bottom: 6px;
+    }
+
+    .company-form-header__content h1 {
+        margin: 0;
+        font-size: 1.9rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .company-form-header__content p {
+        margin: 10px 0 0;
+        color: #475569;
+        max-width: 640px;
+        line-height: 1.5;
+    }
+
+    .company-form-header__actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .company-form-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border-radius: 12px;
+        border: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        text-decoration: none;
+    }
+
+    .company-form-button--primary {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #ffffff;
+        box-shadow: 0 14px 32px rgba(37, 99, 235, 0.32);
+    }
+
+    .company-form-button--primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 36px rgba(37, 99, 235, 0.36);
+    }
+
+    .company-form-button--secondary {
+        background: #ffffff;
+        color: #64748b;
+        border: 1px solid #d1d9e6;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+    }
+
+    .company-form-button--secondary:hover {
+        background: #f8fafc;
+        color: #475569;
+    }
+
+    .company-form-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.1);
+        padding: 32px;
+    }
+
+    .company-form {
+        display: grid;
+        gap: 24px;
+    }
+
+    .company-form__section {
+        display: grid;
+        gap: 16px;
+    }
+
+    .company-form__section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .company-form__field {
+        display: grid;
+        gap: 8px;
+    }
+
+    .company-form__field--half {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .company-form__field--file {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .company-form__label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #374151;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .company-form__label--required::after {
+        content: '*';
+        color: #ef4444;
+        font-weight: 700;
+    }
+
+    .company-form__input,
+    .company-form__textarea,
+    .company-form__select {
+        border-radius: 12px;
+        border: 1px solid #d1d9e6;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        color: #0f172a;
+        width: 100%;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        font-family: inherit;
+    }
+
+    .company-form__input:focus,
+    .company-form__textarea:focus,
+    .company-form__select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+        outline: none;
+    }
+
+    .company-form__textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .company-form__textarea--large {
+        min-height: 200px;
+    }
+
+    .company-form__file-input {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+        border-radius: 12px;
+        border: 2px dashed #d1d9e6;
+        padding: 24px;
+        text-align: center;
+        transition: all 0.18s ease;
+        background: #f8fafc;
+    }
+
+    .company-form__file-input:hover {
+        border-color: #2563eb;
+        background: #eff6ff;
+    }
+
+    .company-form__file-input input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    .company-form__file-preview {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 12px;
+        padding: 12px;
+        background: #f1f5f9;
+        border-radius: 8px;
+    }
+
+    .company-form__file-preview img {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 1px solid #e2e8f0;
+    }
+
+    .company-form__file-preview-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .company-form__file-preview-name {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .company-form__file-preview-size {
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    .company-form__checkbox {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .company-form__checkbox input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #2563eb;
+    }
+
+    .company-form__checkbox label {
+        font-weight: 600;
+        color: #374151;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .company-form__actions {
+        display: flex;
+        gap: 16px;
+        justify-content: flex-end;
+        padding-top: 24px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .company-form__submit {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 24px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        box-shadow: 0 14px 32px rgba(37, 99, 235, 0.32);
+    }
+
+    .company-form__submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 36px rgba(37, 99, 235, 0.36);
+    }
+
+    .company-form__cancel {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 24px;
+        border-radius: 12px;
+        border: 1px solid #d1d9e6;
+        background: #ffffff;
+        color: #64748b;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        text-decoration: none;
+    }
+
+    .company-form__cancel:hover {
+        background: #f8fafc;
+        color: #475569;
+    }
+
+    .error {
+        background: #fee2e2 !important;
+        color: #b91c1c !important;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        margin-top: 4px;
+        border: 1px solid #fecaca;
+    }
+
+    .company-form__help {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+        .company-form-manager {
+            padding: 40px 0 36px;
+        }
+
+        .company-form-container {
+            padding: 0 18px;
+            gap: 24px;
+        }
+
+        .company-form-header__content h1 {
+            font-size: 1.6rem;
+        }
+
+        .company-form-header__actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .company-form-card {
+            padding: 24px;
+        }
+
+        .company-form__field--half {
+            grid-template-columns: 1fr;
+        }
+
+        .company-form__actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<section class="company-form-manager" id="company-form">
+    <div class="company-form-container">
+        <div class="company-form-header">
+            <div class="company-form-header__content">
+                <span>Company management</span>
+                <h1>{% if company %}Edit{% else %}Create New{% endif %} Company</h1>
+                <p>{% if company %}Update company information, logo, and settings.{% else %}Add a new company to the platform with complete details and settings.{% endif %}</p>
+            </div>
+            <div class="company-form-header__actions">
+                <a href="{% url 'dashboard:companies' 'company' %}" class="company-form-button company-form-button--secondary">
+                    <i class="fa fa-arrow-left"></i>
+                    Back to Companies
+                </a>
+            </div>
+          </div>
+
+        <div class="company-form-card">
+            <form name="companyform" id="companyform" method="post" enctype="multipart/form-data" class="company-form">
+                <div class="company-form__section">
+                    <h3 class="company-form__section-title">Basic Information</h3>
+                    
+                    <div class="company-form__field company-form__field--half">
+                        <div class="company-form__field">
+                            <label for="name" class="company-form__label company-form__label--required">Company Name</label>
+                            <input type="text" class="company-form__input" name="name" id="name" 
+                                   value="{{ company.name }}" placeholder="Enter company name..." required>
+                        </div>
+                        
+                        <div class="company-form__field">
+                            <label for="website" class="company-form__label">Website</label>
+                            <input type="url" class="company-form__input" name="website" id="website" 
+                                   value="{% if company.website %}{{ company.website }}{% endif %}" 
+                                   placeholder="https://company.com">
+            </div>
+          </div>
+
+          {% if company %}
+                    <div class="company-form__field">
+                        <label for="slug" class="company-form__label">URL Slug</label>
+                        <input type="text" class="company-form__input" name="slug" id="slug" 
+                               value="{{ company.slug }}" placeholder="company-slug">
+                        <div class="company-form__help">Used in company profile URLs</div>
+                    </div>
+                    {% endif %}
+
+                    <div class="company-form__field">
+                        <label for="address" class="company-form__label company-form__label--required">Address</label>
+                        <textarea class="company-form__textarea" name="address" id="address" 
+                                  placeholder="Enter company address..." required>{{ company.address }}</textarea>
+                    </div>
+
+                    <div class="company-form__field">
+                        <label for="textareacontents" class="company-form__label company-form__label--required">Company Profile</label>
+                        <textarea class="company-form__textarea company-form__textarea--large" name="textareacontents" id="textareacontents" 
+                                  placeholder="Describe the company, its mission, values, and what makes it unique...">{{ company.profile }}</textarea>
+                        <input type="hidden" name="profile" id="profile" value="{{ company.profile }}">
+                        <div class="company-form__help">Provide a detailed description of the company</div>
+                    </div>
+                </div>
+
+                <div class="company-form__section">
+                    <h3 class="company-form__section-title">Media & Branding</h3>
+                    
+                    <div class="company-form__field company-form__field--half">
+                        <div class="company-form__field company-form__field--file">
+                            <label class="company-form__label">Company Logo</label>
+                            <div class="company-form__file-input">
+                                <input type="file" name="profile_pic" id="profile_pic" accept="image/*">
+                                <div>
+                                    <i class="fa fa-cloud-upload" style="font-size: 2rem; color: #2563eb; margin-bottom: 8px;"></i>
+                                    <div style="font-weight: 600; color: #1e293b;">Upload Company Logo</div>
+                                    <div style="font-size: 0.85rem; color: #64748b;">PNG, JPG up to 2MB</div>
+                                </div>
+                            </div>
+                            {% if company.profile_pic %}
+                                <div class="company-form__file-preview">
+                                    <img src="{% if 'http' in company.profile_pic|slugify %}{{company.profile_pic}}{% else %}https://careerlite.s3.amazonaws.com/{{company.profile_pic}}{% endif %}" 
+                                         alt="Current logo">
+                                    <div class="company-form__file-preview-info">
+                                        <div class="company-form__file-preview-name">Current Logo</div>
+                                        <div class="company-form__file-preview-size">Click above to replace</div>
+              </div>
+            </div>
+          {% endif %}
+                        </div>
+
+                        <div class="company-form__field company-form__field--file">
+                            <label class="company-form__label">Campaign Icon</label>
+                            <div class="company-form__file-input">
+                                <input type="file" name="campaign_icon" id="campaign_icon" accept="image/*">
+                                <div>
+                                    <i class="fa fa-image" style="font-size: 2rem; color: #2563eb; margin-bottom: 8px;"></i>
+                                    <div style="font-weight: 600; color: #1e293b;">Upload Campaign Icon</div>
+                                    <div style="font-size: 0.85rem; color: #64748b;">PNG, JPG up to 1MB</div>
+            </div>
+          </div>
+                            {% if company.campaign_icon %}
+                                <div class="company-form__file-preview">
+                                    <img src="{{company.campaign_icon}}" alt="Current campaign icon">
+                                    <div class="company-form__file-preview-info">
+                                        <div class="company-form__file-preview-name">Current Campaign Icon</div>
+                                        <div class="company-form__file-preview-size">Click above to replace</div>
+           </div>
+          </div>
+                            {% endif %}
+                        </div>
+            </div>
+          </div>
+
+                <div class="company-form__section">
+                    <h3 class="company-form__section-title">SEO & Settings</h3>
+                    
+                    <div class="company-form__field">
+                        <label for="meta_title" class="company-form__label">Meta Title</label>
+                        <textarea class="company-form__textarea" name="meta_title" id="meta_title" 
+                                  placeholder="SEO title for search engines...">{{ company.meta_title }}</textarea>
+                        <div class="company-form__help">Recommended: 50-60 characters</div>
+             </div>
+
+                    <div class="company-form__field">
+                        <label for="meta_description" class="company-form__label">Meta Description</label>
+                        <textarea class="company-form__textarea" name="meta_description" id="meta_description" 
+                                  placeholder="SEO description for search engines...">{{ company.meta_description }}</textarea>
+                        <div class="company-form__help">Recommended: 150-160 characters</div>
+           </div>
+
+                    <div class="company-form__checkbox">
+                        <input type="checkbox" name="is_active" id="is_active" {% if company.is_active %}checked{% endif %}>
+                        <label for="is_active">Active Company</label>
+                        <div class="company-form__help">Active companies can post jobs and are visible to users</div>
+             </div>
+           </div>
+
+                <div class="company-form__actions">
+                    <a href="{% url 'dashboard:companies' 'company' %}" class="company-form__cancel">
+                        <i class="fa fa-times"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="company-form__submit">
+                        <i class="fa fa-save"></i>
+                        {% if company %}Update Company{% else %}Create Company{% endif %}
+                    </button>
+            </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock stage %}
+
+{% block script %}
+  <script type="text/javascript">
+    (function ($) {
+        // Setup CSRF token for AJAX requests
+        var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                }
+            }
+        });
+
+        // Initialize CKEditor
+  CKEDITOR.config.allowedContent = true;
+  CKEDITOR.config.forcePasteAsPlainText = true;
+  CKEDITOR.config.pasteFromWordRemoveFontStyles = true;
+  CKEDITOR.config.pasteFromWordRemoveStyles = true;
+
+  var editor = CKEDITOR.replace('textareacontents', {
+            toolbar: [
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
+                { name: 'links', items: ['Link', 'Unlink'] },
+                { name: 'styles', items: ['Format'] },
+                { name: 'colors', items: ['TextColor', 'BGColor'] },
+                { name: 'tools', items: ['Maximize'] }
+            ]
+        });
+
+        // Handle file input changes
+        $('input[type="file"]').on('change', function() {
+            var file = this.files[0];
+            var $preview = $(this).closest('.company-form__field--file').find('.company-form__file-preview');
+            
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    if ($preview.length === 0) {
+                        $preview = $('<div class="company-form__file-preview"></div>');
+                        $(this).closest('.company-form__field--file').append($preview);
+                    }
+                    
+                    $preview.html(`
+                        <img src="${e.target.result}" alt="Preview">
+                        <div class="company-form__file-preview-info">
+                            <div class="company-form__file-preview-name">${file.name}</div>
+                            <div class="company-form__file-preview-size">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                        </div>
+                    `);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle form submission
+  $('form#companyform').ajaxForm({
+    beforeSerialize: function() {
+      $("input[name='profile']").val(CKEDITOR.instances.textareacontents.getData());
+    },
+    dataType: 'json',
+    success: function(data) {
+      if (data.error) {
+        $('p.error').remove();
+        for (var key in data.response) {
+          $('#' + key).after('<p class="error">' + data.response[key] + '</p>');
+        }
+      } else {
+                    if (data.edit) {
+            window.location = '{% url "dashboard:companies" 'company' %}?active=' + data.company_active;
+                    } else {
+            window.location = '{% url "dashboard:companies" 'company' %}';
+          }
+        }
+            },
+            error: function() {
+                open_dialog('An error occurred while saving the company. Please try again.', 'Error!');
+            }
+        });
+
+        // Character count for meta fields
+        function updateCharCount($textarea, maxLength) {
+            var currentLength = $textarea.val().length;
+            var $help = $textarea.siblings('.company-form__help');
+            var helpText = $help.text().split(' (')[0];
+            
+            if (currentLength > maxLength) {
+                $help.text(helpText + ' (' + currentLength + '/' + maxLength + ' - Too long!)');
+                $help.css('color', '#ef4444');
+            } else {
+                $help.text(helpText + ' (' + currentLength + '/' + maxLength + ')');
+                $help.css('color', '#64748b');
+            }
+        }
+
+        $('#meta_title').on('input', function() {
+            updateCharCount($(this), 60);
+        });
+
+        $('#meta_description').on('input', function() {
+            updateCharCount($(this), 160);
+        });
+
+        // Initialize character counts
+        updateCharCount($('#meta_title'), 60);
+        updateCharCount($('#meta_description'), 160);
+    })(jQuery);
+</script>
+
+{% endblock script %}

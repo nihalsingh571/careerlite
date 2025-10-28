@@ -1,0 +1,623 @@
+{% extends 'dashboard/base.html' %}
+{% load tz %}
+{% load page_tags %}
+{% load static %}
+
+{% block stage %}
+<style>
+/* Modern Search Log List Styling */
+.search-log-page {
+    background: #f8fafc;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.page-header {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.page-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin: 0 0 16px 0;
+}
+
+.insights-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.insight-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.insight-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.insight-icon.total {
+    color: #3b82f6;
+}
+
+.insight-icon.today {
+    color: #10b981;
+}
+
+.insight-icon.popular {
+    color: #f59e0b;
+}
+
+.insight-icon.recent {
+    color: #8b5cf6;
+}
+
+.insight-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 4px 0;
+}
+
+.insight-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #64748b;
+    margin: 0;
+}
+
+.search-logs-section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.log-count {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.search-logs-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.search-log-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.search-log-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    transform: translateY(-2px);
+}
+
+.search-log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.search-log-id {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.search-log-date {
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.search-log-content {
+    margin-bottom: 16px;
+}
+
+.search-criteria {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.criteria-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.criteria-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.criteria-value {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.criteria-value.empty {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+.skills-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.skill-tag {
+    background: #dcfce7;
+    color: #166534;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.location-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.location-tag {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.search-log-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.search-results {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.results-icon {
+    color: #10b981;
+    font-size: 1rem;
+}
+
+.results-count {
+    background: #dcfce7;
+    color: #166534;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.search-log-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.action-btn:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.view-btn {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.view-btn:hover {
+    background: #bfdbfe;
+    color: #1e3a8a;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.user-icon {
+    color: #9ca3af;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: #64748b;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    color: #cbd5e1;
+    margin-bottom: 16px;
+}
+
+.empty-state-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #475569;
+    margin: 0 0 8px 0;
+}
+
+.empty-state-text {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.pagination-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.modern-pagination {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pagination-btn {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.pagination-btn:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+    color: #111827;
+    text-decoration: none;
+}
+
+.pagination-btn.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+@media (max-width: 768px) {
+    .search-log-page {
+        padding: 16px;
+    }
+    
+    .insights-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .search-criteria {
+        grid-template-columns: 1fr;
+    }
+    
+    .search-log-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .search-log-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+</style>
+
+<div class="search-log-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Search Logs</h1>
+        <p class="page-subtitle">Monitor and analyze user search behavior and patterns</p>
+    </div>
+
+    <!-- Insights Section -->
+    <div class="insights-section">
+        <div class="insight-card">
+            <div class="insight-icon total">
+                <i class="fa fa-search"></i>
+            </div>
+            <h3 class="insight-number">{{ total_count|default:0 }}</h3>
+            <p class="insight-label">Total Searches</p>
+        </div>
+        <div class="insight-card">
+            <div class="insight-icon today">
+                <i class="fa fa-calendar-day"></i>
+            </div>
+            <h3 class="insight-number">{{ today_count|default:0 }}</h3>
+            <p class="insight-label">Today's Searches</p>
+        </div>
+        <div class="insight-card">
+            <div class="insight-icon popular">
+                <i class="fa fa-fire"></i>
+            </div>
+            <h3 class="insight-number">{{ high_result_count|default:0 }}</h3>
+            <p class="insight-label">High Result Searches</p>
+        </div>
+        <div class="insight-card">
+            <div class="insight-icon recent">
+                <i class="fa fa-clock"></i>
+            </div>
+            <h3 class="insight-number">{{ recent_count|default:0 }}</h3>
+            <p class="insight-label">Recent Searches</p>
+        </div>
+    </div>
+
+    <!-- Search Logs Section -->
+    <div class="search-logs-section">
+        <div class="section-header">
+            <h2 class="section-title">Search History</h2>
+            <span class="log-count">{{ search_logs|length }} {{ search_logs|length|pluralize:"Search,Search Logs" }}</span>
+        </div>
+
+        {% if search_logs %}
+            <div class="search-logs-grid">
+      {% for search_log in search_logs %}
+                    <div class="search-log-card" onclick="window.location.href='{% url 'dashboard:view_search_log' search_log.id %}'">
+                        <div class="search-log-header">
+                            <span class="search-log-id">#{{ search_log.id }}</span>
+                            <span class="search-log-date">
+                                <i class="fa fa-calendar"></i>
+                                {{ search_log.search_on|timezone:"Asia/Calcutta"|date:"M d, Y H:i" }}
+                            </span>
+                        </div>
+                        
+                        <div class="search-log-content">
+                            <div class="search-criteria">
+                                <div class="criteria-item">
+                                    <span class="criteria-label">Skills</span>
+                                    <span class="criteria-value">
+                                        {% if search_log.search_text.skills %}
+                                            {{ search_log.search_text.skills }}
+                                        {% else %}
+                                            <span class="empty">No skills specified</span>
+                                        {% endif %}
+                                    </span>
+                                    {% if search_log.skills.all %}
+                                        <div class="skills-tags">
+                                            {% for skill in search_log.skills.all %}
+                                                <span class="skill-tag">{{ skill.name }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="criteria-item">
+                                    <span class="criteria-label">Locations</span>
+                                    <span class="criteria-value">
+                                        {% if search_log.search_text.locations %}
+                                            {{ search_log.search_text.locations }}
+                                        {% else %}
+                                            <span class="empty">No locations specified</span>
+                                        {% endif %}
+                                    </span>
+                                    {% if search_log.locations.all %}
+                                        <div class="location-tags">
+                                            {% for location in search_log.locations.all %}
+                                                <span class="location-tag">{{ location.name }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="criteria-item">
+                                    <span class="criteria-label">Industry</span>
+                                    <span class="criteria-value">
+                                        {% if search_log.industry %}
+                                            {{ search_log.industry }}
+                                        {% else %}
+                                            <span class="empty">Not specified</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                
+                                <div class="criteria-item">
+                                    <span class="criteria-label">Functional Area</span>
+                                    <span class="criteria-value">
+                                        {% if search_log.functional_area %}
+                                            {{ search_log.functional_area }}
+                                        {% else %}
+                                            <span class="empty">Not specified</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                
+                                <div class="criteria-item">
+                                    <span class="criteria-label">Job Type</span>
+                                    <span class="criteria-value">
+                                        {% if search_log.job_type %}
+                                            {{ search_log.get_job_type_display }}
+                                        {% else %}
+                                            <span class="empty">All types</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                
+                                <div class="criteria-item">
+                                    <span class="criteria-label">Experience</span>
+                                    <span class="criteria-value">
+                                        {% if search_log.expierence %}
+                                            {{ search_log.expierence }} years
+                                        {% else %}
+                                            <span class="empty">Not specified</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="search-log-footer">
+                            <div class="search-results">
+                                <i class="fa fa-briefcase results-icon"></i>
+                                <span class="results-count">{{ search_log.job_post }} Results</span>
+                            </div>
+                            
+                            <div class="search-log-actions">
+                                {% if search_log.user %}
+                                    <div class="user-info">
+                                        <i class="fa fa-user user-icon"></i>
+                                        <span>{{ search_log.user.email|default:"Anonymous" }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                <a href="{% url 'dashboard:view_search_log' search_log.id %}" class="action-btn view-btn">
+                                    <i class="fa fa-eye"></i>
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+      {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fa fa-search"></i>
+                </div>
+                <h3 class="empty-state-title">No Search Logs Found</h3>
+                <p class="empty-state-text">
+                    No search activity has been recorded yet. Search logs will appear here once users start searching for jobs.
+                </p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    {% if search_logs and last_page > 1 %}
+        <div class="pagination-section">
+            <nav class="modern-pagination">
+            {% if current_page != 1 %}
+                    <a href="?page={{ previous_page }}" class="pagination-btn">
+                        <i class="fa fa-angle-double-left"></i>
+                    </a>
+                    <a href="?page={{ prev_page }}" class="pagination-btn">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+              {% endif %}
+                
+                {% get_page current_page last_page as pages %}
+              {% for s in pages %}
+                    <a href="?page={{ s }}" class="pagination-btn {% if s == current_page %}active{% endif %}">
+                        {{ s }}
+                    </a>
+              {% endfor %}
+                
+              {% if current_page != last_page %}
+                    <a href="?page={{ aft_page }}" class="pagination-btn">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                    <a href="?page={{ after_page }}" class="pagination-btn">
+                        <i class="fa fa-angle-double-right"></i>
+                    </a>
+                {% endif %}
+        </nav>
+      </div>
+    {% endif %}
+  </div>
+{% endblock stage %}
+
+{% block script %}
+<script type="text/javascript">
+    // Prevent action buttons from triggering card click
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.action-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    });
+</script>
+{% endblock script %}

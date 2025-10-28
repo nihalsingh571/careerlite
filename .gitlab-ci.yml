@@ -1,0 +1,18 @@
+stages:
+  - deploy
+
+deploy_live:
+  stage: deploy
+  environment:
+    name: live
+  script:
+    - sudo /bin/rm -rf /home/careerlite/careerlite/; cp -r . /home/careerlite/careerlite
+    - source /home/careerlite/env/bin/activate
+    - pip install pipenv
+    - pipenv install -d
+    - python /home/careerlite/careerlite/manage_server.py migrate --noinput
+    - sudo /usr/bin/supervisorctl restart all
+  tags:
+    - careerlite-live
+  only:
+    - master

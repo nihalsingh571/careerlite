@@ -1,0 +1,821 @@
+{% extends 'dashboard/base.html' %}
+{% load page_tags %}
+
+{% block stage %}
+<style>
+    .qualification-manager {
+        background: #f8fafc;
+        min-height: 100%;
+        padding: 56px 0 48px;
+    }
+
+    .qualification-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+    }
+
+    .qualification-header {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 24px;
+    }
+
+    .qualification-header__content {
+        max-width: 640px;
+    }
+
+    .qualification-header__content span {
+        display: inline-block;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+
+    .qualification-header__content h1 {
+        margin: 0;
+        font-size: 1.9rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .qualification-header__content p {
+        margin: 8px 0 0;
+        color: #475569;
+        line-height: 1.55;
+    }
+
+    .qualification-status {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 12px;
+    }
+
+    .qualification-status__label {
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #64748b;
+    }
+
+    .qualification-status__filters {
+        display: inline-flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .qualification-filter {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 18px;
+        border-radius: 999px;
+        border: 1px solid #d1d9e6;
+        background: #ffffff;
+        color: #1f2937;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+        transition: all 0.18s ease;
+    }
+
+    .qualification-filter:hover {
+        transform: translateY(-1px);
+        border-color: #93c5fd;
+        color: #1d4ed8;
+    }
+
+    .qualification-filter--active {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.32);
+    }
+
+    .qualification-tools {
+        display: grid;
+        gap: 20px;
+        padding: 24px;
+        background: #ffffff;
+        border-radius: 18px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 18px 36px rgba(15, 23, 42, 0.10);
+    }
+
+    .qualification-form,
+    .qualification-search {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .qualification-form label,
+    .qualification-search label {
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #64748b;
+    }
+
+    .qualification-form__fields,
+    .qualification-search__fields {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .qualification-form__fields input,
+    .qualification-search__fields input {
+        flex: 1;
+        min-width: 220px;
+        border-radius: 12px;
+        border: 1px solid #d1d9e6;
+        background: #ffffff;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        color: #0f172a;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .qualification-form__fields input:focus,
+    .qualification-search__fields input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+        outline: none;
+    }
+
+    .qualification-form__fields button,
+    .qualification-search__fields button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        white-space: nowrap;
+    }
+
+    .qualification-form__fields button {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #ffffff;
+        box-shadow: 0 12px 28px rgba(37, 99, 235, 0.32);
+    }
+
+    .qualification-form__fields button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 32px rgba(37, 99, 235, 0.36);
+    }
+
+    .qualification-search__fields button {
+        background: linear-gradient(135deg, #14b8a6, #0f766e);
+        color: #ffffff;
+        box-shadow: 0 12px 28px rgba(20, 184, 166, 0.28);
+    }
+
+    .qualification-search__fields button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 30px rgba(20, 184, 166, 0.32);
+    }
+
+    .qualification-results {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        justify-content: space-between;
+        align-items: center;
+        color: #475569;
+        font-size: 0.95rem;
+    }
+
+    .qualification-results strong {
+        color: #0f172a;
+    }
+
+    .qualification-results__reset {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+        color: #2563eb;
+        text-decoration: none;
+    }
+
+    .qualification-results__reset:hover {
+        text-decoration: underline;
+    }
+
+    .qualification-grid {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .qualification-card {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 1px solid #e2e8f0;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        box-shadow: 0 18px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .qualification-card__header {
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .qualification-card__identity {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .qualification-card__title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        line-height: 1.35;
+        color: #0f172a;
+        word-break: break-word;
+    }
+
+    .qualification-card__meta {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-top: 10px;
+    }
+
+    .qualification-card__meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: #2563eb;
+        font-weight: 500;
+    }
+
+    .qualification-card__meta .qualification-card__status {
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .qualification-card__meta .qualification-card__status--inactive {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .qualification-card__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+        width: 100%;
+    }
+
+    .qualification-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.18s ease;
+        color: #1f2937;
+        background: #ffffff;
+        box-shadow: none;
+    }
+
+    .qualification-card__actions .qualification-action {
+        flex: 1 1 calc(33.333% - 10px);
+        min-width: 120px;
+    }
+
+    .qualification-action:hover {
+        transform: translateY(-1px);
+        background: #f1f5f9;
+    }
+
+    .qualification-action--primary {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #2563eb;
+    }
+
+    .qualification-action--primary:hover {
+        background: #1e40af;
+    }
+
+    .qualification-action--danger {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-color: #fecaca;
+    }
+
+    .qualification-action--danger:hover {
+        background: #fecaca;
+        color: #991b1b;
+    }
+
+    .qualification-action--ghost {
+        background: #f8fafc;
+        color: #2563eb;
+        border-color: #dbeafe;
+    }
+
+    .qualification-action--ghost:hover {
+        background: #eff6ff;
+    }
+
+    .edit_panel {
+        display: none;
+        border-top: 1px solid #f1f5f9;
+        padding-top: 16px;
+    }
+
+    .qualification-edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .qualification-edit-form textarea {
+        border-radius: 12px;
+        border: 1px solid #d1d9e6;
+        padding: 12px 14px;
+        resize: vertical;
+        min-height: 80px;
+        font-size: 0.95rem;
+        color: #0f172a;
+    }
+
+    .qualification-edit-form textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+        outline: none;
+    }
+
+    .qualification-edit-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .qualification-empty {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 1px dashed #cbd5f5;
+        padding: 60px 24px;
+        text-align: center;
+        color: #475569;
+        display: grid;
+        gap: 12px;
+        justify-items: center;
+        box-shadow: 0 18px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .qualification-empty i {
+        font-size: 2.4rem;
+        color: #2563eb;
+    }
+
+    .qualification-pagination {
+        margin-top: 12px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .qualification-pagination__inner {
+        background: #ffffff;
+        border-radius: 14px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+        padding: 12px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .qualification-pagination__group {
+        display: inline-flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .qualification-pagination__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        color: #1f2937;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        transition: all 0.18s ease;
+    }
+
+    .qualification-pagination__button:hover {
+        background: #e2e8f0;
+    }
+
+    .qualification-pagination__button--primary {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.32);
+    }
+
+    .qualification-pagination__button--disabled {
+        color: #94a3b8;
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    @media (max-width: 768px) {
+        .qualification-manager {
+            padding: 40px 0 36px;
+        }
+
+        .qualification-container {
+            padding: 0 18px;
+            gap: 24px;
+        }
+
+        .qualification-header__content h1 {
+            font-size: 1.6rem;
+        }
+
+        .qualification-status {
+            align-items: flex-start;
+        }
+
+        .qualification-card {
+            padding: 18px;
+        }
+
+        .qualification-card__actions {
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+
+        .qualification-pagination__inner {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .qualification-pagination__group {
+            justify-content: space-between;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .qualification-card__actions {
+            gap: 8px;
+        }
+
+        .qualification-card__actions .qualification-action {
+            flex: 1 1 100%;
+        }
+    }
+</style>
+
+<section id="tech_skills" class="qualification-manager">
+    <div class="qualification-container">
+        <div class="qualification-header">
+            <div class="qualification-header__content">
+                <span>Data management</span>
+                <h1>Qualifications</h1>
+                <p>Keep the qualification library polished so recruiters can match job posts with the right candidate profile. Add new items, refine existing ones, or toggle visibility without leaving this view.</p>
+            </div>
+            <div class="qualification-status">
+                <span class="qualification-status__label">Quick filter</span>
+                {% with status|default_if_none:''|lower as status_lower %}
+                    <div class="qualification-status__filters">
+                        <a class="qualification-filter{% if not status_lower %} qualification-filter--active{% endif %}" href="{% url 'dashboard:qualifications' %}">All</a>
+                        <a class="qualification-filter{% if status_lower == 'active' %} qualification-filter--active{% endif %}" href="{% url 'dashboard:qualifications' %}?status=Active">Active</a>
+                        <a class="qualification-filter{% if status_lower == 'inactive' %} qualification-filter--active{% endif %}" href="{% url 'dashboard:qualifications' %}?status=InActive">Inactive</a>
+                    </div>
+                {% endwith %}
+            </div>
+        </div>
+
+        <div class="qualification-tools">
+            <form id="addform" method="post" action="." class="qualification-form">
+                <label for="qualification_name">Add a qualification</label>
+                <div class="qualification-form__fields">
+                    <input type="text" id="qualification_name" name="name" placeholder="Ex: Bachelor of Computer Science" autocomplete="off">
+                    <button type="submit" class="qualification-action qualification-action--primary">
+                        <i class="fa fa-plus"></i>
+                        Add qualification
+                    </button>
+                </div>
+            </form>
+
+            <form id="search_form" name="adv-search-form" method="get" class="qualification-search">
+                <label for="search">Search or filter</label>
+                <div class="qualification-search__fields">
+                    <input type="text" name="search" id="search" value="{{ request.GET.search }}" placeholder="Search by qualification name…">
+                    <input type="hidden" name="page" id="page" value="{% if request.GET.page %}{{ request.GET.page }}{% else %}1{% endif %}">
+                    {% with status|default_if_none:''|lower as status_lower %}
+                        <input type="hidden" name="status" id="status" value="{% if status_lower == 'active' %}Active{% elif status_lower == 'inactive' %}InActive{% elif status %}{{ status }}{% endif %}">
+                    {% endwith %}
+                    <button type="submit" class="qualification-action">
+                        <i class="fa fa-search"></i>
+                        Apply search
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="qualification-results">
+            {% with status|default_if_none:''|lower as status_lower %}
+                <span>Showing <strong>{{ qualifications|length }}</strong> result{% if qualifications|length != 1 %}s{% endif %} · Status: <strong>{% if status_lower %}{{ status_lower|capfirst }}{% else %}All{% endif %}</strong>{% if search %} · Matching “{{ search }}”{% endif %}</span>
+            {% endwith %}
+            {% if search %}
+                <a class="qualification-results__reset" href="{% url 'dashboard:qualifications' %}{% if status %}?status={% if status|default_if_none:''|lower == 'active' %}Active{% elif status|default_if_none:''|lower == 'inactive' %}InActive{% else %}{{ status|urlencode }}{% endif %}{% endif %}">
+                    <i class="fa fa-rotate-left"></i>
+                    Clear search
+                </a>
+            {% endif %}
+        </div>
+
+        {% if qualifications %}
+            <ul class="qualification-grid">
+                {% for qualification in qualifications %}
+                    <li class="qualification-card">
+                        <div class="qualification-card__header">
+                            <div class="qualification-card__identity">
+                                <h2 class="qualification-card__title">{{ qualification.name }}</h2>
+                                <div class="qualification-card__meta">
+                                    <span>
+                                        <i class="fa-solid fa-briefcase"></i>
+                                        {{ qualification.get_no_of_jobposts|length }} job post{% if qualification.get_no_of_jobposts|length != 1 %}s{% endif %}
+                                    </span>
+                                    <span class="qualification-card__status {% if qualification.status == 'InActive' %}qualification-card__status--inactive{% endif %}">
+                                        <i class="fa-solid fa-circle"></i>
+                                        {{ qualification.status }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="qualification-card__actions">
+                            <button type="button" class="qualification-action qualification-action--ghost qualification-card__action--edit" data-target="#qualification-edit-{{ qualification.id }}">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                Edit
+                            </button>
+                            {% if qualification.status == 'InActive' %}
+                                <a href="#" class="qualification-action qualification-action--primary enable-qualification" data-qualification-id="{{ qualification.id }}" data-page="{% if request.GET.page %}{{ request.GET.page }}{% else %}1{% endif %}">
+                                    <i class="fa fa-check"></i>
+                                    Activate
+                                </a>
+                            {% else %}
+                                <a href="#" class="qualification-action qualification-action--ghost deactivate-qualification" data-qualification-id="{{ qualification.id }}" data-page="{% if request.GET.page %}{{ request.GET.page }}{% else %}1{% endif %}">
+                                    <i class="fa fa-times"></i>
+                                    Deactivate
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'dashboard:delete_qualification' qualification_id=qualification.id %}" class="qualification-action qualification-action--danger">
+                                <i class="fa-solid fa-trash-can"></i>
+                                Delete
+                            </a>
+                        </div>
+                        <div class="edit_panel" id="qualification-edit-{{ qualification.id }}">
+                            <form id="editform{{ qualification.id }}" method="post" action="." class="qualification-edit-form">
+                                <input type="hidden" name="id" value="{{ qualification.id }}">
+                                <input type="hidden" name="mode" value="edit_qualification">
+                                <input type="hidden" name="page" value="{% if request.GET.page %}{{ request.GET.page }}{% else %}1{% endif %}">
+                                <label for="qualification_name_{{ qualification.id }}">Qualification name</label>
+                                <textarea id="qualification_name_{{ qualification.id }}" name="name">{{ qualification.name }}</textarea>
+                                <div class="qualification-edit-actions">
+                                    <button type="button" class="qualification-action qualification-action--ghost" data-target="#qualification-edit-{{ qualification.id }}">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" id="{{ qualification.id }}" class="qualification-action qualification-action--primary update_btn">
+                                        <i class="fa fa-check"></i>
+                                        Update
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="qualification-empty">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <p>No qualifications found. Add a new qualification or adjust your filters to see existing entries.</p>
+            </div>
+        {% endif %}
+
+        {% if qualifications %}
+            {% get_page current_page last_page as pages %}
+            <div class="qualification-pagination">
+                <div class="qualification-pagination__inner" aria-label="Qualifications pagination">
+                    <div class="qualification-pagination__group">
+                        {% if current_page > 1 %}
+                            <a class="qualification-pagination__button qualification-pagination__button--primary" href="?{% if search %}search={{ search|urlencode }}&{% endif %}{% if status %}status={% if status|default_if_none:''|lower == 'active' %}Active{% elif status|default_if_none:''|lower == 'inactive' %}InActive{% else %}{{ status|urlencode }}{% endif %}&{% endif %}page=1">&laquo;</a>
+                            <a class="qualification-pagination__button" href="?{% if search %}search={{ search|urlencode }}&{% endif %}{% if status %}status={% if status|default_if_none:''|lower == 'active' %}Active{% elif status|default_if_none:''|lower == 'inactive' %}InActive{% else %}{{ status|urlencode }}{% endif %}&{% endif %}page={{ previous_page }}">&lsaquo; Previous</a>
+                        {% else %}
+                            <span class="qualification-pagination__button qualification-pagination__button--disabled">&laquo;</span>
+                            <span class="qualification-pagination__button qualification-pagination__button--disabled">&lsaquo; Previous</span>
+                        {% endif %}
+                    </div>
+                    <div class="qualification-pagination__group">
+                        <span>Page <strong>{{ current_page }}</strong> of {{ last_page }}</span>
+                    </div>
+                    <div class="qualification-pagination__group">
+                        {% if current_page < last_page %}
+                            <a class="qualification-pagination__button" href="?{% if search %}search={{ search|urlencode }}&{% endif %}{% if status %}status={% if status|default_if_none:''|lower == 'active' %}Active{% elif status|default_if_none:''|lower == 'inactive' %}InActive{% else %}{{ status|urlencode }}{% endif %}&{% endif %}page={{ aft_page }}">Next &rsaquo;</a>
+                            <a class="qualification-pagination__button qualification-pagination__button--primary" href="?{% if search %}search={{ search|urlencode }}&{% endif %}{% if status %}status={% if status|default_if_none:''|lower == 'active' %}Active{% elif status|default_if_none:''|lower == 'inactive' %}InActive{% else %}{{ status|urlencode }}{% endif %}&{% endif %}page={{ last_page }}">Last &raquo;</a>
+                        {% else %}
+                            <span class="qualification-pagination__button qualification-pagination__button--disabled">Next &rsaquo;</span>
+                            <span class="qualification-pagination__button qualification-pagination__button--disabled">Last &raquo;</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<form id="qualification-status-form" style="display:none;">
+    {% csrf_token %}
+    <input type="hidden" name="page" value="">
+</form>
+{% endblock stage %}
+
+{% block script %}
+<script type="text/javascript">
+    (function ($) {
+        var csrfToken = $('#qualification-status-form input[name="csrfmiddlewaretoken"]').val();
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && csrfToken) {
+                    xhr.setRequestHeader('X-CSRFToken', csrfToken);
+                }
+            }
+        });
+
+        function toggleEditPanel(targetSelector) {
+            var $panel = $(targetSelector);
+            if (!$panel.length) {
+                return;
+            }
+            $('.edit_panel').not($panel).slideUp('fast');
+            $panel.stop(true, true).slideToggle('fast');
+        }
+
+        $(document).on('click', '.qualification-card__action--edit', function (e) {
+            e.preventDefault();
+            var target = $(this).data('target');
+            toggleEditPanel(target);
+        });
+
+        $(document).on('click', '.qualification-edit-actions .qualification-action[type="button"]', function (e) {
+            e.preventDefault();
+            var target = $(this).data('target');
+            toggleEditPanel(target);
+        });
+
+        $("#addform").submit(function (e) {
+            e.preventDefault();
+            $.post('.', {mode: 'add_qualification', name: $('#qualification_name').val()}, function (data) {
+                if (data.error === false) {
+                    open_dialog_with_url(data.message, 'Success!!!', '.');
+                } else {
+                    open_dialog(data.message, 'Error!');
+                }
+            }, 'json');
+        });
+
+        $(".update_btn").click(function (e) {
+            e.preventDefault();
+            $.post('.', $("#editform" + $(this).attr('id')).serialize(), function (data) {
+                if (data.error === false) {
+                    open_dialog_with_url(data.message, 'Success!!!', "{% url 'dashboard:qualifications' %}?page=" + data.page);
+                } else {
+                    open_dialog(data.message, 'Error!');
+                }
+            }, 'json');
+        });
+
+        function requestQualificationStatus(qualificationId, page, successMessage) {
+            $.ajax({
+                url: '/dashboard/qualification/status/' + qualificationId + '/',
+                method: 'POST',
+                dataType: 'json',
+                data: {"page": page},
+                success: function (data) {
+                    if (data.error) {
+                        open_dialog(data.response, 'Error!');
+                    } else {
+                        open_dialog_with_url(successMessage, 'Success!!!', "{% url 'dashboard:qualifications' %}?page=" + data.page);
+                    }
+                },
+                error: function () {
+                    open_dialog('Unable to update qualification status right now.', 'Error!');
+                }
+            });
+        }
+
+        $(document).on('click', '.deactivate-qualification', function (e) {
+            e.preventDefault();
+            var qualificationId = $(this).attr('data-qualification-id');
+            if (!qualificationId) {
+                return;
+            }
+            var page = $(this).attr('data-page') || 1;
+            $('#block_question').text('Do you want to deactivate Qualifications?');
+            $('#block_question').dialog({
+                modal: true,
+                dialogClass: "no-close",
+                draggable: false,
+                title: "Info!!",
+                buttons: [
+                    {
+                        text: "Yes",
+                        click: function () {
+                            $(this).dialog("close");
+                            requestQualificationStatus(qualificationId, page, 'Qualifications Disabled Successfully');
+                        }
+                    },
+                    {
+                        text: "No",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+        });
+
+        $(document).on('click', '.enable-qualification', function (e) {
+            e.preventDefault();
+            var qualificationId = $(this).attr('data-qualification-id');
+            if (!qualificationId) {
+                return;
+            }
+            var page = $(this).attr('data-page') || 1;
+            $('#block_question').text('Do you want to activate Qualifications?');
+            $('#block_question').dialog({
+                modal: true,
+                dialogClass: "no-close",
+                draggable: false,
+                title: "Info!!",
+                buttons: [
+                    {
+                        text: "Yes",
+                        click: function () {
+                            $(this).dialog("close");
+                            requestQualificationStatus(qualificationId, page, "Qualifications Activated Successfully");
+                        }
+                    },
+                    {
+                        text: "No",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+        });
+    })(jQuery);
+</script>
+{% endblock script %}

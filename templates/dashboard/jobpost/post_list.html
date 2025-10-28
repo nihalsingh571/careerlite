@@ -1,0 +1,897 @@
+{% extends "dashboard/base.html" %}
+{% load page_tags %}
+{% load tz %}
+{% load static %}
+
+{% block stage %}
+<style>
+/* Modern Job Post List Styling */
+.job-post-page {
+    background: #f8fafc;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.page-header {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.page-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.job-type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin-top: 12px;
+}
+
+.job-type-full-time {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.job-type-internship {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.job-type-government {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.job-type-walk-in {
+    background: #fce7f3;
+    color: #be185d;
+}
+
+.controls-section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.controls-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.controls-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.add-job-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.add-job-btn:hover {
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+}
+
+.search-filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px;
+    align-items: end;
+}
+
+.search-input {
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.date-input {
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.submit-btn {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+    background: #059669;
+}
+
+.job-posts-section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.job-posts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.job-posts-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.job-count {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.job-posts-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.job-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.job-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    transform: translateY(-2px);
+}
+
+.job-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.job-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+}
+
+.job-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-published {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-live {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-disabled {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.job-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.job-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.job-detail-icon {
+    color: #64748b;
+    font-size: 0.9rem;
+    width: 16px;
+}
+
+.job-detail-text {
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.job-company {
+    color: #3b82f6;
+    font-weight: 600;
+}
+
+.job-location {
+    color: #64748b;
+}
+
+.job-posted-by {
+    color: #64748b;
+}
+
+.job-applications {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.job-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.action-btn:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.edit-btn {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.edit-btn:hover {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.publish-btn {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.publish-btn:hover {
+    background: #bbf7d0;
+    color: #14532d;
+}
+
+.deactivate-btn {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.deactivate-btn:hover {
+    background: #fecaca;
+    color: #b91c1c;
+}
+
+.enable-btn {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.enable-btn:hover {
+    background: #bbf7d0;
+    color: #14532d;
+}
+
+.delete-btn {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.delete-btn:hover {
+    background: #fecaca;
+    color: #b91c1c;
+}
+
+.view-btn {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.view-btn:hover {
+    background: #bfdbfe;
+    color: #1d4ed8;
+}
+
+.frontend-btn {
+    background: #f0f9ff;
+    color: #0369a1;
+}
+
+.frontend-btn:hover {
+    background: #e0f2fe;
+    color: #0284c7;
+}
+
+.pagination-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.modern-pagination {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pagination-btn {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.pagination-btn:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+    color: #111827;
+    text-decoration: none;
+}
+
+.pagination-btn.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-btn:disabled:hover {
+    background: white;
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+.no-jobs {
+    text-align: center;
+    padding: 48px 24px;
+    color: #64748b;
+}
+
+.no-jobs-icon {
+    font-size: 3rem;
+    color: #cbd5e1;
+    margin-bottom: 16px;
+}
+
+.no-jobs-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #475569;
+    margin: 0 0 8px 0;
+}
+
+.no-jobs-text {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .job-post-page {
+        padding: 16px;
+    }
+    
+    .search-filters {
+        grid-template-columns: 1fr;
+    }
+    
+    .controls-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .job-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .job-actions {
+        justify-content: center;
+    }
+        }
+    </style>
+
+<div class="job-post-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Job Posts Management</h1>
+        <p class="page-subtitle">Manage and monitor all job postings across different job types</p>
+        <span class="job-type-badge job-type-{{ job_type|default:'full-time' }}">
+            <i class="fa fa-briefcase"></i>
+            {{ job_type|default:'Full-Time'|title }} Jobs
+        </span>
+                </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <div class="controls-header">
+            <h2 class="controls-title">Search & Filter Jobs</h2>
+            <a href="{% url 'dashboard:new_govt_job' job_type %}" class="add-job-btn">
+                <i class="fa fa-plus"></i>
+                Add New {{ job_type|title }} Job
+            </a>
+        </div>
+        
+        <form id="search_form" name="adv-search-form" class="search-form" method="POST">
+            <div class="search-filters">
+                <div>
+                    <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151;">Search Jobs</label>
+                    <input type="text" name="search" id="search" class="search-input"
+                           placeholder="Search by job title, company, or recruiter..." 
+                           value="{{ request.POST.search }}"/>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151;">Date Range</label>
+                    <input type="text" class="date-input" aria-describedby="basic-addon2" id="reportrange"
+                           name="timestamp" value="{{ request.POST.timestamp }}" 
+                           placeholder="Select date range">
+                </div>
+                <div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fa fa-search"></i>
+                        Search
+                    </button>
+              </div>
+            </div>
+            <input type="hidden" name="job_type" id="job_type" value="{{ job_type }}"/>
+            <input type="hidden" name="page" id="page" value="{{ page }}"/>
+        </form>
+    </div>
+
+    <!-- Job Posts Section -->
+    <div class="job-posts-section">
+        <div class="job-posts-header">
+            <h2 class="job-posts-title">Job Posts List</h2>
+            <span class="job-count">{{ posts|length }} {{ posts|length|pluralize:"Job,Jobs" }}</span>
+        </div>
+
+        {% if posts %}
+            <div class="job-posts-grid">
+            {% for post in posts %}
+                    <div class="job-card job-detail" data-href='/dashboard/jobpost/view/{{ post.id }}/'>
+                        <div class="job-card-header">
+                            <h3 class="job-title">{{ post.title }}</h3>
+                            <span class="job-status status-{{ post.status|lower }}">{{ post.status }}</span>
+                        </div>
+                        
+                        <div class="job-details">
+                            <div class="job-detail-item">
+                                <i class="fa fa-building job-detail-icon"></i>
+                                <span class="job-detail-text job-company">
+                                    {% if post.company %}{{ post.company.name }}{% else %}{{ post.company_name }}{% endif %}
+                                </span>
+                            </div>
+                            
+                            <div class="job-detail-item">
+                                <i class="fa fa-map-marker-alt job-detail-icon"></i>
+                                <span class="job-detail-text job-location">
+                                    {% for location in post.location.all %}
+                                        {% if forloop.last and not forloop.next_element %}
+                                            {{ location.name }}
+                                        {% else %}
+                                            {{ location.name }}, 
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                            </div>
+                            
+                            <div class="job-detail-item">
+                                <i class="fa fa-user job-detail-icon"></i>
+                                <span class="job-detail-text job-posted-by">
+                                    Posted by {{ post.user.username }}
+                                </span>
+                            </div>
+                            
+                            <div class="job-detail-item">
+                                <i class="fa fa-calendar job-detail-icon"></i>
+                                <span class="job-detail-text">
+                                    {{ post.published_on|timezone:'Asia/Calcutta'|date:"M d, Y" }}
+                                </span>
+                            </div>
+                            
+                            <div class="job-detail-item">
+                                <i class="fa fa-users job-detail-icon"></i>
+                                <span class="job-applications">{{ post.get_all_applied_users_count }} Applications</span>
+                            </div>
+                        </div>
+                        
+                        <div class="job-actions">
+                        {% if post.user.id|slugify == request.user.id|slugify %}
+                                <a href="{% url 'dashboard:edit_govt_job' post.id %}" class="action-btn edit-btn">
+                                    <i class="fa fa-edit"></i>
+                                    Edit
+                                </a>
+                            {% endif %}
+
+                            <a href="{% url 'dashboard:edit_job_title' post.id %}" class="action-btn edit-btn">
+                                <i class="fa fa-heading"></i>
+                                Edit Title
+                            </a>
+
+                        {% if post.status == 'Disabled' %}
+                                <a href="{% url 'dashboard:enable' post.id %}" class="action-btn enable-btn">
+                                    <i class="fa fa-check"></i>
+                                    Enable
+                                </a>
+                        {% else %}
+                                <a href="{% url 'dashboard:deactivate_job' post.id %}" class="action-btn deactivate-btn">
+                                    <i class="fa fa-times"></i>
+                                    Deactivate
+                                </a>
+                        {% endif %}
+
+                        {% if post.status == 'Pending' %}
+                                <a href="{% url 'dashboard:publish' post.id %}" class="action-btn publish-btn">
+                                    <i class="fa fa-hand-o-up"></i>
+                                    Publish
+                                </a>
+                            {% elif post.status == 'Published' or post.status == 'Live' %}
+                                <a href="{% url 'dashboard:publish' post.id %}" class="action-btn publish-btn">
+                                    <i class="fa fa-check"></i>
+                                    Live
+                            </a>
+                        {% endif %}
+                        
+                         {% if post.status == 'Live' %}
+                                <a href="#" data-href="{{post.slug}}" class="action-btn frontend-btn front_end_url">
+                                    <i class="fa fa-eye"></i>
+                                    View Frontend
+                                </a>
+                        {% endif %}
+
+                            <a href="#" data-href="{% url 'dashboard:delete' post.id %}" class="action-btn delete-btn delete-job">
+                                <i class="fa fa-trash"></i>
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-jobs">
+                <div class="no-jobs-icon">
+                    <i class="fa fa-briefcase"></i>
+                </div>
+                <h3 class="no-jobs-title">No Job Posts Found</h3>
+                <p class="no-jobs-text">
+                    {% if request.POST.search %}
+                        No jobs match your search criteria. Try adjusting your filters.
+                    {% else %}
+                        No {{ job_type|title }} jobs have been posted yet. Create your first job post to get started.
+                    {% endif %}
+                </p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    {% if posts and last_page > 1 %}
+        <div class="pagination-section">
+            <nav class="modern-pagination">
+                {% if current_page != 1 %}
+                    <a href="#" class="pagination-btn {{ previous_page }}">
+                        <i class="fa fa-angle-double-left"></i>
+                    </a>
+                    <a href="#" class="pagination-btn {{ prev_page }}">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                {% endif %}
+                
+                {% get_page current_page last_page as pages %}
+                {% for s in pages %}
+                    <a href="#" class="pagination-btn {{ s }} {% if s == current_page %}active{% endif %}">
+                        {{ s }}
+                    </a>
+                {% endfor %}
+                
+                {% if current_page != last_page %}
+                    <a href="#" class="pagination-btn {{ aft_page }}">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                    <a href="#" class="pagination-btn {{ after_page }}">
+                        <i class="fa fa-angle-double-right"></i>
+                    </a>
+                {% endif %}
+          </nav>
+        </div>
+    {% endif %}
+    </div>
+{% endblock stage %}
+
+{% block script %}
+    <script type="text/javascript">
+    // CSRF Token Setup
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // Delete Job Handler
+    $('body').on('click', '.delete-job', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        const href = $(this).attr('data-href');
+        const jobTitle = $(this).closest('.job-card').find('.job-title').text();
+        
+        $('#block_question').text(`Do you want to delete the job post "${jobTitle}"?`);
+            $('#block_question').dialog({
+                modal: true,
+                dialogClass: "no-close",
+                draggable: false,
+            title: "Confirm Delete",
+                buttons: [
+                    {
+                    text: "Yes, Delete",
+                        click: function () {
+                            $(this).dialog("close");
+                        $.ajaxSetup({
+                            beforeSend: function(xhr, settings) {
+                                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                            }
+                        });
+                        $.post(href, {}, function (data) {
+                                if (data.error) {
+                                open_dialog(data.response, 'Error!');
+                                } else {
+                                open_dialog('Job Post Deleted Successfully', 'Success!');
+                                    $('#search_form').submit();
+                                }
+                            }, 'json');
+                        }
+                    },
+                    {
+                    text: "Cancel",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+        });
+
+    // Pagination Handler
+    $('body').on('click', '.pagination-btn', function (e) {
+        e.preventDefault();
+        $('#page').val($(this).attr('class').split(' ')[0]);
+        $('#search_form').submit();
+    });
+
+    // Job Card Click Handler
+    $('body').on('click', '.job-detail', function () {
+        window.document.location = $(this).data("href");
+    });
+
+    // Frontend View Handler
+    $('body').on('click', '.front_end_url', function (e) {
+        e.stopPropagation();
+            e.preventDefault();
+        window.open($(this).attr("data-href"), '_blank');
+    });
+
+    // Deactivate Job Handler
+    $('body').on('click', '.deactivate-btn', function (e) {
+            e.stopPropagation();
+        e.preventDefault();
+        const href = $(this).attr('href');
+        const jobTitle = $(this).closest('.job-card').find('.job-title').text();
+        
+        $('#block_question').text(`Do you want to deactivate the job post "${jobTitle}"?`);
+            $('#block_question').dialog({
+                modal: true,
+                dialogClass: "no-close",
+                draggable: false,
+            title: "Confirm Deactivate",
+                buttons: [
+                    {
+                    text: "Yes, Deactivate",
+                        click: function () {
+                            $(this).dialog("close");
+                        window.location.href = href;
+                    }
+                },
+                {
+                    text: "Cancel",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+        });
+
+    // Enable Job Handler
+    $('body').on('click', '.enable-btn', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        const href = $(this).attr('href');
+        const jobTitle = $(this).closest('.job-card').find('.job-title').text();
+        
+        $('#block_question').text(`Do you want to enable the job post "${jobTitle}"?`);
+        $('#block_question').dialog({
+            modal: true,
+            dialogClass: "no-close",
+            draggable: false,
+            title: "Confirm Enable",
+            buttons: [
+                {
+                    text: "Yes, Enable",
+                    click: function () {
+                        $(this).dialog("close");
+                        window.location.href = href;
+                    }
+                },
+                {
+                    text: "Cancel",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+        });
+    });
+
+    // Publish Job Handler
+    $('body').on('click', '.publish-btn', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        const href = $(this).attr('href');
+        const jobTitle = $(this).closest('.job-card').find('.job-title').text();
+        const action = $(this).text().trim();
+        
+        $('#block_question').text(`Do you want to ${action.toLowerCase()} the job post "${jobTitle}"?`);
+        $('#block_question').dialog({
+            modal: true,
+            dialogClass: "no-close",
+            draggable: false,
+            title: `Confirm ${action}`,
+            buttons: [
+                {
+                    text: `Yes, ${action}`,
+                    click: function () {
+                        $(this).dialog("close");
+                        window.location.href = href;
+                    }
+                },
+                {
+                    text: "Cancel",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+        });
+    });
+
+    // Edit Job Handler (just prevent card click)
+    $('body').on('click', '.edit-btn', function (e) {
+        e.stopPropagation();
+        // Let the link work normally
+    });
+
+    // Prevent action buttons from triggering card click
+    $('body').on('click', '.action-btn', function (e) {
+        e.stopPropagation();
+        });
+    </script>
+{% endblock script %}

@@ -1,0 +1,486 @@
+{% extends "dashboard/base.html" %}
+{% load thumbnail %}
+{% load page_tags %}
+{% load tz %}
+{% load static %}
+
+{% block stage %}
+<style>
+/* Modern Search Log View Styling */
+.search-log-view-page {
+    background: #f8fafc;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.page-header {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.back-button:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+    text-decoration: none;
+}
+
+.page-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.search-info {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.info-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.badge-id {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-date {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.badge-results {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.main-content {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title i {
+    color: #3b82f6;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1e293b;
+    line-height: 1.5;
+}
+
+.info-value.empty {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+.skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.skill-tag {
+    background: #dcfce7;
+    color: #166534;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.location-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.location-tag {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.user-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 24px;
+}
+
+.user-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #dbeafe;
+    color: #1e40af;
+    display: flex;
+    align-items: center;
+    justifyاردcontent: center;
+    font-size: 1.2rem;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.user-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 2px 0;
+}
+
+.user-email {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.meta-info {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.meta-item i {
+    color: #9ca3af;
+}
+
+.search-text-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 24px;
+}
+
+.search-text-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 12px 0;
+}
+
+.search-text-content {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #374151;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+@media (max-width: 768px) {
+    .search-log-view-page {
+        padding: 16px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="search-log-view-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div>
+                <a href="{% url 'dashboard:search_log' %}" class="back-button">
+                    <i class="fa fa-arrow-left"></i>
+                    Back to Search Logs
+                </a>
+                <h1 class="page-title">Search Log Details</h1>
+                <p class="page-subtitle">Complete information about this search query</p>
+            </div>
+            
+            <div class="search-info">
+                <span class="info-badge badge-id">
+                    <i class="fa fa-hashtag"></i> #{{ search_log.id }}
+                </span>
+                <span class="info-badge badge-date">
+                    <i class="fa fa-calendar"></i> {{ search_log.search_on|timezone:'Asia/Calcutta'|date:"M d, Y H:i" }}
+                </span>
+                <span class="info-badge badge-results">
+                    <i class="fa fa-briefcase"></i> {{ search_log.job_post }} Results
+                </span>
+    </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2 class="section-title">
+            <i class="fa fa-search"></i>
+            Search Criteria
+        </h2>
+        
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Key Skills</span>
+                <span class="info-value">
+                    {% if search_log.skills.all %}
+                        {% for skill in search_log.skills.all %}
+                            {{ skill.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <span class="empty">No skills specified</span>
+                    {% endif %}
+            </span>
+                {% if search_log.skills.all %}
+                    <div class="skills-grid">
+                        {% for skill in search_log.skills.all %}
+                            <span class="skill-tag">{{ skill.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+          </div>
+            
+            <div class="info-item">
+                <span class="info-label">Other Skills</span>
+                <span class="info-value">
+                    {% if search_log.other_skill %}
+                        {{ search_log.other_skill }}
+                    {% else %}
+                        <span class="empty">No other skills</span>
+                    {% endif %}
+            </span>
+          </div>
+            
+            <div class="info-item">
+                <span class="info-label">Locations</span>
+                <span class="info-value">
+                    {% if search_log.locations.all %}
+                        {% for loc in search_log.locations.all %}
+                            {{ loc.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <span class="empty">No locations specified</span>
+                    {% endif %}
+            </span>
+                {% if search_log.locations.all %}
+                    <div class="location-grid">
+                        {% for loc in search_log.locations.all %}
+                            <span class="location-tag">{{ loc.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+          </div>
+            
+            <div class="info-item">
+                <span class="info-label">Other Locations</span>
+                <span class="info-value">
+                    {% if search_log.other_location %}
+                        {{ search_log.other_location }}
+                    {% else %}
+                        <span class="empty">No other locations</span>
+                    {% endif %}
+            </span>
+          </div>
+            
+            <div class="info-item">
+                <span class="info-label">Industry</span>
+                <span class="info-value">
+                    {% if search_log.industry %}
+                        {{ search_log.industry }}
+                    {% else %}
+                        <span class="empty">Not specified</span>
+                    {% endif %}
+            </span>
+          </div>
+            
+            <div class="info-item">
+                <span class="info-label">Functional Area</span>
+                <span class="info-value">
+                    {% if search_log.functional_area %}
+                        {{ search_log.functional_area }}
+                    {% else %}
+                        <span class="empty">Not specified</span>
+                    {% endif %}
+            </span>
+          </div>
+            
+            <div class="info-item">
+                <span class="info-label">Job Type</span>
+                <span class="info-value">
+                    {% if search_log.job_type %}
+                        {{ search_log.get_job_type_display }}
+                    {% else %}
+                        <span class="empty">All types</span>
+                    {% endif %}
+            </span>
+          </div>
+            
+            <div class="info-item">
+                <span class="info-label">Experience Required</span>
+                <span class="info-value">
+                    {% if search_log.expierence %}
+                        {{ search_log.expierence }} Years
+                    {% else %}
+                        <span class="empty">Not specified</span>
+                    {% endif %}
+            </span>
+            </div>
+        </div>
+
+        <!-- User Information Section -->
+        {% if search_log.user %}
+        <div class="user-section">
+            <h3 class="section-title">
+                <i class="fa fa-user"></i>
+                Searched By
+            </h3>
+            
+            <div class="user-header">
+                <div class="user-icon">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <h4 class="user-name">{{ search_log.user.get_full_name|default:search_log.user.username|default:"User" }}</h4>
+                    <p class="user-email">{{ search_log.user.email }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- IP Address and Meta Information -->
+        <div class="user-section">
+            <h3 class="section-title">
+                <i class="fa fa-info-circle"></i>
+                Additional Information
+            </h3>
+            
+            <div class="meta-info">
+                <div class="meta-item">
+                    <i class="fa fa-globe"></i>
+                    <span>IP Address: {{ search_log.ip_address|default:"N/A" }}</span>
+          </div>
+                <div class="meta-item">
+                    <i class="fa fa-briefcase"></i>
+                    <span>Results Found: {{ search_log.job_post }}</span>
+          </div>
+                <div class="meta-item">
+                    <i class="fa fa-clock"></i>
+                    <span>Searched: {{ search_log.search_on|timezone:'Asia/Calcutta'|timesince }} ago</span>
+          </div>
+          </div>
+        </div>
+
+        <!-- Raw Search Text -->
+        {% if search_log.search_text %}
+        <div class="search-text-section">
+            <h3 class="search-text-title">
+                <i class="fa fa-code"></i>
+                Raw Search Data
+            </h3>
+            <div class="search-text-content">{{ search_log.search_text|linebreaks }}</div>
+      </div>
+        {% endif %}
+    </div>
+  </div>
+{% endblock %}
