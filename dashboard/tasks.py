@@ -334,7 +334,7 @@ def recruiter_jobpost_applicants():
                 if len(applicants) >= 10:
                     c = {"jobposts": job, "user": each, "applicants": applicants[:10]}
                     t = loader.get_template("email/job_applicants.html")
-        subject = "No. Of Applicants Applied For Your Job"
+                    subject = "No. Of Applicants Applied For Your Job"
                     rendered = t.render(c)
                     mto = [each.email]
                     user_active = True if each.is_active else False
