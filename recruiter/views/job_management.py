@@ -285,7 +285,7 @@ def new_job(request, status):
         adding_other_fields_data(request.POST, validate_post, request.user)
         c = {"job_post": validate_post, "user": request.user}
         t = loader.get_template("email/jobpost_notification.html")
-        subject = "PeelJobs New JobPost"
+        subject = "CareerLite New JobPost"
         rendered = t.render(c)
         mto = settings.SUPPORT_EMAILS
         send_email.delay(mto, subject, rendered)
@@ -495,7 +495,7 @@ def copy_job(request, status):
         adding_other_fields_data(request.POST, validate_post, request.user)
         c = {"job_post": validate_post, "user": request.user}
         t = loader.get_template("email/jobpost_notification.html")
-        subject = "PeelJobs New JobPost"
+        subject = "CareerLite New JobPost"
         rendered = t.render(c)
         mto = settings.SUPPORT_EMAILS
         send_email.delay(mto, subject, rendered)

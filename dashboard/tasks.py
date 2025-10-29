@@ -119,7 +119,7 @@ def job_alerts_to_users():
                 user_posts = user_posts.order_by(job_order)
             c = {"jobposts": user_posts.distinct()[:10], "user": user}
             t = loader.get_template("email/job_alert.html")
-            subject = "Top Matching Jobs for your Profile - PeelJobs"
+            subject = "Top Matching Jobs for your Profile - CareerLite"
             rendered = t.render(c)
             mto = [user.email]
             user_active = True if user.is_active else False
@@ -156,7 +156,7 @@ def job_alerts_to_subscribers():
                 "sub_skills": skills,
             }
             t = loader.get_template("email/job_alert.html")
-            subject = "Top Matching jobs for your subscription - PeelJobs"
+            subject = "Top Matching jobs for your subscription - CareerLite"
             rendered = t.render(c)
             mto = [sub.email]
             user_active = False
@@ -216,7 +216,7 @@ def jobpost_published():
        
         c = {"job_post": job, "user": job.user}
         t = loader.get_template("email/jobpost.html")
-        subject = "PeelJobs JobPost Status"
+        subject = "CareerLite JobPost Status"
         mto = [settings.DEFAULT_FROM_EMAIL, job.user.email]
         rendered = t.render(c)
         send_email.delay(mto, subject, rendered)
@@ -334,7 +334,7 @@ def recruiter_jobpost_applicants():
                 if len(applicants) >= 10:
                     c = {"jobposts": job, "user": each, "applicants": applicants[:10]}
                     t = loader.get_template("email/job_applicants.html")
-                    subject = "No. Of Applicants Applied For Your Job"
+        subject = "No. Of Applicants Applied For Your Job"
                     rendered = t.render(c)
                     mto = [each.email]
                     user_active = True if each.is_active else False
@@ -669,7 +669,7 @@ def daily_report():
 
     for each in users:
         temp = loader.get_template("email/daily_report.html")
-        subject = "Peeljobs Daily Report For " + formatted_date
+        subject = "CareerLite Daily Report For " + formatted_date
         mto = [each]
         rendered = temp.render(data)
         send_email.delay(mto, subject, rendered)

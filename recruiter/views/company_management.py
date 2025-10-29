@@ -174,7 +174,7 @@ def company_recruiter_create(request):
             }
             rendered = temp.render(c)
             mto = [user.email]
-            subject = "PeelJobs Recruiter Account Activation"
+            subject = "CareerLite Recruiter Account Activation"
             # user_active = True if request.user.is_active else False
             send_email.delay(mto, subject, rendered)
             data = {"error": False, "response": "Recruiter Created Successfully"}

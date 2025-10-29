@@ -100,7 +100,7 @@ def index(request):
                 c = {"activate_url": url, "user": user}
                 rendered = temp.render(c)
                 mto = [request.POST.get("email")]
-                subject = "PeelJobs Recruiter Account Activation"
+                subject = "CareerLite Recruiter Account Activation"
                 send_email.delay(mto, subject, rendered)
                 data = {
                     "error": True,
@@ -273,7 +273,7 @@ def new_user(request):  # pragma: no mccabe
                     user_obj.save()
 
                     temp = loader.get_template("recruiter/email/recruiter_account.html")
-                    subject = "PeelJobs Recruiter Account Activation"
+                    subject = "CareerLite Recruiter Account Activation"
                     mto = request.POST.get("email")
                     if (
                         "client_type" in request.POST
@@ -401,7 +401,7 @@ def user_password_reset(request):
                     temp = loader.get_template("email/subscription_success.html")
                 else:
                     temp = loader.get_template("recruiter/email/activate.html")
-                subject = "Password Reset - PeelJobs"
+                subject = "Password Reset - CareerLite"
                 mto = [request.POST.get("email")]
                 try:
                     url = (
@@ -741,7 +741,7 @@ def google_register_callback(request):
         
         # Send welcome email
         temp = loader.get_template("recruiter/email/google_registration_welcome.html")
-        subject = "Welcome to PeelJobs - Registration Successful"
+        subject = "Welcome to CareerLite - Registration Successful"
         mto = user_document.get('email')
         c = {
             'user': user,

@@ -36,8 +36,9 @@ AWS_SES_REGION_ENDPOINT = "email.us-east-1.amazonaws.com"
 AWS_ACCESS_KEY_ID = ""
 AWS_SECRET_ACCESS_KEY = ""
 
-# Use console email backend for local development
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# Use file-based email backend for local development (emails saved to files)
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
 # Test runner for BDD tests
 TEST_RUNNER = "django_behave.runner.DjangoBehaveTestSuiteRunner"
@@ -141,9 +142,9 @@ DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 COMPRESS_ENABLED = False
 COMPRESS_OFFLINE = False
 
-# Local celery settings (if different)
-# CELERY_TASK_ALWAYS_EAGER = True  # Execute tasks synchronously for testing
-# CELERY_TASK_EAGER_PROPAGATES = True
+# Local Celery settings: execute tasks synchronously so emails are written immediately
+CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPAGATES = True
 
 # Additional development tools settings
 # DJANGO_EXTENSIONS = True  # if using django-extensions
